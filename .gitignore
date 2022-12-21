@@ -1,0 +1,5 @@
+venv
+*.swp
+.*.swp
+downloads/*
+!downloads/.gitkeep
