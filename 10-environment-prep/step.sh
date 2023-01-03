@@ -49,8 +49,10 @@ function validate_subdomain_delegation {
         }
 
         # We need the edgelab AWS credentials in this subshell
+        { set +x ; } &>/dev/null
         # shellcheck disable=SC1090
         source ~/.edgelab.aws
+        set -x
 
         record_set="$(venv/bin/aws route53 list-resource-record-sets --hosted-zone-id Z0870591EV5SVIJ5YVFG | jq '.ResourceRecordSets[] | .Name')"
         if echo "$record_set" | grep -qF "$BASE_DOMAIN."; then

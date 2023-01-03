@@ -59,7 +59,9 @@ SSH_PUB_KEY="$(cat id_rsa.pub)"
 export SSH_PUB_KEY
 
 # Grab and format our pull secret
+{ set +x ; } &>/dev/null
 PULL_SECRET="$(< ~/.pull-secret.json tr '\n' ' ' | sed 's/\s\+//g')"
+set -x
 export PULL_SECRET
 
 if [ ! -f install/auth/kubeconfig ]; then
