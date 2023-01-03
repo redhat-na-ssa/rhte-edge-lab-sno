@@ -12,44 +12,68 @@ trust_key() {
     gpg --update-trustdb || return 2
 }
 
+raw_download() {
+    if [ ! -f "$1" ]; then
+        curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/$OPENSHIFT_VERSION/$1"
+    fi
+}
+
+download_is_valid() {
+    grep -F "$1" "$download_dir/sha256sum.txt" | sha256sum -c || return 1
+}
+
+download() {
+    if [ ! -f "$1" ] || ! download_is_valid "$1"; then
+        pushd "$tmp_dir" || fail Unable to cd into the temp directory
+        raw_download "$1"
+        download_is_valid "$1"
+        popd || fail Unable to return from temp directory
+        mv "$tmp_dir/$1" ./
+    fi
+}
+
 # We need a temporary directory that gets cleaned up
 tmp_dir="$(mktemp -d)"
-cd "$tmp_dir" || fail Unable to create temporary directory
+download_dir="$PROJECT_DIR/tmp"
+cd "$download_dir" || fail Unable to change into the download directory
 
 # Download  things we'll need to check the version
-curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/$OPENSHIFT_VERSION/release.txt"
+raw_download release.txt
 
 openshift_version_z="$(awk '/^Name:/{print $2}' release.txt)"
 openshift_install_tarball="openshift-install-linux-${openshift_version_z}.tar.gz"
+oc_tarball="openshift-client-linux-${openshift_version_z}.tar.gz"
 
-if [ ! -f "$PROJECT_DIR/tmp/$openshift_install_tarball" ]; then
-    # We need to validate the GPG signature on the checksums of the downloads
+# We need to validate the GPG signature on the checksums of the downloads
+if [ ! -f rh_key.txt ]; then
     curl -Lo rh_key.txt https://www.redhat.com/security/fd431d51.txt
-    if ! gpg --list-keys |& grep -qF security@redhat.com; then
-        gpg --import rh_key.txt || fail Unable to import GPG key
-    fi
-    if ! gpg --list-keys |& grep -q 'ultimate.*security@redhat\.com'; then
-        trust_key || fail Unable to establish key trust for Red Hat Security
-    fi
-    curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/$OPENSHIFT_VERSION/sha256sum.txt"
-    curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/$OPENSHIFT_VERSION/sha256sum.txt.gpg"
-    sig_verification="$(gpg --verify sha256sum.txt.gpg 2>&1)"
-    echo "$sig_verification" | grep -qF 'Good signature from "Red Hat' || fail Unable to validate the signature on the checksums
-
-    # Download the installer
-    curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/$OPENSHIFT_VERSION/$openshift_install_tarball"
-    grep -F "$openshift_install_tarball" sha256sum.txt | sha256sum -c -
-    mv "$openshift_install_tarball" "$PROJECT_DIR/tmp"
+fi
+if ! gpg --list-keys |& grep -qF security@redhat.com; then
+    gpg --import rh_key.txt || fail Unable to import GPG key
+fi
+if ! gpg --list-keys |& grep -q 'ultimate.*security@redhat\.com'; then
+    trust_key || fail Unable to establish key trust for Red Hat Security
+fi
+raw_download sha256sum.txt
+raw_download sha256sum.txt.gpg
+if ! gpg --verify sha256sum.txt.gpg |& grep -qF 'Good signature from "Red Hat'; then
+    rm -rf sha256sum.txt{,.gpg}
+    fail Unable to validate the signature on the checksums
 fi
 
-cd "$PROJECT_DIR/tmp" || fail Unable to change into the download directory
-
-# Ensure downloaded and unpacked
+# Ensure installer and cli are downloaded and unpacked
+download "$openshift_install_tarball"
+download "$oc_tarball"
 if [ ! -x openshift-install ] || [ "$(./openshift-install version | head -1 | cut -d' ' -f2)" != "$openshift_version_z" ]; then
     tar xvzf "$openshift_install_tarball"
     chmod +x openshift-install
 fi
 ./openshift-install version
+if [ ! -x oc ] || [ "$(./oc version --client | head -1 | cut -d' ' -f3)" != "$openshift_version_z" ]; then
+    tar xvzf "$oc_tarball"
+    chmod +x oc
+fi
+./oc version --client
 
 # Ensure that SSH keys are generated
 if [ ! -f id_rsa ] || [ ! -f id_rsa.pub ]; then
