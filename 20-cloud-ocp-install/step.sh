@@ -22,7 +22,7 @@ curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/$OPENSHIFT_V
 openshift_version_z="$(awk '/^Name:/{print $2}' release.txt)"
 openshift_install_tarball="openshift-install-linux-${openshift_version_z}.tar.gz"
 
-if [ ! -f "$PROJECT_DIR/downloads/$openshift_install_tarball" ]; then
+if [ ! -f "$PROJECT_DIR/tmp/$openshift_install_tarball" ]; then
     # We need to validate the GPG signature on the checksums of the downloads
     curl -Lo rh_key.txt https://www.redhat.com/security/fd431d51.txt
     if ! gpg --list-keys |& grep -qF security@redhat.com; then
@@ -39,19 +39,35 @@ if [ ! -f "$PROJECT_DIR/downloads/$openshift_install_tarball" ]; then
     # Download the installer
     curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/$OPENSHIFT_VERSION/$openshift_install_tarball"
     grep -F "$openshift_install_tarball" sha256sum.txt | sha256sum -c -
-    mv "$openshift_install_tarball" "$PROJECT_DIR/downloads"
+    mv "$openshift_install_tarball" "$PROJECT_DIR/tmp"
 fi
 
-cd "$PROJECT_DIR/downloads" || fail Unable to change into the download directory
+cd "$PROJECT_DIR/tmp" || fail Unable to change into the download directory
 
-if [ ! -x openshift-install ]; then
+# Ensure downloaded and unpacked
+if [ ! -x openshift-install ] || [ "$(./openshift-install version | head -1 | cut -d' ' -f2)" != "$openshift_version_z" ]; then
     tar xvzf "$openshift_install_tarball"
     chmod +x openshift-install
 fi
+./openshift-install version
+
+# Ensure that SSH keys are generated
+if [ ! -f id_rsa ] || [ ! -f id_rsa.pub ]; then
+    ssh-keygen -t rsa -b 4096 -C 'admin@edgelab.dev' -N '' -f ./id_rsa
+fi
+SSH_PUB_KEY="$(cat id_rsa.pub)"
+export SSH_PUB_KEY
+
+# Grab and format our pull secret
+PULL_SECRET="$(< ~/.pull-secret.json tr '\n' ' ' | sed 's/\s\+//g')"
+export PULL_SECRET
 
 if [ ! -f install/auth/kubeconfig ]; then
-    mkdir -p install
+    if [ -d install ]; then
+        mv install "install-$(date --iso-8601=seconds)"
+    fi
+    mkdir install
     cd install || fail Unable to change to install directory
-    cp "$SCRIPT_DIR/install-config.yaml" ./
+    < "$SCRIPT_DIR/install-config.tpl" envsubst '$BASE_DOMAIN $CLUSTER_NAME $AWS_REGION $SSH_PUB_KEY $PULL_SECRET' > install-config.yaml
     ../openshift-install create cluster
 fi

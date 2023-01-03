@@ -1,9 +1,10 @@
 #!/bin/bash
 
 OPENSHIFT_VERSION=candidate-4.12
-CLUSTER_NAME="${CLUSTER_NAME:-rhte}"
-BASE_DOMAIN=edgelab.dev
+CLUSTER_NAME="${CLUSTER_NAME:-edge1}"
+BASE_DOMAIN=rhte.edgelab.dev
 FULL_CLUSTER_NAME="$CLUSTER_NAME.$BASE_DOMAIN"
+AWS_REGION="${AWS_REGION:-us-east-2}"
 
 set -eux
 
@@ -38,3 +39,4 @@ export OPENSHIFT_VERSION
 export CLUSTER_NAME
 export BASE_DOMAIN
 export FULL_CLUSTER_NAME
+export AWS_REGION
