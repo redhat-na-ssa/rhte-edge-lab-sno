@@ -19,7 +19,7 @@ raw_download() {
 }
 
 download_is_valid() {
-    grep -F "$1" "$download_dir/sha256sum.txt" | sha256sum -c || return 1
+    grep -F "$1" "$DOWNLOAD_DIR/sha256sum.txt" | sha256sum -c || return 1
 }
 
 download() {
@@ -34,8 +34,7 @@ download() {
 
 # We need a temporary directory that gets cleaned up
 tmp_dir="$(mktemp -d)"
-download_dir="$PROJECT_DIR/tmp"
-cd "$download_dir" || fail Unable to change into the download directory
+cd "$DOWNLOAD_DIR" || fail Unable to change into the download directory
 
 # Download  things we'll need to check the version
 raw_download release.txt
@@ -88,7 +87,7 @@ PULL_SECRET="$(< ~/.pull-secret.json tr '\n' ' ' | sed 's/\s\+//g')"
 set -x
 export PULL_SECRET
 
-if [ ! -f install/auth/kubeconfig ]; then
+if [ ! -f "$KUBECONFIG" ]; then
     if [ -d install ]; then
         mv install "install-$(date --iso-8601=seconds)"
     fi

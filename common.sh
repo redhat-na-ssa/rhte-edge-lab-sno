@@ -9,7 +9,8 @@ AWS_REGION="${AWS_REGION:-us-east-2}"
 set -eux
 
 PROJECT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-export PROJECT_DIR
+DOWNLOAD_DIR="$PROJECT_DIR/tmp"
+KUBECONFIG="$DOWNLOAD_DIR/install/auth/kubeconfig"
 
 function cleanup {
     if [ -n "${tmp_dir:-}" ]; then
@@ -40,3 +41,7 @@ export CLUSTER_NAME
 export BASE_DOMAIN
 export FULL_CLUSTER_NAME
 export AWS_REGION
+
+export PROJECT_DIR
+export DOWNLOAD_DIR
+export KUBECONFIG
