@@ -8,6 +8,7 @@ steps=(
     20-cloud-ocp-install
     30-acm-hub-setup
     40-local-mirror-setup
+    50-infra-env-setup
 )
 
 for step in "${steps[@]}"; do

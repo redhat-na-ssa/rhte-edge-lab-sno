@@ -17,6 +17,13 @@ OPENSHIFT_INSTALL="$DOWNLOAD_DIR/openshift-install"
 OC="$DOWNLOAD_DIR/oc"
 OC_MIRROR="$DOWNLOAD_DIR/oc-mirror"
 
+declare -A INFRA_ENV_LOCS=(
+  [na]=dallas
+  [latam]=buenos_aires
+  [emea]=dublin
+  [apac]=singapore
+)
+
 function cleanup {
     if [ -n "${tmp_dir:-}" ]; then
         set -x
@@ -55,3 +62,5 @@ export KUBECONFIG
 export OPENSHIFT_INSTALL
 export OC
 export OC_MIRROR
+
+export INFRA_ENV_LOCS
