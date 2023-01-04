@@ -46,5 +46,12 @@ fi
 # Make sure we've got venv in the python stdlib
 python3 -m venv --help &>/dev/null || fail Unable to continue without the venv module in the Python stdlib
 
+# Make sure our DNS resolves correctly
+hostname_ip="$(dig -4 +short "${HOSTNAME}")" || fail Unable to resolve hostname: "$HOSTNAME"
+ip addr | grep -qF "inet $hostname_ip" || fail Unable to identify IP address for "$HOSTNAME" on interfaces
+
+# Make sure we can sudo
+sudo whoami | grep -qF root || fail Unable to verify sudo access
+
 echo "Environment validation complete."
 set -x
