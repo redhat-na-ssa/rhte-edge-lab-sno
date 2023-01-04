@@ -95,4 +95,8 @@ if [ ! -f "$KUBECONFIG" ]; then
     cd install || fail Unable to change to install directory
     < "$SCRIPT_DIR/install-config.tpl" envsubst '$BASE_DOMAIN $CLUSTER_NAME $AWS_REGION $SSH_PUB_KEY $PULL_SECRET' > install-config.yaml
     ../openshift-install create cluster
+    cd .. || fail Unable to return from the install directory
 fi
+
+./oc whoami --show-server
+./oc whoami
