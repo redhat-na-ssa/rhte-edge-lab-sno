@@ -15,6 +15,8 @@ metadata:
 spec:
   agentLabels:
     'agentclusterinstalls.extensions.hive.openshift.io/location': ${env_loc}
+  cpuArchitecture: x86_64
+  ipxeScriptType: DiscoveryImageAlways
   pullSecretRef:
     name: pullsecret
   sshAuthorizedKey: ${SSH_PUB_KEY}
