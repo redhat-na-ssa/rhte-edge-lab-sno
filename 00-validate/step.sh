@@ -31,6 +31,7 @@ needed_bins=(
     grep
     ssh-keygen
     envsubst
+    podman
 )
 lacking_bins=()
 

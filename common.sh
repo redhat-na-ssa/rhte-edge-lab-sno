@@ -1,6 +1,7 @@
 #!/bin/bash
 
-OPENSHIFT_VERSION=candidate-4.12
+OPENSHIFT_VERSION="${OPENSHIFT_VERSION:-candidate-4.12}"
+SHORT_VERSION="$(echo "$OPENSHIFT_VERSION" | tr -d 'a-z' | tr -d '-')"
 CLUSTER_NAME="${CLUSTER_NAME:-edge1}"
 BASE_DOMAIN=rhte.edgelab.dev
 FULL_CLUSTER_NAME="$CLUSTER_NAME.$BASE_DOMAIN"
@@ -11,8 +12,10 @@ set -eux
 PROJECT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 DOWNLOAD_DIR="$PROJECT_DIR/tmp"
 KUBECONFIG="$DOWNLOAD_DIR/install/auth/kubeconfig"
+
 OPENSHIFT_INSTALL="$DOWNLOAD_DIR/openshift-install"
 OC="$DOWNLOAD_DIR/oc"
+OC_MIRROR="$DOWNLOAD_DIR/oc-mirror"
 
 function cleanup {
     if [ -n "${tmp_dir:-}" ]; then
@@ -39,6 +42,7 @@ trap 'fail_trap "${BASH_COMMAND}" "${LINENO}"' ERR
 trap 'cleanup' EXIT
 
 export OPENSHIFT_VERSION
+export SHORT_VERSION
 export CLUSTER_NAME
 export BASE_DOMAIN
 export FULL_CLUSTER_NAME
@@ -47,5 +51,7 @@ export AWS_REGION
 export PROJECT_DIR
 export DOWNLOAD_DIR
 export KUBECONFIG
+
 export OPENSHIFT_INSTALL
 export OC
+export OC_MIRROR

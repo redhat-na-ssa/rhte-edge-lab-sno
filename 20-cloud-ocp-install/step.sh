@@ -42,6 +42,7 @@ raw_download release.txt
 openshift_version_z="$(awk '/^Name:/{print $2}' release.txt)"
 openshift_install_tarball="openshift-install-linux-${openshift_version_z}.tar.gz"
 oc_tarball="openshift-client-linux-${openshift_version_z}.tar.gz"
+oc_mirror_tarball="oc-mirror.tar.gz"
 
 # We need to validate the GPG signature on the checksums of the downloads
 if [ ! -f rh_key.txt ]; then
@@ -63,6 +64,7 @@ fi
 # Ensure installer and cli are downloaded and unpacked
 download "$openshift_install_tarball"
 download "$oc_tarball"
+raw_download "$oc_mirror_tarball"
 if [ ! -x "$OPENSHIFT_INSTALL" ] || [ "$("$OPENSHIFT_INSTALL" version | head -1 | cut -d' ' -f2)" != "$openshift_version_z" ]; then
     tar xvzf "$openshift_install_tarball"
     chmod +x "$OPENSHIFT_INSTALL"
@@ -73,6 +75,11 @@ if [ ! -x "$OC" ] || [ "$("$OC" version --client | head -1 | cut -d' ' -f3)" != 
     chmod +x "$OC"
 fi
 "$OC" version --client
+if [ ! -x "$OC_MIRROR" ] || ! "$OC_MIRROR" version | grep -qF "$SHORT_VERSION"; then
+    tar xvzf "$oc_mirror_tarball"
+    chmod +x "$OC_MIRROR"
+fi
+"$OC_MIRROR" version
 
 # Ensure that SSH keys are generated
 if [ ! -f id_rsa ] || [ ! -f id_rsa.pub ]; then
