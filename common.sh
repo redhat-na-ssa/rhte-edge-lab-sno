@@ -11,6 +11,8 @@ set -eux
 PROJECT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 DOWNLOAD_DIR="$PROJECT_DIR/tmp"
 KUBECONFIG="$DOWNLOAD_DIR/install/auth/kubeconfig"
+OPENSHIFT_INSTALL="$DOWNLOAD_DIR/openshift-install"
+OC="$DOWNLOAD_DIR/oc"
 
 function cleanup {
     if [ -n "${tmp_dir:-}" ]; then
@@ -45,3 +47,5 @@ export AWS_REGION
 export PROJECT_DIR
 export DOWNLOAD_DIR
 export KUBECONFIG
+export OPENSHIFT_INSTALL
+export OC

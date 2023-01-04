@@ -63,16 +63,16 @@ fi
 # Ensure installer and cli are downloaded and unpacked
 download "$openshift_install_tarball"
 download "$oc_tarball"
-if [ ! -x openshift-install ] || [ "$(./openshift-install version | head -1 | cut -d' ' -f2)" != "$openshift_version_z" ]; then
+if [ ! -x "$OPENSHIFT_INSTALL" ] || [ "$("$OPENSHIFT_INSTALL" version | head -1 | cut -d' ' -f2)" != "$openshift_version_z" ]; then
     tar xvzf "$openshift_install_tarball"
-    chmod +x openshift-install
+    chmod +x "$OPENSHIFT_INSTALL"
 fi
-./openshift-install version
-if [ ! -x oc ] || [ "$(./oc version --client | head -1 | cut -d' ' -f3)" != "$openshift_version_z" ]; then
+"$OPENSHIFT_INSTALL" version
+if [ ! -x "$OC" ] || [ "$("$OC" version --client | head -1 | cut -d' ' -f3)" != "$openshift_version_z" ]; then
     tar xvzf "$oc_tarball"
-    chmod +x oc
+    chmod +x "$OC"
 fi
-./oc version --client
+"$OC" version --client
 
 # Ensure that SSH keys are generated
 if [ ! -f id_rsa ] || [ ! -f id_rsa.pub ]; then
@@ -94,9 +94,9 @@ if [ ! -f "$KUBECONFIG" ]; then
     mkdir install
     cd install || fail Unable to change to install directory
     < "$SCRIPT_DIR/install-config.tpl" envsubst '$BASE_DOMAIN $CLUSTER_NAME $AWS_REGION $SSH_PUB_KEY $PULL_SECRET' > install-config.yaml
-    ../openshift-install create cluster
+    "$OPENSHIFT_INSTALL" create cluster
     cd .. || fail Unable to return from the install directory
 fi
 
-./oc whoami --show-server
-./oc whoami
+"$OC" whoami --show-server
+"$OC" whoami
