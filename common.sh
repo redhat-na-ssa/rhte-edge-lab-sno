@@ -7,7 +7,7 @@ BASE_DOMAIN=rhte.edgelab.dev
 FULL_CLUSTER_NAME="$CLUSTER_NAME.$BASE_DOMAIN"
 AWS_REGION="${AWS_REGION:-us-east-2}"
 
-set -eux
+set -eu
 
 PROJECT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 DOWNLOAD_DIR="$PROJECT_DIR/tmp"
@@ -67,3 +67,5 @@ export AWS
 export ANSIBLE_PLAYBOOK
 
 export INFRA_ENV_LOCS
+
+set -x
