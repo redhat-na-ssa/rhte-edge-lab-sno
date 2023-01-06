@@ -13,7 +13,9 @@ controlPlane:
   architecture: amd64
   hyperthreading: Enabled
   name: master
-  platform: {}
+  platform:
+    aws:
+      type: m6i.2xlarge
   replicas: 3
 networking:
   clusterNetwork:
