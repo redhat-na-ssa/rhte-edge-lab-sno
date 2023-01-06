@@ -23,6 +23,11 @@ if [ -d "$DOWNLOAD_DIR/install" ]; then
     rm -rf "$DOWNLOAD_DIR/install"
 fi
 
+if [ -f "$DOWNLOAD_DIR/metal.cf.yaml" ]; then
+    "$AWS" cloudformation delete-stack --stack-name "$CLUSTER_NAME" --region "$AWS_REGION"
+    rm -f "$DOWNLOAD_DIR/metal.cf.yaml"
+fi
+
 if $all; then
     find "$DOWNLOAD_DIR" -mindepth 1 -maxdepth 1 ! -name '.gitkeep' -exec rm -rf {} \;
     rm -rf venv
