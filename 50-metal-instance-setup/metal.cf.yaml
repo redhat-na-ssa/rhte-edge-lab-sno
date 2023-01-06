@@ -160,8 +160,6 @@ Resources:
 
             # Ensure cockpit is enabled
             systemctl enable --now cockpit.socket
-            firewall-cmd --add-service=cockpit --permanent
-            firewall-cmd --reload
 
             # Ensure workshop user is created
             adduser labuser -c 'Lab User' -G wheel
