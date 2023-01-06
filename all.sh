@@ -5,7 +5,10 @@ set -e
 steps=(
     00-validate
     10-environment-prep
+    15-dns-setup
     20-cloud-ocp-install
+    30-acm-hub-setup
+    40-infra-env-setup
 )
 
 for step in "${steps[@]}"; do
