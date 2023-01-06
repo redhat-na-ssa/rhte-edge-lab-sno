@@ -21,7 +21,7 @@ fi
 export LAB_USER_PASSWORD
 
 < metal.cf.yaml envsubst \
-    '$HOSTED_ZONE $BASE_DOMAIN $INSTANCE_NAME $SSH_PUB_KEY' \
+    '$HOSTED_ZONE $BASE_DOMAIN $INSTANCE_NAME $LAB_USER_PASSWORD $SSH_PUB_KEY' \
     > "$DOWNLOAD_DIR/metal.cf.yaml"
 "$AWS" cloudformation deploy \
     --template-file "$DOWNLOAD_DIR/metal.cf.yaml" \
