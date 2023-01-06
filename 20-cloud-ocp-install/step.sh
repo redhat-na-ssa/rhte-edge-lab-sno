@@ -2,9 +2,9 @@
 
 SCRIPT_PATH="$(realpath "$0")"
 SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
-cd "$SCRIPT_DIR" || fail Unable to change into script directory
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/../common.sh"
+cd "$DOWNLOAD_DIR" || fail Unable to change to the download dir
 
 # Ensure that SSH keys are generated
 if [ ! -f id_rsa ] || [ ! -f id_rsa.pub ]; then
