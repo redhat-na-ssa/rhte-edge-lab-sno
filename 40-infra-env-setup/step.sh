@@ -9,6 +9,7 @@ source "$SCRIPT_DIR/../common.sh"
 "$OC" apply -f agentserviceconfig.yml
 < cim-nlb.tpl envsubst '$FULL_CLUSTER_NAME' > "$DOWNLOAD_DIR/cim-nlb.yml"
 "$OC" apply -f "$DOWNLOAD_DIR/cim-nlb.yml"
+
 while ! "$OC" get route -n multicluster-engine assisted-image-service; do
     sleep 5
 done
@@ -31,6 +32,7 @@ export SSH_PUB_KEY
 PULL_SECRET_B64="$(< ~/.pull-secret.json base64 -w0)"
 set -x
 export PULL_SECRET_B64
+
 for env_name in "${!INFRA_ENV_LOCS[@]}"; do
     env_loc="${INFRA_ENV_LOCS[$env_name]}"
     export env_name

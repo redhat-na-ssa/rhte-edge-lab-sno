@@ -11,11 +11,17 @@ set -eux
 
 PROJECT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 DOWNLOAD_DIR="$PROJECT_DIR/tmp"
+VENV="$PROJECT_DIR/venv"
+
 KUBECONFIG="$DOWNLOAD_DIR/install/auth/kubeconfig"
 
 OPENSHIFT_INSTALL="$DOWNLOAD_DIR/openshift-install"
 OC="$DOWNLOAD_DIR/oc"
 OC_MIRROR="$DOWNLOAD_DIR/oc-mirror"
+
+PIP="$VENV/bin/pip"
+AWS="$VENV/bin/aws"
+ANSIBLE_PLAYBOOK="$VENV/bin/ansible-playbook"
 
 declare -A INFRA_ENV_LOCS=(
   [na]=dallas
@@ -23,14 +29,6 @@ declare -A INFRA_ENV_LOCS=(
   [emea]=dublin
   [apac]=singapore
 )
-
-function cleanup {
-    if [ -n "${tmp_dir:-}" ]; then
-        set -x
-        cd "$PROJECT_DIR" || cd ||:
-        rm -rf "$tmp_dir"
-    fi
-}
 
 function fail_trap {
     { set +x ; } &>/dev/null
@@ -46,7 +44,6 @@ function fail {
 }
 
 trap 'fail_trap "${BASH_COMMAND}" "${LINENO}"' ERR
-trap 'cleanup' EXIT
 
 export OPENSHIFT_VERSION
 export SHORT_VERSION
@@ -57,10 +54,16 @@ export AWS_REGION
 
 export PROJECT_DIR
 export DOWNLOAD_DIR
+export VENV
+
 export KUBECONFIG
 
 export OPENSHIFT_INSTALL
 export OC
 export OC_MIRROR
+
+export PIP
+export AWS
+export ANSIBLE_PLAYBOOK
 
 export INFRA_ENV_LOCS
