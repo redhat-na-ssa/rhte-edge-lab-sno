@@ -6,14 +6,9 @@ SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
 source "$SCRIPT_DIR/../common.sh"
 cd "$PROJECT_DIR" || fail Unable to cd into the project directory
 
-function set_hosted_zone {
-    # Set the hosted zone ID for our expected cluster domain
-    hosted_zone="$("$AWS" route53 list-hosted-zones | jq -r '.HostedZones[] | select(.Name == "'"$BASE_DOMAIN"'.") | .Id' | rev | cut -d/ -f1 | rev)"
-}
-
 function validate_subdomain_delegation {
     # Ensure that the edgelab.dev AWS account has the subdomain delegated
-    hosted_zone_nameservers="$("$AWS" route53 get-hosted-zone --id "$hosted_zone" | jq -r '.DelegationSet.NameServers[]')"
+    hosted_zone_nameservers="$("$AWS" route53 get-hosted-zone --id "$HOSTED_ZONE" | jq -r '.DelegationSet.NameServers[]')"
     export hosted_zone_nameservers
     (
         set -eux
@@ -72,7 +67,7 @@ function validate_subdomain_delegation {
 }
 
 set_hosted_zone
-if [ -z "$hosted_zone" ]; then
+if [ -z "$HOSTED_ZONE" ]; then
     "$AWS" route53 create-hosted-zone --name "$BASE_DOMAIN" --caller-reference "$(date +'%s')"
     set_hosted_zone
 fi

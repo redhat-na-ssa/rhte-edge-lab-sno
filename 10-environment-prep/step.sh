@@ -98,3 +98,8 @@ if [ ! -x "$OC_MIRROR" ] || ! "$OC_MIRROR" version | grep -qF "$SHORT_VERSION"; 
     chmod +x "$OC_MIRROR"
 fi
 "$OC_MIRROR" version
+
+# Ensure that SSH keys are generated
+if [ ! -f "$SSH_PRIV_KEY_FILE" ] || [ ! -f "$SSH_PUB_KEY_FILE" ]; then
+    ssh-keygen -t rsa -b 4096 -C 'admin@edgelab.dev' -N '' -f "$SSH_PRIV_KEY_FILE"
+fi

@@ -12,8 +12,11 @@ set -eu
 PROJECT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 DOWNLOAD_DIR="$PROJECT_DIR/tmp"
 VENV="$PROJECT_DIR/venv"
+OPENSHIFT_INSTALL_DIR="$DOWNLOAD_DIR/install"
 
-KUBECONFIG="$DOWNLOAD_DIR/install/auth/kubeconfig"
+KUBECONFIG="$OPENSHIFT_INSTALL_DIR/auth/kubeconfig"
+SSH_PRIV_KEY_FILE="$DOWNLOAD_DIR/id_rsa"
+SSH_PUB_KEY_FILE="$DOWNLOAD_DIR/id_rsa.pub"
 
 OPENSHIFT_INSTALL="$DOWNLOAD_DIR/openshift-install"
 OC="$DOWNLOAD_DIR/oc"
@@ -55,8 +58,15 @@ export AWS_REGION
 export PROJECT_DIR
 export DOWNLOAD_DIR
 export VENV
+export OPENSHIFT_INSTALL_DIR
 
 export KUBECONFIG
+export SSH_PRIV_KEY_FILE
+export SSH_PUB_KEY_FILE
+if [ -f "$SSH_PUB_KEY_FILE" ]; then
+    SSH_PUB_KEY="$(cat "$SSH_PUB_KEY_FILE")"
+    export SSH_PUB_KEY
+fi
 
 export OPENSHIFT_INSTALL
 export OC
@@ -67,5 +77,11 @@ export AWS
 export ANSIBLE_PLAYBOOK
 
 export INFRA_ENV_LOCS
+
+function set_hosted_zone {
+    # Set the hosted zone ID for our expected cluster domain
+    HOSTED_ZONE="$("$AWS" route53 list-hosted-zones | jq -r '.HostedZones[] | select(.Name == "'"$BASE_DOMAIN"'.") | .Id' | rev | cut -d/ -f1 | rev)"
+    export HOSTED_ZONE
+}
 
 set -x
