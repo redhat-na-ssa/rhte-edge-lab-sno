@@ -155,11 +155,15 @@ Resources:
             # Apply the latest security patches
             dnf -y update --security
 
+            # Ensure the hostname is set correctly
+            hostnamectl set-hostname ${INSTANCE_NAME}
+
             # Install the necessary packages for running VMs
             dnf -y install cockpit cockpit-machines
 
-            # Ensure cockpit is enabled
+            # Ensure cockpit and libvirt services are enabled
             systemctl enable --now cockpit.socket
+            systemctl enable --now libvirt.service
 
             # Ensure workshop user is created
             adduser labuser -c 'Lab User' -G wheel
