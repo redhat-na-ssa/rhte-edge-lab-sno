@@ -13,10 +13,16 @@ PROJECT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 DOWNLOAD_DIR="$PROJECT_DIR/tmp"
 VENV="$PROJECT_DIR/venv"
 OPENSHIFT_INSTALL_DIR="$DOWNLOAD_DIR/install"
+ACME_DIR="$DOWNLOAD_DIR/acme.sh"
+ACME_EMAIL='jharmison@redhat.com'
 
 KUBECONFIG="$OPENSHIFT_INSTALL_DIR/auth/kubeconfig"
 SSH_PRIV_KEY_FILE="$DOWNLOAD_DIR/id_rsa"
 SSH_PUB_KEY_FILE="$DOWNLOAD_DIR/id_rsa.pub"
+CLUSTER_FULLCHAIN_FILE="$DOWNLOAD_DIR/cluster-fullchain.crt"
+CLUSTER_PRIVATE_KEY_FILE="$DOWNLOAD_DIR/cluster-key.crt"
+VIRT_FULLCHAIN_FILE="$DOWNLOAD_DIR/virt-fullchain.crt"
+VIRT_PRIVATE_KEY_FILE="$DOWNLOAD_DIR/virt-key.crt"
 
 OPENSHIFT_INSTALL="$DOWNLOAD_DIR/openshift-install"
 OC="$DOWNLOAD_DIR/oc"
@@ -59,6 +65,8 @@ export PROJECT_DIR
 export DOWNLOAD_DIR
 export VENV
 export OPENSHIFT_INSTALL_DIR
+export ACME_DIR
+export ACME_EMAIL
 
 export KUBECONFIG
 export SSH_PRIV_KEY_FILE
@@ -66,6 +74,26 @@ export SSH_PUB_KEY_FILE
 if [ -f "$SSH_PUB_KEY_FILE" ]; then
     SSH_PUB_KEY="$(cat "$SSH_PUB_KEY_FILE")"
     export SSH_PUB_KEY
+fi
+export CLUSTER_FULLCHAIN_FILE
+if [ -f "$CLUSTER_FULLCHAIN_FILE" ]; then
+    CLUSTER_FULLCHAIN="$(cat "$CLUSTER_FULLCHAIN_FILE")"
+    export CLUSTER_FULLCHAIN
+fi
+export CLUSTER_PRIVATE_KEY_FILE
+if [ -f "$CLUSTER_PRIVATE_KEY_FILE" ]; then
+    CLUSTER_PRIVATE_KEY="$(cat "$CLUSTER_PRIVATE_KEY_FILE")"
+    export CLUSTER_PRIVATE_KEY
+fi
+export VIRT_FULLCHAIN_FILE
+if [ -f "$VIRT_FULLCHAIN_FILE" ]; then
+    VIRT_FULLCHAIN="$(cat "$VIRT_FULLCHAIN_FILE")"
+    export VIRT_FULLCHAIN
+fi
+export VIRT_PRIVATE_KEY_FILE
+if [ -f "$VIRT_PRIVATE_KEY_FILE" ]; then
+    VIRT_PRIVATE_KEY="$(cat "$VIRT_PRIVATE_KEY_FILE")"
+    export VIRT_PRIVATE_KEY
 fi
 
 export OPENSHIFT_INSTALL
@@ -82,6 +110,9 @@ function set_hosted_zone {
     # Set the hosted zone ID for our expected cluster domain
     HOSTED_ZONE="$("$AWS" route53 list-hosted-zones | jq -r '.HostedZones[] | select(.Name == "'"$BASE_DOMAIN"'.") | .Id' | rev | cut -d/ -f1 | rev)"
     export HOSTED_ZONE
+}
+function set_cluster_fullchain {
+    if -f
 }
 
 set -x
