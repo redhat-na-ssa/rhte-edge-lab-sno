@@ -25,3 +25,5 @@ fi
 
 "$OC" whoami --show-server
 "$OC" whoami
+
+"$OC" apply -f 
