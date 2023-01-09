@@ -161,6 +161,11 @@ Resources:
             # Install the necessary packages for running VMs
             dnf -y install cockpit cockpit-machines
 
+            # Ensure that cockpit certificates are in place
+            mkdir -p /etc/cockpit/ws-certs.d
+            echo "${COCKPIT_CERT}" > /etc/cockpit/ws-certs.d/00-cockpit.crt
+            echo "${COCKPIT_KEY}" > /etc/cockpit/ws-certs.d/00-cockpit.key
+
             # Ensure cockpit and libvirt services are enabled
             systemctl enable --now cockpit.socket
             systemctl enable --now libvirt.service
