@@ -61,16 +61,20 @@ if ! "$OC" patch apiserver.config cluster --type=merge -p '{
     sed '/certificate-authority-data/d' "$KUBECONFIG"
     # And wait for the rollouts to start with a generous sleep
     sleep 30
-    while true; do
-        # co_updated will have one of the following values:
-        # - empty (an error occurred because we don't have the updated certificate yet)
-        # - "True\nFalse" (some cluster operators are not reporting a completed rollout)
-        # - "True" (all cluster operators are reporting a completed rollout)
-        co_updated="$({ "$OC" get co -ojsonpath='{range .items[*].status.conditions[?(@.type=="Available")]}{.status}{"\n"}{end}' ||: ; } | sort -u)"
-        if [ "$co_updated" != "True" ]; then
-            sleep 10
+
+    duration=0
+    timeout=1800
+    step=5
+    # Expect the following values from the while loop grep:
+    # - empty (an error occurred because we don't have the updated certificate yet)
+    # - "True\nFalse" (some cluster operators are not reporting a completed rollout)
+    # - "True" (all cluster operators are reporting a completed rollout)
+    while [ "$({ "$OC" get co -ojsonpath='{range .items[*].status.conditions[?(@.type=="Available")]}{.status}{"\n"}{end}' ||: ; } | sort -u)" != "True" ]; do
+        if (( duration >= timeout )); then
+            fail Timed out waiting for API server to recover after certificate update
         else
-            break
+            (( duration += step ))
+            sleep "$step"
         fi
     done
 fi
