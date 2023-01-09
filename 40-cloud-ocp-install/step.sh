@@ -56,9 +56,9 @@ if ! "$OC" patch apiserver.config cluster --type=merge -p '{
     }
 }' | grep -qF '(no change)'; then
     # API server certificate has changed
-    mv "$KUBECONFIG" "$KUBECONFIG-orig"
+    cp "$KUBECONFIG" "$KUBECONFIG-orig"
     # We need to remove it from the KUBECONFIG
-    sed '/certificate-authority-data/d' "$KUBECONFIG"
+    sed -i '/certificate-authority-data/d' "$KUBECONFIG"
     # And wait for the rollouts to start with a generous sleep
     sleep 30
 
