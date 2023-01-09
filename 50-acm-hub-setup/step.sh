@@ -64,6 +64,9 @@ wait_for() {
     while ! { "$OC" get "${args[@]}" ||: ; } | grep -qF "$expected"; do
         if (( duration >= timeout )); then
             fail Timed out waiting for "$kind" "$name" to reach "$jsonpath" "$expected" after "$timeout" seconds
+        else
+            (( duration += step ))
+            sleep "$step"
         fi
     done
 }
