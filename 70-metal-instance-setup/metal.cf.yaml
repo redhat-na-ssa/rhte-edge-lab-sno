@@ -163,8 +163,8 @@ Resources:
 
             # Ensure that cockpit certificates are in place
             mkdir -p /etc/cockpit/ws-certs.d
-            echo "${COCKPIT_CERT}" > /etc/cockpit/ws-certs.d/00-cockpit.crt
-            echo "${COCKPIT_KEY}" > /etc/cockpit/ws-certs.d/00-cockpit.key
+            echo "${COCKPIT_CERT}" | base64 -d > /etc/cockpit/ws-certs.d/00-cockpit.crt
+            echo "${COCKPIT_KEY}" | base64 -d > /etc/cockpit/ws-certs.d/00-cockpit.key
 
             # Ensure cockpit and libvirt services are enabled
             systemctl enable --now cockpit.socket
