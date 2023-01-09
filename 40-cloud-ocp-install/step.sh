@@ -26,4 +26,51 @@ fi
 "$OC" whoami --show-server
 "$OC" whoami
 
-"$OC" apply -f 
+# Configure our certs
+if ! "$OC" get secret cluster-api -n openshift-config; then
+    "$OC" create secret tls cluster-api --cert="$CLUSTER_FULLCHAIN_FILE" --key="$CLUSTER_PRIVATE_KEY_FILE" -n openshift-config
+fi
+if ! "$OC" get secret cluster-router -n openshift-ingress; then
+    "$OC" create secret tls cluster-router --cert="$CLUSTER_FULLCHAIN_FILE" --key="$CLUSTER_PRIVATE_KEY_FILE" -n openshift-ingress
+fi
+"$OC" patch ingresscontroller.operator default --type=merge -p '{
+    "spec": {
+        "defaultCertificate": {
+            "name": "cluster-router"
+        }
+    }
+}' -n openshift-ingress-operator
+if ! "$OC" patch apiserver.config cluster --type=merge -p '{
+    "spec": {
+        "servingCerts": {
+            "namedCertificates": [
+                {
+                    "names": [
+                        "api.'"$FULL_CLUSTER_NAME"'"
+                    ], "servingCertificate": {
+                        "name": "cluster-api"
+                    }
+                }
+            ]
+        }
+    }
+}' | grep -qF '(no change)'; then
+    # API server certificate has changed
+    mv "$KUBECONFIG" "$KUBECONFIG-orig"
+    # We need to remove it from the KUBECONFIG
+    sed '/certificate-authority-data/d' "$KUBECONFIG"
+    # And wait for the rollouts to start with a generous sleep
+    sleep 30
+    while true; do
+        # co_updated will have one of the following values:
+        # - empty (an error occurred because we don't have the updated certificate yet)
+        # - "True\nFalse" (some cluster operators are not reporting a completed rollout)
+        # - "True" (all cluster operators are reporting a completed rollout)
+        co_updated="$({ "$OC" get co -ojsonpath='{range .items[*].status.conditions[?(@.type=="Available")]}{.status}{"\n"}{end}' ||: ; } | sort -u)"
+        if [ "$co_updated" != "True" ]; then
+            sleep 10
+        else
+            break
+        fi
+    done
+fi

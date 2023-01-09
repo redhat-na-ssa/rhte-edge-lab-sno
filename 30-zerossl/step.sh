@@ -19,6 +19,15 @@ acme_issue() {
                     shift
                 done
                 ;;
+            -f)
+                shift
+                args+=(
+                    --cert-file "$1.crt"
+                    --key-file "$1-key.pem"
+                    --fullchain-file "$1-fullchain.crt"
+                )
+                shift
+                ;;
             *)
                 domains+=("$1")
                 args+=(-d "$1")
@@ -55,17 +64,6 @@ router_endpoint="*.apps.$FULL_CLUSTER_NAME"
 
 virt_domain="$CLUSTER_NAME-virt.$BASE_DOMAIN"
 
-cluster_args=(
-    --cert-file "$DOWNLOAD_DIR/cluster-cert.pem"
-    --key-file "$DOWNLOAD_DIR/cluster-key.pem"
-    --fullchain-file "$DOWNLOAD_DIR/cluster-fullchain.pem"
-)
-virt_args=(
-    --cert-file "$DOWNLOAD_DIR/virt-cert.pem"
-    --key-file "$DOWNLOAD_DIR/virt-key.pem"
-    --fullchain-file "$DOWNLOAD_DIR/virt-fullchain.pem"
-)
-
 "${acme[@]}" --register-account -m "$ACME_EMAIL"
-acme_issue "$api_endpoint" "$router_endpoint" -- "${cluster_args[@]}"
-acme_issue "$virt_domain" -- "${virt_args[@]}"
+acme_issue "$api_endpoint" "$router_endpoint" -f "$CLUSTER_CERT_PREFIX"
+acme_issue "$virt_domain" -f "$VIRT_CERT_PREFIX"
