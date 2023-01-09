@@ -77,6 +77,10 @@ export ACME_EMAIL
 export KUBECONFIG
 export SSH_PRIV_KEY_FILE
 export SSH_PUB_KEY_FILE
+if [ -f "$SSH_PUB_KEY_FILE" ]; then
+    SSH_PUB_KEY="$(cat "$SSH_PUB_KEY_FILE")"
+    export SSH_PUB_KEY
+fi
 
 export CLUSTER_CERT_PREFIX
 export CLUSTER_CERT_FILE
