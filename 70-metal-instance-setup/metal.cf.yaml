@@ -168,7 +168,7 @@ Resources:
 
             # Ensure cockpit and libvirt services are enabled
             systemctl enable --now cockpit.socket
-            systemctl enable --now libvirt.service
+            systemctl enable --now libvirtd.service
 
             # Ensure workshop user is created
             adduser labuser -c 'Lab User' -G wheel
