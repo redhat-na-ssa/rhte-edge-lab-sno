@@ -87,4 +87,5 @@ wait_for \
     --namespace=open-cluster-management \
     --name=multiclusterhub \
     --jsonpath='{.status.phase}' \
+    --timeout=900 \
     --expected=Running
