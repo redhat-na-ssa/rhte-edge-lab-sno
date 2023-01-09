@@ -170,9 +170,22 @@ Resources:
             systemctl enable --now cockpit.socket
             systemctl enable --now libvirtd.service
 
+            # Configure disks for /var
+            pvcreate /dev/nvme0n1
+            pvcreate /dev/nvme1n1
+            vgcreate vg_var /dev/nvme0n1 /dev/nvme1n1
+            extents=$(vgdisplay | awk '/Total PE/{print $3}')
+            lvcreate --stripes 2 --extents $extents --name lv_var vg_var
+            mkfs.xfs /dev/vg_var/lv_var
+            uuid=$(lvdisplay | awk '/LV UUID/{print $3}')
+            echo "UUID=$uuid /var xfs defaults 0 0" >> /etc/fstab
+
             # Ensure workshop user is created
             adduser labuser -c 'Lab User' -G wheel
             echo '${LAB_USER_PASSWORD}' | sudo passwd --stdin labuser
+
+            sync
+            reboot now
       Tags:
       - Key: Name
         Value: !Sub 'Metal Instance - ${AWS::StackName}'
