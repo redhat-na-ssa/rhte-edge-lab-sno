@@ -60,16 +60,16 @@ if ! "$OC" patch apiserver.config cluster --type=merge -p '{
     # We need to remove it from the KUBECONFIG
     sed -i '/certificate-authority-data/d' "$KUBECONFIG"
     # And wait for the rollouts to start with a generous sleep
-    sleep 30
+    sleep 60
 
     duration=0
     timeout=1800
     step=5
     # Expect the following values from the while loop grep:
     # - empty (an error occurred because we don't have the updated certificate yet)
-    # - "True\nFalse" (some cluster operators are not reporting a completed rollout)
-    # - "True" (all cluster operators are reporting a completed rollout)
-    while [ "$({ "$OC" get co -ojsonpath='{range .items[*].status.conditions[?(@.type=="Available")]}{.status}{"\n"}{end}' ||: ; } | sort -u)" != "True" ]; do
+    # - "NodeInstallerProgressing: 1 nodes are at revision 9; 2 nodes are at revision 10\nAsExpected" (some cluster operators are not reporting a completed rollout)
+    # - "AsExpected" (all cluster operators are reporting a completed rollout)
+    while [ "$({ "$OC" get co -ojsonpath='{range .items[*].status.conditions[?(@.type=="Progressing")]}{.reason}{"\n"}{end}' ||: ; } | sort -u)" != "AsExpected" ]; do
         if (( duration >= timeout )); then
             fail Timed out waiting for API server to recover after certificate update
         else
