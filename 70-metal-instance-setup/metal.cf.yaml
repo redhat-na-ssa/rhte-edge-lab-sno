@@ -170,22 +170,26 @@ Resources:
             systemctl enable --now cockpit.socket
             systemctl enable --now libvirtd.service
 
-            # Configure disks for /var
+            # Configure disks for /srv/images
+            mkdir -p /srv/images
             pvcreate /dev/nvme0n1
             pvcreate /dev/nvme1n1
-            vgcreate vg_var /dev/nvme0n1 /dev/nvme1n1
+            vgcreate vg_images /dev/nvme0n1 /dev/nvme1n1
             extents=$(vgdisplay | awk '/Total PE/{print $3}')
-            lvcreate --stripes 2 --extents $extents --name lv_var vg_var
-            mkfs.xfs /dev/vg_var/lv_var
-            uuid=$(lsblk -nouuid /dev/vg_var/lv_var | sed 's/\s//g')
-            echo "UUID=$uuid /var xfs defaults 0 0" >> /etc/fstab
+            lvcreate --stripes 2 --extents $extents --name lv_images vg_images
+            mkfs.xfs /dev/vg_images/lv_images
+            echo "/dev/vg_images/lv_images /srv/images xfs defaults 0 0" >> /etc/fstab
+            sync
+            mount /srv/images
+            virsh pool-define-as --name images --type dir --target /srv/images
+            virsh pool-start --build images
+            virsh pool-autostart images
+            semanage fcontext --add --seuser system_u --type virt_image_t '/srv/images(/.*)?'
+            restorecon -Riv /srv/images
 
             # Ensure workshop user is created
-            adduser labuser -c 'Lab User' -G wheel
+            adduser labuser -c 'Lab User' -G wheel,libvirt
             echo '${LAB_USER_PASSWORD}' | sudo passwd --stdin labuser
-
-            sync
-            reboot now
       Tags:
       - Key: Name
         Value: !Sub 'Metal Instance - ${AWS::StackName}'
