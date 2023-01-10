@@ -177,7 +177,7 @@ Resources:
             extents=$(vgdisplay | awk '/Total PE/{print $3}')
             lvcreate --stripes 2 --extents $extents --name lv_var vg_var
             mkfs.xfs /dev/vg_var/lv_var
-            uuid=$(lsblk -nouuid /dev/vg_var/lv_var)
+            uuid=$(lsblk -nouuid /dev/vg_var/lv_var | sed 's/\s//g')
             echo "UUID=$uuid /var xfs defaults 0 0" >> /etc/fstab
 
             # Ensure workshop user is created
