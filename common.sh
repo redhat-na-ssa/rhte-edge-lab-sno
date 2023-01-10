@@ -12,8 +12,23 @@ set -eu
 PROJECT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 DOWNLOAD_DIR="$PROJECT_DIR/tmp"
 VENV="$PROJECT_DIR/venv"
+OPENSHIFT_INSTALL_DIR="$DOWNLOAD_DIR/install"
+ACME_DIR="$DOWNLOAD_DIR/acme.sh"
+ACME_EMAIL='jharmison@redhat.com'
 
-KUBECONFIG="$DOWNLOAD_DIR/install/auth/kubeconfig"
+KUBECONFIG="$OPENSHIFT_INSTALL_DIR/auth/kubeconfig"
+SSH_PRIV_KEY_FILE="$DOWNLOAD_DIR/id_rsa"
+SSH_PUB_KEY_FILE="$DOWNLOAD_DIR/id_rsa.pub"
+
+CLUSTER_CERT_PREFIX="$DOWNLOAD_DIR/$CLUSTER_NAME-cluster"
+CLUSTER_CERT_FILE="$CLUSTER_CERT_PREFIX.crt"
+CLUSTER_PRIVATE_KEY_FILE="$CLUSTER_CERT_PREFIX-key.pem"
+CLUSTER_FULLCHAIN_FILE="$CLUSTER_CERT_PREFIX-fullchain.crt"
+
+VIRT_CERT_PREFIX="$DOWNLOAD_DIR/$CLUSTER_NAME-virt"
+VIRT_CERT_FILE="$VIRT_CERT_PREFIX.crt"
+VIRT_PRIVATE_KEY_FILE="$VIRT_CERT_PREFIX-key.pem"
+VIRT_FULLCHAIN_FILE="$VIRT_CERT_PREFIX-fullchain.crt"
 
 OPENSHIFT_INSTALL="$DOWNLOAD_DIR/openshift-install"
 OC="$DOWNLOAD_DIR/oc"
@@ -55,8 +70,27 @@ export AWS_REGION
 export PROJECT_DIR
 export DOWNLOAD_DIR
 export VENV
+export OPENSHIFT_INSTALL_DIR
+export ACME_DIR
+export ACME_EMAIL
 
 export KUBECONFIG
+export SSH_PRIV_KEY_FILE
+export SSH_PUB_KEY_FILE
+if [ -f "$SSH_PUB_KEY_FILE" ]; then
+    SSH_PUB_KEY="$(cat "$SSH_PUB_KEY_FILE")"
+    export SSH_PUB_KEY
+fi
+
+export CLUSTER_CERT_PREFIX
+export CLUSTER_CERT_FILE
+export CLUSTER_PRIVATE_KEY_FILE
+export CLUSTER_FULLCHAIN_FILE
+
+export VIRT_CERT_PREFIX
+export VIRT_CERT_FILE
+export VIRT_PRIVATE_KEY_FILE
+export VIRT_FULLCHAIN_FILE
 
 export OPENSHIFT_INSTALL
 export OC
@@ -67,5 +101,11 @@ export AWS
 export ANSIBLE_PLAYBOOK
 
 export INFRA_ENV_LOCS
+
+function set_hosted_zone {
+    # Set the hosted zone ID for our expected cluster domain
+    HOSTED_ZONE="$("$AWS" route53 list-hosted-zones | jq -r '.HostedZones[] | select(.Name == "'"$BASE_DOMAIN"'.") | .Id' | rev | cut -d/ -f1 | rev)"
+    export HOSTED_ZONE
+}
 
 set -x

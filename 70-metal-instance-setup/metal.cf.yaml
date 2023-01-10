@@ -1,0 +1,211 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Template for RHTE SNO Lab bare metal instance
+
+Parameters:
+
+  VpcCidr:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-4]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-24.
+    Default: 172.20.0.0/16
+    Description: CIDR block for VPC.
+    Type: String
+
+  SubnetBits:
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/19-27.
+    MinValue: 5
+    MaxValue: 13
+    Default: 8
+    Description: "Size of each subnet to create within the availability zones. (Min: 5 = /27, Max: 13 = /19)"
+    Type: Number
+
+  AmiId:
+    Type: AWS::EC2::Image::Id
+    Default: ami-0c39257433c03e8ad # Cloud Access RHEL 9.1
+    Description: AMI ID pointer in AWS Systems Manager Parameter Store.
+
+  InstanceType:
+    Type: String
+    Default: z1d.metal
+    Description: Instance type to use to launch the NAT instances.
+    AllowedValues:
+    - c5n.metal # 72c 192 GB
+    - m5zn.metal # 48c 192 GB
+    - z1d.metal # 48c 384 GB
+    - c5d.metal # 96c 192 GB
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: "Network Configuration"
+      Parameters:
+      - VpcCidr
+      - SubnetBits
+    ParameterLabels:
+      VpcCidr:
+        default: "VPC CIDR"
+      SubnetBits:
+        default: "Bits Per Subnet"
+
+Resources:
+  VPC:
+    Type: "AWS::EC2::VPC"
+    Properties:
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      CidrBlock: !Ref VpcCidr
+
+###############################################################################
+# Subnet
+########
+
+  PublicSubnet:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Select [0, !Cidr [!Ref VpcCidr, 6, !Ref SubnetBits]]
+      MapPublicIpOnLaunch: true
+      Tags:
+      - Key: Name
+        Value: !Sub 'Public Subnet - ${AWS::StackName}'
+      AvailabilityZone: !Select
+      - 0
+      - Fn::GetAZs: !Ref "AWS::Region"
+
+  InternetGateway:
+    Type: "AWS::EC2::InternetGateway"
+
+  GatewayToInternet:
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicRouteTable:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      VpcId: !Ref VPC
+
+  PublicRoute:
+    Type: "AWS::EC2::Route"
+    DependsOn: GatewayToInternet
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnetRouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref PublicRouteTable
+
+###############################################################################
+# Metal Instance
+################
+
+  MetalInstanceSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allows incoming Cockpit and SSH connections
+      SecurityGroupIngress:
+      - CidrIp: 0.0.0.0/0
+        FromPort: 9090
+        ToPort: 9090
+        IpProtocol: TCP
+      - CidrIp: 0.0.0.0/0
+        FromPort: 22
+        ToPort: 22
+        IpProtocol: TCP
+      Tags:
+      - Key: Name
+        Value: !Sub 'Metal Instance SG - ${AWS::StackName}'
+      VpcId: !Ref VPC
+
+  MetalInstanceKey:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: MetalInstance
+      KeyType: rsa
+      PublicKeyMaterial: >-
+        ${SSH_PUB_KEY}
+      Tags:
+      - Key: Name
+        Value: !Sub 'Metal Instance Key - ${AWS::StackName}'
+
+  MetalInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref AmiId
+      InstanceType: !Ref InstanceType
+      KeyName: MetalInstance
+      NetworkInterfaces:
+      - AssociatePublicIpAddress: true
+        DeviceIndex: "0"
+        GroupSet:
+        - !Ref MetalInstanceSG
+        SubnetId: !Ref PublicSubnet
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            # Redirect the user-data output to the console logs
+            exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+
+            # Apply the latest security patches
+            dnf -y update --security
+
+            # Ensure the hostname is set correctly
+            hostnamectl set-hostname ${INSTANCE_NAME}
+
+            # Install the necessary packages for running VMs
+            dnf -y install cockpit cockpit-machines cockpit-storaged
+
+            # Ensure that cockpit certificates are in place
+            mkdir -p /etc/cockpit/ws-certs.d
+            echo "${COCKPIT_CERT}" | base64 -d > /etc/cockpit/ws-certs.d/00-cockpit.crt
+            echo "${COCKPIT_KEY}" | base64 -d > /etc/cockpit/ws-certs.d/00-cockpit.key
+
+            # Ensure cockpit and libvirt services are enabled
+            systemctl enable --now cockpit.socket
+            systemctl enable --now libvirtd.service
+
+            # Configure disks for /srv/images
+            mkdir -p /srv/images
+            pvcreate /dev/nvme0n1
+            pvcreate /dev/nvme1n1
+            vgcreate vg_images /dev/nvme0n1 /dev/nvme1n1
+            extents=$(vgdisplay | awk '/Total PE/{print $3}')
+            lvcreate --stripes 2 --extents $extents --name lv_images vg_images
+            mkfs.xfs /dev/vg_images/lv_images
+            echo "/dev/vg_images/lv_images /srv/images xfs defaults 0 0" >> /etc/fstab
+            sync
+            mount /srv/images
+            virsh pool-define-as --name default --type dir --target /srv/images
+            virsh pool-start --build default
+            virsh pool-autostart default
+            semanage fcontext --add --seuser system_u --type virt_image_t '/srv/images(/.*)?'
+            restorecon -Riv /srv/images
+
+            # Ensure workshop user is created
+            adduser labuser -c 'Lab User' -G wheel,libvirt
+            echo '${LAB_USER_PASSWORD}' | sudo passwd --stdin labuser
+      Tags:
+      - Key: Name
+        Value: !Sub 'Metal Instance - ${AWS::StackName}'
+
+  MetalInstanceARecord:
+    Type: AWS::Route53::RecordSet
+    Properties: 
+      Comment: Route53 record for the Metal instance
+      HostedZoneId: ${HOSTED_ZONE}
+      Name: ${INSTANCE_NAME}.${BASE_DOMAIN}.
+      ResourceRecords: 
+      - Fn::GetAtt: [MetalInstance, PublicIp]
+      Type: A
+      TTL: 300
+
+Outputs:
+  VpcId:
+    Description: ID of the new VPC.
+    Value: !Ref VPC
