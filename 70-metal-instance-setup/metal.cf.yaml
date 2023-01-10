@@ -181,9 +181,9 @@ Resources:
             echo "/dev/vg_images/lv_images /srv/images xfs defaults 0 0" >> /etc/fstab
             sync
             mount /srv/images
-            virsh pool-define-as --name images --type dir --target /srv/images
-            virsh pool-start --build images
-            virsh pool-autostart images
+            virsh pool-define-as --name default --type dir --target /srv/images
+            virsh pool-start --build default
+            virsh pool-autostart default
             semanage fcontext --add --seuser system_u --type virt_image_t '/srv/images(/.*)?'
             restorecon -Riv /srv/images
 
