@@ -63,7 +63,7 @@ if ! "$OC" patch apiserver.config cluster --type=merge -p '{
     sleep 60
 
     duration=0
-    timeout=1800
+    timeout=3600
     step=5
     # Expect the following values from the while loop grep:
     # - empty (an error occurred because we don't have the updated certificate yet)
