@@ -67,9 +67,9 @@ if ! "$OC" patch apiserver.config cluster --type=merge -p '{
     step=5
     # Expect the following values from the while loop grep:
     # - empty (an error occurred because we don't have the updated certificate yet)
-    # - "NodeInstallerProgressing: 1 nodes are at revision 9; 2 nodes are at revision 10\nAsExpected" (some cluster operators are not reporting a completed rollout)
-    # - "AsExpected" (all cluster operators are reporting a completed rollout)
-    while [ "$({ "$OC" get co -ojsonpath='{range .items[*].status.conditions[?(@.type=="Progressing")]}{.reason}{"\n"}{end}' ||: ; } | sort -u)" != "AsExpected" ]; do
+    # - "NodeInstaller" (api-server cluster operator is not reporting a completed rollout)
+    # - "AsExpected" (api-server is reporting a completed rollout)
+    while [ "$({ "$OC" get co kube-apiserver -ojsonpath='{.status.conditions[?(@.type=="Progressing")].reason}' ||: ; })" != "AsExpected" ]; do
         if (( duration >= timeout )); then
             fail Timed out waiting for API server to recover after certificate update
         else
