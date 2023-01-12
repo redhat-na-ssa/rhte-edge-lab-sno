@@ -6,6 +6,7 @@ CLUSTER_NAME="${CLUSTER_NAME:-edge1}"
 BASE_DOMAIN=rhte.edgelab.dev
 FULL_CLUSTER_NAME="$CLUSTER_NAME.$BASE_DOMAIN"
 AWS_REGION="${AWS_REGION:-us-east-2}"
+VIRT_CLUSTER_COUNT=15
 
 set -eu
 
@@ -14,6 +15,7 @@ DOWNLOAD_DIR="$PROJECT_DIR/tmp"
 VENV="$PROJECT_DIR/venv"
 OPENSHIFT_INSTALL_DIR="$DOWNLOAD_DIR/install"
 ACME_DIR="$DOWNLOAD_DIR/acme.sh"
+ANSIBLE_DIR="$PROJECT_DIR/ansible"
 ACME_EMAIL='jharmison@redhat.com'
 
 KUBECONFIG="$OPENSHIFT_INSTALL_DIR/auth/kubeconfig"
@@ -37,6 +39,7 @@ OC_MIRROR="$DOWNLOAD_DIR/oc-mirror"
 PIP="$VENV/bin/pip"
 AWS="$VENV/bin/aws"
 ANSIBLE_PLAYBOOK="$VENV/bin/ansible-playbook"
+ANSIBLE_GALAXY="$VENV/bin/ansible-galaxy"
 
 declare -A INFRA_ENV_LOCS=(
   [na]=dallas
@@ -66,12 +69,14 @@ export CLUSTER_NAME
 export BASE_DOMAIN
 export FULL_CLUSTER_NAME
 export AWS_REGION
+export VIRT_CLUSTER_COUNT
 
 export PROJECT_DIR
 export DOWNLOAD_DIR
 export VENV
 export OPENSHIFT_INSTALL_DIR
 export ACME_DIR
+export ANSIBLE_DIR
 export ACME_EMAIL
 
 export KUBECONFIG
@@ -99,6 +104,7 @@ export OC_MIRROR
 export PIP
 export AWS
 export ANSIBLE_PLAYBOOK
+export ANSIBLE_GALAXY
 
 export INFRA_ENV_LOCS
 

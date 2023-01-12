@@ -1,0 +1,72 @@
+---
+- name: Configure libvirt for hosting clusters
+  hosts: metal
+  become: true
+
+  vars:
+    infra_env: na
+
+  tasks:
+  - name: Retrieve the default network XML
+    community.libvirt.virt_net:
+      name: default
+      command: get_xml
+    register: default_xml
+
+  - name: Undefine and redefine the default network
+    block:
+    - name: Undefine the default network
+      community.libvirt.virt_net:
+        name: default
+        state: absent
+    - name: Redefine the default network
+      community.libvirt.virt_net:
+        name: default
+        state: present
+        xml: '{{ lookup("template", "network.xml.j2") }}'
+    when:
+    - default_xml.get_xml != lookup("template", "network.xml.j2")
+    vars:
+      sno_clusters: '{{ sno_clusters_yaml|from_yaml }}'
+
+  - name: Ensure the network is active
+    community.libvirt.virt_net:
+      name: default
+      state: active
+
+  - name: Ensure the network autostarts
+    community.libvirt.virt_net:
+      name: default
+      autostart: true
+
+  - name: Ensure that the ISOs are downloaded
+    ansible.builtin.get_url:
+      url: '{{ item.url }}'
+      dest: /srv/images/discovery-{{ item.name }}.iso
+      validate_certs: false
+    loop: '{{ isos }}'
+    loop_control:
+      label: '{{ item.name }}'
+
+  - name: Ensure that disk images exist
+    ansible.builtin.shell: qemu-img create -f qcow2 {{ vm_name }}.qcow2 120G
+    args:
+      chdir: /srv/images
+      creates:  '{{ vm_name }}.qcow2'
+    loop: '{{ sno_clusters_yaml|from_yaml }}'
+    loop_control:
+      loop_var: cluster
+      label: '{{ vm_name }}'
+    vars:
+      vm_name: '{{ cluster.name }}-{{ infra_env }}'
+
+  - name: Ensure that VMs are defined with correct MAC addresses
+    community.libvirt.virt:
+      command: define
+      xml: '{{ lookup("template", "vm.xml.j2") }}'
+    loop: '{{ sno_clusters_yaml|from_yaml }}'
+    loop_control:
+      loop_var: cluster
+      label: '{{ vm_name }}'
+    vars:
+      vm_name: '{{ cluster.name }}-{{ infra_env }}'

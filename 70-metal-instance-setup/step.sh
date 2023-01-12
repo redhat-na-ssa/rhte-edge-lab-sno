@@ -33,3 +33,31 @@ export COCKPIT_KEY
     --stack-name "$CLUSTER_NAME" \
     --region "$AWS_REGION" \
     --no-fail-on-empty-changeset
+
+instance_up=(
+    ssh
+    -o identitiesonly=yes
+    -o stricthostkeychecking=no
+    -o userknownhostsfile=/dev/null
+    -i "$DOWNLOAD_DIR/id_rsa"
+    ec2-user@"$INSTANCE_NAME.$BASE_DOMAIN"
+    whoami
+)
+while ! "${instance_up[@]}" &>/dev/null; do
+    sleep 5;
+done
+
+iso_files='isos:
+'
+for env in "${!INFRA_ENV_LOCS[@]}"; do 
+    iso_files+="- name: ${env}
+  url: '$("$OC" get infraenv -n $env $env -ojsonpath='{.status.isoDownloadURL}')'
+"
+done
+export iso_files
+cd "$ANSIBLE_DIR" || fail Unable to change into the ansible directory
+< "$ANSIBLE_DIR/inventory/hosts.ini.tpl" envsubst '$INSTANCE_NAME $BASE_DOMAIN $DOWNLOAD_DIR $VIRT_CLUSTER_COUNT' > "$ANSIBLE_DIR/inventory/hosts.ini"
+< "$ANSIBLE_DIR/inventory/group_vars/metal/isos.yml.tpl" envsubst '$iso_files' > "$ANSIBLE_DIR/inventory/group_vars/metal/isos.yml"
+
+"$ANSIBLE_PLAYBOOK" haproxy.yml
+"$ANSIBLE_PLAYBOOK" hypervisor.yml

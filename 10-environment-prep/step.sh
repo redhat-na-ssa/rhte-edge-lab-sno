@@ -54,6 +54,14 @@ if [ ! -x "$ANSIBLE_PLAYBOOK" ]; then
     "$PIP" install ansible
 fi
 
+# Ensure we have the appropriate Ansible collections installed
+if [ ! -d "$ANSIBLE_DIR/collections/amazon/aws" ]; then
+    pushd "$ANSIBLE_DIR" || fail Unable to change into Ansible directory for collection installation
+    "$PIP" install -r requirements.txt
+    "$ANSIBLE_GALAXY" collection install -r requirements.yml
+    popd || fail Unable to return from Ansible directory
+fi
+
 # Download  things we'll need to check the version
 raw_download release.txt
 

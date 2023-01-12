@@ -11,6 +11,7 @@ steps=(
     50-acm-hub-setup
     60-infra-env-setup
     70-metal-instance-setup
+    80-sno-final-setup
 )
 
 for step in "${steps[@]}"; do

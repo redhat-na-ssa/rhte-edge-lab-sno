@@ -1,0 +1,68 @@
+global
+    log /dev/log  local0
+    log /dev/log  local1 notice
+    chroot      /var/lib/haproxy
+    pidfile     /var/run/haproxy.pid
+    maxconn     4000
+    user        haproxy
+    group       haproxy
+    daemon
+
+    # turn on stats unix socket
+    stats socket /var/lib/haproxy/stats
+
+    # utilize system-wide crypto-policies
+    ssl-default-bind-ciphers PROFILE=SYSTEM
+    ssl-default-server-ciphers PROFILE=SYSTEM
+
+defaults
+    mode                    tcp
+    log                     global
+    option                  dontlognull
+    option                  redispatch
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+    timeout http-keep-alive 10s
+    timeout check           10s
+    maxconn                 3000
+
+listen stats
+    bind :9000
+    mode http
+    stats enable
+    stats uri /
+    monitor-uri /healthz
+
+frontend https
+    bind :443
+    tcp-request inspect-delay 5s
+{% for cluster in sno_clusters %}
+    acl {{ cluster.name }} req.ssl_sni -m end -i apps.{{ cluster.name }}.{{ base_domain }}
+    use_backend {{ cluster.name }}-ingress if {{ cluster.name }}
+{% endfor %}
+    tcp-request content accept if { req.ssl_hello_type 1 }
+    default_backend webserver
+
+frontend api
+    bind :6443
+    tcp-request inspect-delay 5s
+{% for cluster in sno_clusters %}
+    acl {{ cluster.name }} req.ssl_sni -m str -i api.{{ cluster.name }}.{{ base_domain }}
+    use_backend {{ cluster.name }}-api if {{ cluster.name }}
+{% endfor %}
+    tcp-request content accept if { req.ssl_hello_type 1 }
+{% for cluster in sno_clusters %}
+
+backend {{ cluster.name }}-ingress
+    server {{ cluster.name }}-ingress {{ cluster.ip }}:443 check
+
+backend {{ cluster.name }}-api
+    server {{ cluster.name }}-api {{ cluster.ip }}:6443 check
+{% endfor %}
+
+backend webserver
+    server localhost 127.0.0.1:443 check

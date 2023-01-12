@@ -1,0 +1,61 @@
+---
+- name: Install and configure HAProxy for proxying into virtual clusters
+  hosts: metal
+  become: true
+
+  tasks:
+  - name: Ensure that CName records exist
+    become: false
+    amazon.aws.route53:
+      state: present
+      zone: '{{ base_domain }}'
+      record: '{{ record.1 }}.{{ record.0.name }}.{{ base_domain }}'
+      type: CNAME
+      value: '{{ ansible_hostname }}'
+      ttl: 300
+    loop: '{{ sno_clusters_yaml|from_yaml|product(records)|list }}'
+    loop_control:
+      loop_var: record
+      label: '{{ record.1 }}.{{ record.0.name }}.{{ base_domain }}'
+    vars:
+      records:
+      - api
+      - "*.apps"
+    delegate_to: localhost
+
+  - name: Ensure HAProxy is installed
+    ansible.builtin.package:
+      name: haproxy
+      state: installed
+
+  - name: Ensure HAProxy can bind to ports
+    community.general.seport:
+      ports: 443,6443
+      proto: tcp
+      setype: http_port_t
+    notify: restart haproxy
+
+  - name: Ensure HAProxy configuration is in place
+    ansible.builtin.template:
+      src: haproxy.cfg.j2
+      dest: /etc/haproxy/haproxy.cfg
+      owner: root
+      group: root
+      mode: '0644'
+      validate: haproxy -f %s -c -q
+    vars:
+      sno_clusters: '{{ sno_clusters_yaml|from_yaml }}'
+    notify: restart haproxy
+
+  - name: Ensure HAProxy is running and starts on boot
+    ansible.builtin.systemd:
+      name: haproxy
+      state: started
+      enabled: true
+      masked: false
+
+  handlers:
+  - name: restart haproxy
+    ansible.builtin.systemd:
+      name: haproxy
+      state: restarted
