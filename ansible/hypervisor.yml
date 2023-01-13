@@ -53,6 +53,7 @@
     args:
       chdir: /srv/images
       creates:  '{{ vm_name }}.qcow2'
+    retries: 5
     loop: '{{ sno_clusters_yaml|from_yaml }}'
     loop_control:
       loop_var: cluster
