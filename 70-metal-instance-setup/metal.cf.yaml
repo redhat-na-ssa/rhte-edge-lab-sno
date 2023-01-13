@@ -125,6 +125,10 @@ Resources:
         FromPort: 6443
         ToPort: 6443
         IpProtocol: TCP
+      - CidrIp: 0.0.0.0/0
+        FromPort: 9000
+        ToPort: 9000
+        IpProtocol: TCP
       Tags:
       - Key: Name
         Value: !Sub 'Metal Instance SG - ${AWS::StackName}'
