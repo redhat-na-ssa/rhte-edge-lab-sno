@@ -12,7 +12,6 @@ export openshift_version_z
 < clusterimageset.tpl envsubst '$openshift_version_z' > "$DOWNLOAD_DIR/clusterimageset.yml"
 "$OC" apply -f "$DOWNLOAD_DIR/clusterimageset.yml"
 
-
 iso_files='isos:
 '
 for env in "${!INFRA_ENV_LOCS[@]}"; do 
@@ -28,6 +27,12 @@ cd "$ANSIBLE_DIR" || fail Unable to change into the ansible directory
 "$ANSIBLE_PLAYBOOK" haproxy.yml
 "$ANSIBLE_PLAYBOOK" hypervisor.yml
 
-# clusterimageset not working 🤔
 # need to add argocd deployment
 # consider Skupper deployment
+# app:
+# https://www.youtube.com/watch?v=FOelk2m8r0o
+# https://github.com/redhat-developer-demos/quinoa-wind-turbine-manifests
+# https://github.com/redhat-developer-demos/quinoa-wind-turbine
+# https://docs.google.com/document/d/1eRde9o62sb7e3wHKt2ra8W6tvnBBKGYAxmiE_pV-XM4/edit#
+# https://github.com/stefan-bergstein/quinoa-wind-turbine-manifests
+# https://github.com/stefan-bergstein/quinoa-wind-turbine
