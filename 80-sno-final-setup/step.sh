@@ -10,7 +10,7 @@ openshift_version_z="$(awk '/^Name:/{print $2}' "$DOWNLOAD_DIR/release.txt")"
 export openshift_version_z
 
 < clusterimageset.tpl envsubst '$openshift_version_z' > "$DOWNLOAD_DIR/clusterimageset.yml"
-oc apply -f "$DOWNLOAD_DIR/clusterimageset.yml"
+"$OC" apply -f "$DOWNLOAD_DIR/clusterimageset.yml"
 
 
 iso_files='isos:
