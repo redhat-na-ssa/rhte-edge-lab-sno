@@ -14,7 +14,7 @@ export openshift_version_z
 
 iso_files='isos:
 '
-for env in "${!INFRA_ENV_LOCS[@]}"; do 
+for env in "${!INFRA_ENV_LOCS[@]}"; do
     iso_files+="- name: ${env}
   url: '$("$OC" get infraenv -n $env $env -ojsonpath='{.status.isoDownloadURL}')'
 "
