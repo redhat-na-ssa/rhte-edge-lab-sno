@@ -1,0 +1,7 @@
+---
+sno_clusters_yaml: |-
+  {% for num in range(1, cluster_count + 1) %}
+  - name: student{{ num }}
+    ip: '192.168.122.{{ 200 + num }}'
+    num: {{ num }}
+  {% endfor %}
