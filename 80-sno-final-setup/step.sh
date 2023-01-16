@@ -19,10 +19,9 @@ for env in "${!INFRA_ENV_LOCS[@]}"; do
   url: '$("$OC" get infraenv -n $env $env -ojsonpath='{.status.isoDownloadURL}')'
 "
 done
-export iso_files
 
 cd "$ANSIBLE_DIR" || fail Unable to change into the ansible directory
-< "$ANSIBLE_DIR/inventory/group_vars/metal/isos.yml.tpl" envsubst '$iso_files' > "$ANSIBLE_DIR/inventory/group_vars/metal/isos.yml"
+echo "$iso_files" > "$ANSIBLE_DIR/inventory/group_vars/metal/isos.yml"
 
 "$ANSIBLE_PLAYBOOK" haproxy.yml
 "$ANSIBLE_PLAYBOOK" hypervisor.yml
