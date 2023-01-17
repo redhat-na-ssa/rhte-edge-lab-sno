@@ -1,0 +1,33 @@
+FROM registry.fedoraproject.org/fedora:37 as builder
+
+RUN dnf -y install \
+    rubygem-bundler ruby-devel \
+    gcc gcc-c++ \
+    vips vips-devel vips-tools \
+    libpng libpng-devel \
+    libwebp libwebp-devel \
+    libjpeg libjpeg-devel \
+    ImageMagick ImageMagick-devel ImageMagick-libs
+
+COPY content/Gemfile /app/
+
+WORKDIR /app
+
+RUN bundle install
+
+COPY content/ /app/
+
+ARG BUILD_REVISION
+ENV JEKYLL_ENV=production
+ENV JEKYLL_BUILD_REVISION="${BUILD_REVISION}"
+
+RUN jekyll clean \
+ && jekyll build
+
+FROM registry.access.redhat.com/ubi9/nginx-120:latest
+
+COPY --chown=1001:0 --from=builder /app/_site/ /tmp/src/
+
+RUN /usr/libexec/s2i/assemble
+
+CMD /usr/libexec/s2i/run
