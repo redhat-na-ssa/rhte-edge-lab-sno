@@ -1,0 +1,60 @@
+---
+layout: default
+---
+{% assign record_next_section = false %}
+{% assign record_prev_section = true %}
+{% assign next_section = "" %}
+{% assign prev_section = "" %}
+{% assign section_name = "" %}
+{% assign exercise_index = 0 %}
+{% for section in site.data.exercises %}
+  {% for item in section[1] %}
+    {% if item.name == page.title %}
+      {% assign section_name = section[0] %}
+      {% assign section_exercises = section[1] %}
+      {% assign exercise_index = forloop.index | minus: 1 %}
+      {% assign exercise = item %}
+    {% endif %}
+  {% endfor %}
+  {% if section_name == section[0] and exercise.name == page.title %}
+    {% assign record_next_section = true %}
+    {% assign record_prev_section = false %}
+  {% elsif record_next_section %}
+    {% assign next_section = section[0] %}
+    {% assign record_next_section = false %}
+  {% endif %}
+  {% if record_prev_section %}
+    {% assign prev_section = section[0] %}
+  {% endif %}
+{% endfor %}
+<section>
+    <h1 id="{{ site.title | downcase | replace: ' ', '-' }}">{{ site.title }}</h1>
+    <h2 id="{{ section_name | downcase | replace: ' ', '-' }}">{{ section_name }}</h2>
+    <h3 id="{{ page.title | downcase | replace: ' ', '-' }}">{{ page.title }}</h3>
+    {{ content }}
+</section>
+
+{% assign next_index = exercise_index | plus: 1 %}
+{% assign prev_index = exercise_index | minus: 1 %}
+{% if next_index >= section_exercises.size %}
+    {% assign next = site.data.exercises[next_section][0] %}
+{% elsif next_index != exercise_index %}
+    {% assign next = section_exercises[next_index] %}
+{% else %}
+    {% assign next = false %}
+{% endif %}
+{% if prev_index >= 0 %}
+    {% assign prev = section_exercises[prev_index] %}
+{% elsif prev_secion != "" %}
+    {% assign prev = site.data.exercises[prev_section][site.data.exercises[prev_section].size] %}
+{% else %}
+    {% assign prev = false %}
+{% endif %}
+<div id="next_prev" class="row">
+    <div id="prev" class="column">
+        {% if prev %}<a href="/labguides/ex-{{ prev.exercise }}">Previous: {{ prev.name }}</a>{% endif %}
+    </div>
+    <div id="next" class="column">
+        {% if next %}<a href="/labguides/ex-{{ next.exercise }}">Next: {{ next.name }}</a>{% else %}<a href="/fin">Next: Wrap-up</a>{% endif %}
+    </div>
+</div>

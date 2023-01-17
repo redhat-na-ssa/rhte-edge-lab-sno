@@ -16,8 +16,8 @@ WORKDIR /app
 RUN bundle install
 
 ARG BUILD_REVISION
-ENV JEKYLL_ENV=production
+ENV JEKYLL_ENV=development
 ENV JEKYLL_BUILD_REVISION="${BUILD_REVISION}"
 
 ENTRYPOINT ["/bin/sh"]
-CMD ["-c", "jekyll serve --incremental --host 0.0.0.0 --port 8080"]
+CMD ["-c", "jekyll clean && jekyll serve --incremental --host 0.0.0.0 --port 8080"]
