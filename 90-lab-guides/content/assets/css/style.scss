@@ -133,12 +133,6 @@ td {
   background: #f2f2f2;
 }
 
-// codeblock tweaks
-
-.highlighter-rouge pre.highlight {
-  background-color: #f5f2f0;
-}
-
 // custom header
 
 header {
@@ -302,4 +296,33 @@ a h3:hover {
     flex-direction: column;
     flex-basis: 100%;
     flex: 1;
+}
+
+pre.highlight {
+    padding: 8px 12px;
+    position: relative;
+  
+    // copy code to clipboard
+    .copy {
+      color: #EEEEEE;
+      position: absolute;
+      border-radius: 7px;
+      right: 0.2rem;
+      top: 0.2rem;
+      opacity: 0;
+  
+      &:active,
+      &:focus,
+      &:hover {
+        background: rgba(0, 0, 0, 0.7);
+        opacity: 1;
+      }
+    }
+  
+    &:active .copy,
+    &:focus .copy,
+    &:hover .copy {
+      background: rgba(0, 0, 0, 0.7);
+      opacity: 1;
+    }
 }
