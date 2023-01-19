@@ -22,6 +22,7 @@ ACME_EMAIL='jharmison@redhat.com'
 KUBECONFIG="$OPENSHIFT_INSTALL_DIR/auth/kubeconfig"
 SSH_PRIV_KEY_FILE="$DOWNLOAD_DIR/id_rsa"
 SSH_PUB_KEY_FILE="$DOWNLOAD_DIR/id_rsa.pub"
+KUBEADMIN_PASS_FILE="$OPENSHIFT_INSTALL_DIR/auth/kubeadmin-password"
 
 CLUSTER_CERT_PREFIX="$DOWNLOAD_DIR/$CLUSTER_NAME-cluster"
 CLUSTER_CERT_FILE="$CLUSTER_CERT_PREFIX.crt"
@@ -88,6 +89,11 @@ if [ -f "$SSH_PUB_KEY_FILE" ]; then
     SSH_PUB_KEY="$(cat "$SSH_PUB_KEY_FILE")"
     export SSH_PUB_KEY
 fi
+export KUBEADMIN_PASS_FILE
+if [ -f "$KUBEADMIN_PASS_FILE" ]; then
+    KUBEADMIN_PASS="$(cat "$KUBEADMIN_PASS_FILE")"
+    export KUBEADMIN_PASS
+fi
 
 export CLUSTER_CERT_PREFIX
 export CLUSTER_CERT_FILE
@@ -109,6 +115,15 @@ export ANSIBLE_PLAYBOOK
 export ANSIBLE_GALAXY
 
 export INFRA_ENV_LOCS
+
+# Randomly generate a password
+if [ -f "$DOWNLOAD_DIR/lab-user-password" ]; then
+    LAB_USER_PASSWORD="$(cat "$DOWNLOAD_DIR/lab-user-password")"
+else
+    LAB_USER_PASSWORD="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16)"
+    echo "$LAB_USER_PASSWORD" > "$DOWNLOAD_DIR/lab-user-password"
+fi
+export LAB_USER_PASSWORD
 
 function set_hosted_zone {
     # Set the hosted zone ID for our expected cluster domain

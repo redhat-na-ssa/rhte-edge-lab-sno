@@ -90,10 +90,20 @@ blockquote p:first-child:before {
 blockquote {
     font-style: normal;
 }
-// Centre images using ?style=centreme
-img[src*="#centreme"] {
+// Center images using ?style=centered
+img[src*="style=centered"] {
   display: block;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+// Shrink images using ?style=small
+img[src*="style=small"] {
+    height: 3.0rem;
+}
+// Border and drop shadow images using ?style=border
+img[src*="style=border"] {
+    filter: drop-shadow(5px 5px 3px #222222);
+    border: 1px solid #999;
 }
 
 img {
@@ -282,20 +292,34 @@ a h3:hover {
     color: #5F0000;
 }
 
-.row {
+.nav-header {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
-    margin-left: 18px;
-    margin-right: 18px;
+    justify-content: center;
+    margin-bottom: 0px;
+    flex-basis: content;
 }
 
-.column {
+.nav {
     display: flex;
-    flex-direction: column;
-    flex-basis: 100%;
-    flex: 1;
+    justify-content: space-between;
+    margin-top: 0px;
+    margin-bottom: 32px;
+}
+
+.nav-item {
+    flex: 1 1 auto;
+    background: #f2f2f2;
+    border: 1px solid #999;
+    flex-basis: content;
+    width: 100%;
+}
+
+.nav-item:first-child {
+    text-align: left;
+}
+
+.nav-item:last-child {
+    text-align: right;
 }
 
 pre.highlight {

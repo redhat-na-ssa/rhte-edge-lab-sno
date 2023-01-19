@@ -27,34 +27,30 @@ layout: default
     {% assign prev_section = section[0] %}
   {% endif %}
 {% endfor %}
-<section>
-    <h1 id="{{ site.title | downcase | replace: ' ', '-' }}">{{ site.title }}</h1>
-    <h2 id="{{ section_name | downcase | replace: ' ', '-' }}">{{ section_name }}</h2>
-    <h3 id="{{ page.title | downcase | replace: ' ', '-' }}">{{ page.title }}</h3>
-    {{ content }}
-</section>
-
 {% assign next_index = exercise_index | plus: 1 %}
 {% assign prev_index = exercise_index | minus: 1 %}
 {% if next_index >= section_exercises.size %}
     {% assign next = site.data.exercises[next_section][0] %}
 {% elsif next_index != exercise_index %}
     {% assign next = section_exercises[next_index] %}
+    {% assign next_section = section_name %}
 {% else %}
     {% assign next = false %}
 {% endif %}
 {% if prev_index >= 0 %}
     {% assign prev = section_exercises[prev_index] %}
-{% elsif prev_secion != "" %}
-    {% assign prev = site.data.exercises[prev_section][site.data.exercises[prev_section].size] %}
+    {% assign prev_section = section_name %}
+{% elsif prev_section != "" %}
+    {% assign prev_section_obj = site.data.exercises[prev_section] %}
+    {% assign prev = prev_section_obj[-1] %}
 {% else %}
     {% assign prev = false %}
 {% endif %}
-<div id="next_prev" class="row">
-    <div id="prev" class="column">
-        {% if prev %}<a href="/labguides/ex-{{ prev.exercise }}">Previous: {{ prev.name }}</a>{% endif %}
-    </div>
-    <div id="next" class="column">
-        {% if next %}<a href="/labguides/ex-{{ next.exercise }}">Next: {{ next.name }}</a>{% else %}<a href="/fin">Next: Wrap-up</a>{% endif %}
-    </div>
-</div>
+<section>
+{% include ex_nav.html %}
+    <h1 id="{{ site.title | downcase | replace: ' ', '-' }}">{{ site.title }}</h1>
+    <h2 id="{{ section_name | downcase | replace: ' ', '-' }}">{{ section_name }}</h2>
+    <h3 id="{{ page.title | downcase | replace: ' ', '-' }}">{{ page.title }}</h3>
+    {{ content }}
+{% include ex_nav.html %}
+</section>

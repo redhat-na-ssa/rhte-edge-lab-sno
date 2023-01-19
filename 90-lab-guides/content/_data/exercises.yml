@@ -5,7 +5,7 @@ Getting Started:
   exercise: '1.2'
 - name: Exploring the Cockpit Interface
   exercise: '1.3'
-- name: Looking at our Bare Metal nodes
+- name: Looking at our Bare Metal Nodes
   exercise: '1.4'
 Provisioning and Adopting:
 - name: Provisioning a SNO Cluster with the Assisted Installer

@@ -31,5 +31,7 @@ fi
 if $all; then
     find "$DOWNLOAD_DIR" -mindepth 1 -maxdepth 1 ! -name '.gitkeep' -exec rm -rf {} \;
     find "$ANSIBLE_DIR/collections" -mindepth 1 -maxdepth 1 ! -name '.gitkeep' ! -name '.gitignore' -exec rm -rf {} \;
+    rm -rf "$ANSIBLE_DIR/inventory/"{hosts.ini,group_vars/metal/isos.yml}
+    rm -rf "$PROJECT_DIR/90-lab-guides/content/"{_data/login.yml,_site,.jekyll-metadata,Gemfile.lock}
     rm -rf venv
 fi
