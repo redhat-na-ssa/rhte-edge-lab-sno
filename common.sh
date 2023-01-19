@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OPENSHIFT_VERSION="${OPENSHIFT_VERSION:-candidate-4.12}"
+OPENSHIFT_VERSION="${OPENSHIFT_VERSION:-stable-4.12}"
 SHORT_VERSION="$(echo "$OPENSHIFT_VERSION" | tr -d '[:lower:]' | tr -d '-')"
 CLUSTER_NAME="${CLUSTER_NAME:-edge1}"
 BASE_DOMAIN=rhte.edgelab.dev
