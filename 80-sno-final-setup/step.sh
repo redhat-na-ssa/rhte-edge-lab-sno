@@ -9,6 +9,8 @@ source "$SCRIPT_DIR/../common.sh"
 openshift_version_z="$(awk '/^Name:/{print $2}' "$DOWNLOAD_DIR/release.txt")"
 export openshift_version_z
 
+# FIXME: This needs to have the right sub name from a fresh install
+# "$OC" delete --wait=true subscription.apps hive-clusterimageset-0
 < clusterimageset.tpl envsubst '$openshift_version_z' > "$DOWNLOAD_DIR/clusterimageset.yml"
 "$OC" apply -f "$DOWNLOAD_DIR/clusterimageset.yml"
 

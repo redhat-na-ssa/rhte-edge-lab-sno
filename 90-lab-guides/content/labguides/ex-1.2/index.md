@@ -7,6 +7,8 @@ The ACM hub interface you get dropped off at should look like this after signing
 
 ![ACM Hub Overview](/assets/images/acm-hub-landing.png?style=centered&style=border "ACM Hub Overview")
 
+If your interface doesn't show those sections on the left and instead shows a traditional OpenShift console navigation bar, change the pulldown in the top left from ![ACM Local Cluster](/assets/images/acm-local-cluster.png?style=small "ACM Local Cluster") to ![ACM All Clusters](/assets/images/acm-all-clusters.png?style=small "ACM All Clusters") and select `Home` and `Overview` in the left navigation bar if necessary.
+
 You'll be able to view the discovered hosts by browsing the menu on the left. Click ![Infrastructure](/assets/images/acm-infrastructure.png?style=small "Infrastructure"), then ![Host Inventory](/assets/images/acm-host-inventory.png?style=small "Host Inventory"), and click on the name of your Infrastructure Environment from the list (`{{ site.data.login.region }}`).
 
 ![ACM Infrastructure Environments](/assets/images/acm-infra-envs.png?style=centered&style=border "ACM Infrastructure Environments")
