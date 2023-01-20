@@ -13,7 +13,13 @@ Navigate to the Cockpit Machines interface and identify your assigned VM, openin
 >
 > Remember that these VMs have been preconfigured to boot the Discovery ISO to install their operating system and will boot from their virtual hard drive after this.
 
-From the ACM Hub interface, head to `Infrastructure` then `Host Inventory` and click on the name of your Infrastructure Environment, `{{ site.data.login.region }}`. Click on the `Hosts` tab in the main pane and find your assigned VM in the list, or wait a few seconds if it's not showing yet, and then click ![Approve Host](/assets/images/acm-approve-host.png?style=small "Approve Host") (then `Approve Host` again in the popup after confirming the correct Hostname) in the `Status` column.
+From the ACM Hub interface, head to `Infrastructure` then `Host Inventory` and click on the name of your Infrastructure Environment, `{{ site.data.login.region }}`.
+
+> **Note**
+>
+> If you don't see the `Infrastructure` section of the navigation bar on the left, remember to change `local-cluster` to `All clusters` using the pulldown in the top left.
+
+Click on the `Hosts` tab in the main pane and find your assigned VM in the list, or wait a few seconds if it's not showing yet, and then click ![Approve Host](/assets/images/acm-approve-host.png?style=small "Approve Host") (then `Approve Host` again in the popup after confirming the correct Hostname) in the `Status` column.
 
 
 This registers your host as `Available` for binding to a cluster. As long as this host stays booted into the Discovery ISO (from an ISO in the VM in this case, or maybe from a USB storage device in the field), it will remain available for binding to a cluster installation.
@@ -32,22 +38,32 @@ Because we've already provisioned our host, and approved it, on the next screen 
 
 1. For your cluster name, `student#` where you replace the `#` with your student number, as in your VM's name. In my examples, I've been showing the `student9-na` VM, so I'll put `student9`.
 2. For `Base domain`, put `rhte.edgelab.dev`.
-3. Pick `OpenShift 4.12.x` from the `OpenShift version` pulldown (It should be the only option right now).
+3. Pick `OpenShift 4.11.24` from the `OpenShift version` pulldown (It should be the only option right now).
 4. Check the `Install single node OpenShift (SNO)` box.
-5. Paste a `Pull secret` in the box. I'm not going to give you mine so easy, so head to the [OpenShift Cloud Console](https://console.redhat.com/openshift/install/pull-secret){:target="_blank"}.
+5. In the `Additional labels` box, enter `student=#` replacing `#` with your student number. In my example, I'm entering `student=9`.
+  - It should look like this: ![Additional labels](/assets/images/acm-cluster-additional-labels.png?style=border "Additional labels")
+6. Paste a `Pull secret` in the box. I'm not going to give you mine so easy, so head to the [OpenShift Cloud Console](https://console.redhat.com/openshift/install/pull-secret){:target="_blank"}.
 
 Here's how my form looks:
 
 ![Create cluster details](/assets/images/acm-create-cluster-details.png?style=centered&style=border "Create cluster details")
 
-Make sure your student number is right and your form matches mine (unless there's a z-stream release for 4.12).
+Make sure your student number is right and the version matches the one specified above, rather that necessarily the one that's in the screenshot.
 
 Click ![Next](/assets/images/acm-next.png?style=small) when you're sure your Cluster details are correct. Click it again to skip past the `Automation` section. This section lets us tie an Ansible Automation Platform Job to our cluster provisioning, but we're not using this. This would be good to use for configuring network devices, identity systems, or any other non-OpenShift component we need to orchestrate alongside our SNO cluster.
 
-Review the manifests on the right side of the screen before clicking ![Save](/assets/images/acm-save.png?style=small). These manifests could be applied via a GitOps process to onboard clusters with an audit trail and multiple pairs of human eyes confirming details. We could even use a Helm chart to make templates for our onboarding edge clusters.
+Review the manifests on the right side of the screen before clicking ![Save](/assets/images/acm-save.png?style=small). If you don't see the manifests, toggle them on with the button: ![ACM Yaml On](/assets/images/acm-cluster-enable-yaml.png?style=small "ACM Yaml On"). These manifests could be applied via a GitOps process to onboard clusters with an audit trail and multiple pairs of human eyes confirming details. We could even use a Helm chart to make templates for our onboarding edge clusters.
 
-When you click `Save`, your cluster will be drafted and queued for binding and installation. To make any changes after this point, you have to delete the cluster from the `Cluster list` and create it again from scratch.
+When you click `Save`, your cluster will be drafted and queued for binding and installation. To make any changes after this point, you have to delete the appropriate cluster from the `Cluster list` using the ![Three dots](/assets/images/acm-cluster-three-dots.png?style=small "Three dots") button, then create it again from scratch.
 
-#### Picking our discovered host and binding it to our SNO cluster draft.
+#### Picking our discovered host and binding it to our SNO cluster draft
 
-Toggle `Auto-select hosts` off, making it look like this: ![Auto-select hosts off](/assets/images/acm-auto-select-hosts-off.png?style=small)  Now, check the box next to your host.
+Toggle `Auto-select hosts` off, making it look like this: ![Auto-select hosts off](/assets/images/acm-auto-select-hosts-off.png?style=small)  Now, check the box next to your host. ![ACM Checked Host](/assets/images/acm-checked-host.png?style=small "ACM Checked host"). Click on ![Next](/assets/images/acm-next.png?style=small "Next").
+
+#### Finishing our cluster installation
+
+You can just hit ![Next](/assets/images/acm-next.png?style=small "Next") on the `Networking` screen. The only thing you might want to set is an SSH key, but this one should populate with the default key for all our labs if you leave it blank. The rest of this information would change depending on our network environment, but because we have DHCP reservations for our hosts they filled correctly by default.
+
+When you're ready and your cluster shows all green for validations on the `Review and create` screen (you may have to wait a few more seconds if you've been quick so far), you can click ![Install cluster](/assets/images/acm-install-cluster.png?style=small "Install cluster").
+
+In about twenty minutes, this cluster will be up and publicly accessible, though using self-signed certificates for now. If you click ![View Cluster Events](/assets/images/acm-create-cluster-events.png?style=small) you can view the installation progress. We don't need to sit around and wait for that node to install, though. Let's go adopt our bare metal clusters!
