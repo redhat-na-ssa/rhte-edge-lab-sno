@@ -1,0 +1,9 @@
+FROM registry.access.redhat.com/ubi9/nginx-120:latest
+
+COPY entrypoint.sh /opt/app-root/entrypoint.sh
+COPY nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 8000
+
+ENTRYPOINT ["/bin/bash"]
+CMD ["-c", "/opt/app-root/entrypoint.sh"]

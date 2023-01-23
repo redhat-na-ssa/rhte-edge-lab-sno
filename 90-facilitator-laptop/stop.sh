@@ -6,4 +6,9 @@ cd "$SCRIPT_DIR" || fail Unable to cd into the script directory
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/../common.sh"
 
-podman build . -t labguide --build-arg BUILD_REVISION="$(git rev-parse HEAD)"
+for service in https dns dhcp; do
+    sudo firewall-cmd --remove-service=$service --permanent
+done
+sudo firewall-cmd --reload
+
+sudo podman kube down pod.yml

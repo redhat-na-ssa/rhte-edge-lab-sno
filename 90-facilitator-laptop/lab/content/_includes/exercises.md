@@ -4,6 +4,6 @@
 ### {{ section[0] }}
 
 {% for item in section[1] %}
-* [Exercise {{ item.exercise }} - {{ item.name }}](/labguides/ex-{{ item.exercise }})
+* [Exercise {{ item.exercise }} - {{ item.name }}](/labguides/ex-{{ item.exercise }}/)
 {% endfor %}
 {% endfor %}

@@ -1,9 +1,0 @@
-<div id="nav_label" class="nav-header"><h4>Navigation</h4></div>
-<div id="next_prev" class="nav">
-    <div id="prev" class="nav-item">
-        {% if prev %}<a href="/labguides/ex-{{ prev.exercise }}">◄ {{ prev_section }} - {{ prev.name }}</a>{% endif %}
-    </div>
-    <div id="next" class="nav-item">
-        {% if next %}<a href="/labguides/ex-{{ next.exercise }}">{{ next_section }} - {{ next.name }} ►</a>{% else %}<a href="/labguides/fin">Next: Wrap-up</a>{% endif %}
-    </div>
-</div>
