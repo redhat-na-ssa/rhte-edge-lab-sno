@@ -64,6 +64,9 @@ router_endpoint="*.apps.$FULL_CLUSTER_NAME"
 
 virt_domain="$CLUSTER_NAME-virt.$BASE_DOMAIN"
 
+instructor_domain="infra.internal.$BASE_DOMAIN"
+
 "${acme[@]}" --register-account -m "$ACME_EMAIL"
 acme_issue "$api_endpoint" "$router_endpoint" -f "$CLUSTER_CERT_PREFIX"
 acme_issue "$virt_domain" -f "$VIRT_CERT_PREFIX"
+acme_issue "$instructor_domain" -f "$INSTRUCTOR_CERT_PREFIX"
