@@ -1,5 +1,6 @@
 interface=${LAB_INFRA_INTERFACE}
 listen-address=${LAB_INFRA_IP}
+bind-interfaces
 
 port=53
 
