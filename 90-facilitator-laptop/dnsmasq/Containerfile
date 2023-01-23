@@ -6,4 +6,4 @@ COPY dnsmasq.conf /etc/
 COPY hosts.d /etc/hosts.d
 
 ENTRYPOINT ["/bin/sh"]
-CMD ["-c", "/usr/sbin/dnsmasq"]
+CMD ["-c", "/usr/sbin/dnsmasq --log-facility=-"]
