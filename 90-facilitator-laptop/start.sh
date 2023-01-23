@@ -6,8 +6,25 @@ cd "$SCRIPT_DIR" || fail Unable to cd into the script directory
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/../common.sh"
 
+changed=false
+if [ "$(sudo nmcli c show "$LAB_WAN_NM_CONN" | awk '/^connection\.zone/{print $2}')" != "external" ]; then
+    sudo nmcli c mod "$LAB_WAN_NM_CONN" connection.zone external
+    changed=true
+fi
+if ! sudo nmcli c | grep -F rhte; then
+    sudo nmcli c add type ethernet con-name rhte ifname "${LAB_INFRA_INTERFACE}" ip4 "$LAB_INFRA_IP/24"
+    changed=true
+fi
+if [ "$(sudo nmcli c show rhte | awk '/^connection\.zone/{print $2}')" != "internal" ]; then
+    sudo nmcli c mod "$LAB_INFRA_INTERFACE" connection.zone internal
+    changed=true
+fi
+if $changed; then
+    sudo systemctl restart NetworkManager
+fi
+sudo nmcli c up rhte
 for service in https dns dhcp; do
-    sudo firewall-cmd --add-service=$service --permanent
+    sudo firewall-cmd --add-service=$service --permanent --zone=internal
 done
 sudo firewall-cmd --reload
 
@@ -25,8 +42,8 @@ for cluster in $(seq 15); do
     echo "addn-hosts=/etc/hosts.d/metal${cluster}" >> dnsmasq/dnsmasq.conf
     echo "192.168.99.$(( 200 + cluster )) api.metal${cluster}.rhte.edgelab.dev api-int.metal${cluster}.rhte.edgelab.dev" > "dnsmasq/hosts.d/metal${cluster}"
 done
-
 sudo podman build lab -t rhte-labguide --build-arg BUILD_REVISION="$(git rev-parse HEAD)"
+
 sudo podman build cache -t rhte-cache
 sudo podman build proxy -t rhte-proxy
 sudo podman build dnsmasq -t rhte-dnsmasq

@@ -6,8 +6,11 @@ cd "$SCRIPT_DIR" || fail Unable to cd into the script directory
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/../common.sh"
 
+if [ "$(sudo nmcli c show "$LAB_WAN_NM_CONN" | awk '/^connection\.zone/{print $2}')" != "--" ]; then
+    sudo nmcli c mod "$LAB_WAN_NM_CONN" connection.zone ""
+fi
 for service in https dns dhcp; do
-    sudo firewall-cmd --remove-service=$service --permanent
+    sudo firewall-cmd --remove-service=$service --permanent --zone=internal
 done
 sudo firewall-cmd --reload
 

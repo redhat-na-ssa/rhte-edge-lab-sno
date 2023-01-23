@@ -5,7 +5,7 @@ metadata:
   annotations:
     io.podman.annotations.autoremove/rhte-sno: "FALSE"
     io.podman.annotations.init/rhte-sno: "FALSE"
-    io.podman.annotations.privileged/rhte-sno: "FALSE"
+    io.podman.annotations.privileged/rhte-sno: "TRUE"
     io.podman.annotations.publish-all/rhte-sno: "FALSE"
   labels:
     app: rhte-sno
