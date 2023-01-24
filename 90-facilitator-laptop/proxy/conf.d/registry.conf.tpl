@@ -14,5 +14,9 @@ server {
         proxy_set_header X-Real-IP          $remote_addr;
         proxy_set_header X-Forwarded-Proto  $scheme;
         proxy_read_timeout                  900;
+        proxy_send_timeout                  300;
+        proxy_buffering                     off;
+        keepalive_timeout                   5 5;
+        tcp_nodelay                         on;
     }
 }
