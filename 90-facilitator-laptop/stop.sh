@@ -19,9 +19,5 @@ fi
 if $changed; then
     sudo systemctl restart NetworkManager
 fi
-for service in https dns dhcp; do
-    sudo firewall-cmd --remove-service=$service --permanent --zone=internal
-done
-sudo firewall-cmd --reload
 
 sudo podman kube down pod.yml ||:

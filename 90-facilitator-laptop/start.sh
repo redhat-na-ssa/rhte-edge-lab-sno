@@ -16,17 +16,13 @@ if ! sudo nmcli c | grep -F rhte; then
     changed=true
 fi
 if [ "$(sudo nmcli c show rhte | awk '/^connection\.zone/{print $2}')" != "internal" ]; then
-    sudo nmcli c mod rhte connection.zone internal
+    sudo nmcli c mod rhte connection.zone trusted
     changed=true
 fi
 if $changed; then
     sudo systemctl restart NetworkManager
 fi
 sudo nmcli c up rhte
-for service in https dns dhcp; do
-    sudo firewall-cmd --add-service=$service --permanent --zone=internal
-done
-sudo firewall-cmd --reload
 
 rm -rf "$PROJECT_DIR/90-facilitator-laptop/lab/content/"{_data/login.yml,_site,.jekyll-metadata,Gemfile.lock}
 < lab/content/_data/login.yml.tpl envsubst '$KUBEADMIN_PASS $LAB_USER_PASSWORD $CLUSTER_NAME $BASE_DOMAIN $INFRA_ENV' > lab/content/_data/login.yml
