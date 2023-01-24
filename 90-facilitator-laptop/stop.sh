@@ -24,4 +24,4 @@ for service in https dns dhcp; do
 done
 sudo firewall-cmd --reload
 
-sudo podman kube down pod.yml
+sudo podman kube down pod.yml ||:
