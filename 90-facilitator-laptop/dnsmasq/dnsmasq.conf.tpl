@@ -4,14 +4,13 @@ bind-interfaces
 
 port=53
 
-local=/local.rhte.edgelab.dev/
-domain=local.rhte.edgelab.dev
+local=/local.${BASE_DOMAIN}/
+domain=local.${BASE_DOMAIN}
 no-hosts
 
-address=/internal.rhte.edgelab.dev/${LAB_INFRA_IP}
+address=/internal.${BASE_DOMAIN}/${LAB_INFRA_IP}
 
-# Route through me
 dhcp-option=3,${LAB_INFRA_IP}
-# I am DNS
 dhcp-option=6,${LAB_INFRA_IP}
-dhcp-range=192.168.99.50,192.168.99.199,12h
+dhcp-range=${DHCP_RANGE}
+

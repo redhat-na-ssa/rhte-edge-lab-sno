@@ -31,14 +31,28 @@ rm -rf "$PROJECT_DIR/90-facilitator-laptop/lab/content/"{_data/login.yml,_site,.
 # Proxy setup
 cp "$INSTRUCTOR_FULLCHAIN_FILE" proxy/server.crt
 cp "$INSTRUCTOR_PRIVATE_KEY_FILE" proxy/server.key
+for tpl in proxy/conf.d/*.tpl; do
+    conf="$(echo "$tpl" | rev | cut -d. -f2- | rev)"
+    < "$tpl" envsubst '$BASE_DOMAIN' > "$conf"
+done
 
 # dnsmasq setup
+min_addr="$(ipcalc --minaddr "$LAB_INFRA_NETWORK" --no-decorate)"
+max_addr="$(ipcalc --maxaddr "$LAB_INFRA_NETWORK" --no-decorate)"
+IFS=. read -r o1 o2 o3 o4 <<< "$min_addr"
+start="$o1.$o2.$o3.$(( o4 + 49 ))"
+ipcalc -c "$start" || fail Unable to work with simple DHCP range math using network "$LAB_INFRA_NETWORK"
+IFS=. read -r o1 o2 o3 o4 <<< "$max_addr"
+end="$o1.$o2.$o3.$(( o4 - 55 ))"
+ipcalc -c "$end" || fail Unable to work with simple DHCP range math using network "$LAB_INFRA_NETWORK"
+DHCP_RANGE="$start,$end,12h"
+export DHCP_RANGE
 rm -rf dnsmasq/{hosts.d,dnsmasq.conf}
 mkdir -p dnsmasq/hosts.d
-< dnsmasq/dnsmasq.conf.tpl envsubst '$LAB_INFRA_INTERFACE $LAB_INFRA_IP' > dnsmasq/dnsmasq.conf
+< dnsmasq/dnsmasq.conf.tpl envsubst '$LAB_INFRA_INTERFACE $LAB_INFRA_IP $BASE_DOMAIN $DHCP_RANGE' > dnsmasq/dnsmasq.conf
 for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
     METAL_CLUSTER_NAME="metal$cluster"
-    METAL_INSTANCE_IP="$(metal_cluster_ip "$cluster")"
+    METAL_CLUSTER_IP="$(metal_cluster_ip "$cluster")"
     # DNS setup
     echo "address=/apps.$METAL_CLUSTER_NAME.$BASE_DOMAIN/$METAL_CLUSTER_IP" >> dnsmasq/dnsmasq.conf
     echo "addn-hosts=/etc/hosts.d/$METAL_CLUSTER_NAME" >> dnsmasq/dnsmasq.conf
@@ -55,3 +69,7 @@ if ! [ "$(sudo podman volume ls | grep -c 'rhte-sno-\(image\|registry\)-data')" 
 fi
 
 sudo podman kube play --replace --network=host pod.yml
+
+< "$SCRIPT_DIR/imageset-configuration.tpl" envsubst '$OPENSHIFT_VERSION $BASE_DOMAIN' > "$DOWNLOAD_DIR/imageset-configuration.yml"
+cd "$DOWNLOAD_DIR" || fail Unable to change to the download directory
+"$OC_MIRROR" --config=imageset-configuration.yml "docker://registry.internal.$BASE_DOMAIN"
