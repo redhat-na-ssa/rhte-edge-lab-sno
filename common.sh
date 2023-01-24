@@ -171,4 +171,9 @@ function metal_cluster_ip {
     echo "$ip"
 }
 
+if [ ! -f "$HOME/.docker/config.json" ]; then
+    mkdir -p "$HOME/.docker"
+    cp "$HOME/.pull-secret.json" "$HOME/.docker/config.json"
+fi
+
 set -x
