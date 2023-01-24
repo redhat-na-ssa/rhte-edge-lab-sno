@@ -16,7 +16,7 @@ if ! sudo nmcli c | grep -F rhte; then
     changed=true
 fi
 if [ "$(sudo nmcli c show rhte | awk '/^connection\.zone/{print $2}')" != "internal" ]; then
-    sudo nmcli c mod "$LAB_INFRA_INTERFACE" connection.zone internal
+    sudo nmcli c mod rhte connection.zone internal
     changed=true
 fi
 if $changed; then
