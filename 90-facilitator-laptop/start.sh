@@ -19,6 +19,7 @@ if ! sudo nmcli c | grep -F rhte; then
 fi
 if [ "$(sudo nmcli c show rhte | awk '/^ipv4\.dns/{print $2}')" != "$LAB_INFRA_IP" ]; then
     sudo nmcli c mod rhte ipv4.dns "$LAB_INFRA_IP"
+    sudo nmcli c mod rhte ipv4.dns-search "internal.$BASE_DOMAIN"
     changed=true
 fi
 if [ "$(sudo nmcli c show rhte | awk '/^connection\.zone/{print $2}')" != "internal" ]; then
