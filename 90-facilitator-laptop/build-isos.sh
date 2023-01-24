@@ -48,4 +48,5 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
     metal_iso="$cluster_dir/rhcos-live.iso"
     cp "$rhcos_live" "$metal_iso"
     coreos-installer "$cluster_dir" iso ignition embed -fi bootstrap-in-place-for-live-iso.ign rhcos-live.iso
+    coreos-installer "$cluster_dir" iso kargs modify --append "ip=$METAL_INSTANCE_IP::$LAB_INFRA_IP:$METAL_INSTANCE_NETMASK:$METAL_CLUSTER_NAME.$BASE_DOMAIN:$METAL_INSTANCE_NIC:none nameserver=$LAB_INFRA_IP" rhcos-live.iso
 done
