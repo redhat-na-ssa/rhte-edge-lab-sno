@@ -77,6 +77,10 @@ fi
 
 sudo podman kube play --replace --network=host pod.yml
 
+while ! curl -s "https://registry.internal.$BASE_DOMAIN/v2/"; do
+    sleep 5
+done
+
 < "$SCRIPT_DIR/imageset-configuration.tpl" envsubst '$OPENSHIFT_VERSION $BASE_DOMAIN' > "$DOWNLOAD_DIR/imageset-configuration.yml"
 cd "$DOWNLOAD_DIR" || fail Unable to change to the download directory
 "$OC_MIRROR" --config=imageset-configuration.yml "docker://registry.internal.$BASE_DOMAIN:443/mirror"
