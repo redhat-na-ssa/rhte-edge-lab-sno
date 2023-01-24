@@ -15,10 +15,10 @@ LAB_INFRA_NETWORK="${LAB_INFRA_NETWORK:-192.168.99.0/24}"
 LAB_WAN_NM_CONN="${LAB_WAN_NM_CONN:-Harmison}"
 METAL_INSTANCE_NIC="${METAL_INSTANCE_NIC:-enp2s0}"
 
-DEFAULT_METAL_DISK=/dev/disk/by-path/pci-0000:00:17.0-ata3
+DEFAULT_METAL_DISK=/dev/disk/by-path/pci-0000:00:17.0-ata-3
 declare -A METAL_DISK_QUIRKS
 # Example quirk:
-# METAL_DISK_QUIRKS[metal2]=/dev/disk/by-path/pci-0000:00:17.0-ata4
+# METAL_DISK_QUIRKS[metal2]=/dev/disk/by-path/pci-0000:00:17.0-ata-4
 
 set -eu
 
