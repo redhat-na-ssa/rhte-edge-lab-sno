@@ -44,11 +44,23 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
     export METAL_DISK
     < install-config.yaml.tpl envsubst '$METAL_CLUSTER_NAME $BASE_DOMAIN $METAL_DISK $LAB_INFRA_NETWORK $PULL_SECRET $SSH_PUB_KEY' > "$cluster_dir/install-config.yaml"
 
+    kargs_network="ip=$METAL_INSTANCE_IP::$LAB_INFRA_IP:$METAL_INSTANCE_NETMASK:$METAL_CLUSTER_NAME.$BASE_DOMAIN:$METAL_INSTANCE_NIC:none nameserver=$LAB_INFRA_IP"
+    kargs_blacklist="modprobe.blacklist=iwlwifi"
+    "$OPENSHIFT_INSTALL" --dir="$cluster_dir" create manifests
+    cat << EOF > "$cluster_dir/openshift/99-openshift-machineconfig-master-kargs.yaml"
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: master
+  name: 99-openshift-machineconfig-master-kargs
+spec:
+  kernelArguments:
+  - $kargs_blacklist
+EOF
     "$OPENSHIFT_INSTALL" --dir="$cluster_dir" create single-node-ignition-config
     metal_iso="$cluster_dir/rhcos-live.iso"
     cp "$rhcos_live" "$metal_iso"
-    kargs_network="ip=$METAL_INSTANCE_IP::$LAB_INFRA_IP:$METAL_INSTANCE_NETMASK:$METAL_CLUSTER_NAME.$BASE_DOMAIN:$METAL_INSTANCE_NIC:none nameserver=$LAB_INFRA_IP"
-    kargs_blacklist="modprobe.blacklist=iwlwifi"
     coreos-installer "$cluster_dir" iso ignition embed -fi bootstrap-in-place-for-live-iso.ign rhcos-live.iso
     coreos-installer "$cluster_dir" iso kargs modify --append "$kargs_network $kargs_blacklist" rhcos-live.iso
 done
