@@ -19,7 +19,7 @@ if ! sudo nmcli c | grep -F rhte; then
 fi
 if [ "$(sudo nmcli c show rhte | awk '/^ipv4\.dns/{print $2}')" != "$LAB_INFRA_IP" ]; then
     sudo nmcli c mod rhte ipv4.dns "$LAB_INFRA_IP"
-    sudo nmcli c mod rhte ipv4.dns-search "internal.$BASE_DOMAIN"
+    sudo nmcli c mod rhte ipv4.dns-search "internal.$BASE_DOMAIN,$(for cluster in $(seq "$METAL_CLUSTER_COUNT"); do echo -n "metal$cluster.$BASE_DOMAIN,"; done | sed 's/,$//')"
     changed=true
 fi
 if [ "$(sudo nmcli c show rhte | awk '/^connection\.zone/{print $2}')" != "internal" ]; then
@@ -63,7 +63,7 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
     # DNS setup
     echo "address=/apps.$METAL_CLUSTER_NAME.$BASE_DOMAIN/$METAL_CLUSTER_IP" >> dnsmasq/dnsmasq.conf
     echo "addn-hosts=/etc/hosts.d/$METAL_CLUSTER_NAME" >> dnsmasq/dnsmasq.conf
-    echo "$METAL_CLUSTER_IP api.$METAL_CLUSTER_NAME.$BASE_DOMAIN api-int.$METAL_CLUSTER_NAME.$BASE_DOMAIN" > "dnsmasq/hosts.d/metal${cluster}"
+    echo "$METAL_CLUSTER_IP $METAL_CLUSTER_NAME.$BASE_DOMAIN api.$METAL_CLUSTER_NAME.$BASE_DOMAIN api-int.$METAL_CLUSTER_NAME.$BASE_DOMAIN" > "dnsmasq/hosts.d/metal${cluster}"
 done
 
 sudo podman build lab -t rhte-labguide --build-arg BUILD_REVISION="$(git rev-parse HEAD)"
