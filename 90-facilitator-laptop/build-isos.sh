@@ -20,7 +20,7 @@ function coreos-installer {
         -v /run/udev:/run/udev \
         -v "$cluster_dir:/data" \
         -w /data \
-        quay.io/coreos/coreos-installer:release "${@}"
+        quay.io/coreos/coreos-installer:release "${@}" rhcos-live.iso
 }
 
 rhcos_live="$DOWNLOAD_DIR/rhcos-live.iso"
@@ -61,6 +61,8 @@ EOF
     "$OPENSHIFT_INSTALL" --dir="$cluster_dir" create single-node-ignition-config
     metal_iso="$cluster_dir/rhcos-live.iso"
     cp "$rhcos_live" "$metal_iso"
-    coreos-installer "$cluster_dir" iso ignition embed -fi bootstrap-in-place-for-live-iso.ign rhcos-live.iso
-    coreos-installer "$cluster_dir" iso kargs modify --append "$kargs_network $kargs_blacklist" rhcos-live.iso
+    coreos-installer "$cluster_dir" iso ignition embed -fi bootstrap-in-place-for-live-iso.ign
+    coreos-installer "$cluster_dir" iso customize --live-karg-append "$kargs_network"
+    coreos-installer "$cluster_dir" iso customize --live-karg-append "$kargs_blacklist"
+    coreos-installer "$cluster_dir" iso customize --dest-karg-append "$kargs_blacklist"
 done
