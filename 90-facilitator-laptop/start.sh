@@ -24,22 +24,28 @@ if $changed; then
 fi
 sudo nmcli c up rhte
 
+# Labguide setup
 rm -rf "$PROJECT_DIR/90-facilitator-laptop/lab/content/"{_data/login.yml,_site,.jekyll-metadata,Gemfile.lock}
 < lab/content/_data/login.yml.tpl envsubst '$KUBEADMIN_PASS $LAB_USER_PASSWORD $CLUSTER_NAME $BASE_DOMAIN $INFRA_ENV' > lab/content/_data/login.yml
 
+# Proxy setup
 cp "$INSTRUCTOR_FULLCHAIN_FILE" proxy/server.crt
 cp "$INSTRUCTOR_PRIVATE_KEY_FILE" proxy/server.key
 
+# dnsmasq setup
 rm -rf dnsmasq/{hosts.d,dnsmasq.conf}
 mkdir -p dnsmasq/hosts.d
 < dnsmasq/dnsmasq.conf.tpl envsubst '$LAB_INFRA_INTERFACE $LAB_INFRA_IP' > dnsmasq/dnsmasq.conf
-for cluster in $(seq 15); do
-    echo "address=/apps.metal${cluster}.rhte.edgelab.dev/192.168.99.$(( 200 + cluster ))" >> dnsmasq/dnsmasq.conf
-    echo "addn-hosts=/etc/hosts.d/metal${cluster}" >> dnsmasq/dnsmasq.conf
-    echo "192.168.99.$(( 200 + cluster )) api.metal${cluster}.rhte.edgelab.dev api-int.metal${cluster}.rhte.edgelab.dev" > "dnsmasq/hosts.d/metal${cluster}"
+for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
+    METAL_CLUSTER_NAME="metal$cluster"
+    METAL_INSTANCE_IP="$(metal_cluster_ip "$cluster")"
+    # DNS setup
+    echo "address=/apps.$METAL_CLUSTER_NAME.$BASE_DOMAIN/$METAL_CLUSTER_IP" >> dnsmasq/dnsmasq.conf
+    echo "addn-hosts=/etc/hosts.d/$METAL_CLUSTER_NAME" >> dnsmasq/dnsmasq.conf
+    echo "$METAL_CLUSTER_IP api.$METAL_CLUSTER_NAME.$BASE_DOMAIN api-int.$METAL_CLUSTER_NAME.$BASE_DOMAIN" > "dnsmasq/hosts.d/metal${cluster}"
 done
-sudo podman build lab -t rhte-labguide --build-arg BUILD_REVISION="$(git rev-parse HEAD)"
 
+sudo podman build lab -t rhte-labguide --build-arg BUILD_REVISION="$(git rev-parse HEAD)"
 sudo podman build cache -t rhte-cache
 sudo podman build proxy -t rhte-proxy
 sudo podman build dnsmasq -t rhte-dnsmasq

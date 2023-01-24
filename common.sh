@@ -7,10 +7,17 @@ BASE_DOMAIN=rhte.edgelab.dev
 FULL_CLUSTER_NAME="$CLUSTER_NAME.$BASE_DOMAIN"
 AWS_REGION="${AWS_REGION:-us-east-2}"
 VIRT_CLUSTER_COUNT=15
+METAL_CLUSTER_COUNT=15
 INFRA_ENV="${INFRA_ENV:-na}"
 LAB_INFRA_INTERFACE="${LAB_INFRA_INTERFACE:-enp0s31f6}"
 LAB_INFRA_IP="${LAB_INFRA_IP:-192.168.99.1}"
+LAB_INFRA_NETWORK="${LAB_INFRA_NETWORK:-192.168.99.0/24}"
 LAB_WAN_NM_CONN="${LAB_WAN_NM_CONN:-Harmison}"
+
+DEFAULT_METAL_DISK=/dev/disk/by-path/pci-0000:00:17.0-ata3
+declare -A METAL_DISK_QUIRKS
+# Example quirk:
+# METAL_DISK_QUIRKS[metal2]=/dev/disk/by-path/pci-0000:00:17.0-ata4
 
 set -eu
 
@@ -80,10 +87,15 @@ export BASE_DOMAIN
 export FULL_CLUSTER_NAME
 export AWS_REGION
 export VIRT_CLUSTER_COUNT
+export METAL_CLUSTER_COUNT
 export INFRA_ENV
 export LAB_INFRA_INTERFACE
 export LAB_INFRA_IP
+export LAB_INFRA_NETWORK
 export LAB_WAN_NM_CONN
+
+export DEFAULT_METAL_DISK
+export METAL_DISK_QUIRKS
 
 export PROJECT_DIR
 export DOWNLOAD_DIR
@@ -145,6 +157,16 @@ function set_hosted_zone {
     # Set the hosted zone ID for our expected cluster domain
     HOSTED_ZONE="$("$AWS" route53 list-hosted-zones | jq -r '.HostedZones[] | select(.Name == "'"$BASE_DOMAIN"'.") | .Id' | rev | cut -d/ -f1 | rev)"
     export HOSTED_ZONE
+}
+
+function metal_cluster_ip {
+    num="$1"
+    last_octet="$(( 200 + num ))"
+    IFS=. read -r o1 o2 o3 o4 <<< "$LAB_INFRA_NETWORK"
+    ip="$o1.$o2.$o3.$last_octet"
+    IFS=/ read -r _ cidr <<< "$o4"
+    ipcalc -c "$ip/$cidr" || fail Cluster number "$num" puts IP outside of network range
+    echo "$ip"
 }
 
 set -x
