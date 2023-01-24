@@ -9,5 +9,5 @@ COPY index.html /opt/app-root/src/
 EXPOSE 443
 USER 0
 
-ENTRYPOINT ["/usr/sbin/nginx"]
-CMD ["-g", "daemon off;"]
+ENTRYPOINT ["/bin/bash"]
+CMD ["-c", "chown -R nginx:nginx /var/lib/nginx && exec /usr/sbin/nginx -g daemon off;"]
