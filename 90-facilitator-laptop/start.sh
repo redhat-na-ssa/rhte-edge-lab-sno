@@ -12,7 +12,13 @@ if [ "$(sudo nmcli c show "$LAB_WAN_NM_CONN" | awk '/^connection\.zone/{print $2
     changed=true
 fi
 if ! sudo nmcli c | grep -F rhte; then
-    sudo nmcli c add type ethernet con-name rhte ifname "${LAB_INFRA_INTERFACE}" ip4 "$LAB_INFRA_IP/24"
+    IFS=. read -r _ _ _ o4 <<< "$LAB_INFRA_NETWORK"
+    IFS=/ read -r _ cidr <<< "$o4"
+    sudo nmcli c add type ethernet con-name rhte ifname "${LAB_INFRA_INTERFACE}" ip4 "$LAB_INFRA_IP/$cidr"
+    changed=true
+fi
+if [ "$(sudo nmcli c show rhte | awk '/^ipv4\.dns/{print $2}')" != "$LAB_INFRA_IP" ]; then
+    sudo nmcli c mod rhte ipv4.dns "$LAB_INFRA_IP"
     changed=true
 fi
 if [ "$(sudo nmcli c show rhte | awk '/^connection\.zone/{print $2}')" != "internal" ]; then
