@@ -30,6 +30,9 @@ spec:
     image: rhte-proxy
     securityContext:
       privileged: true
+    volumeMounts:
+    - mountPath: /var/lib/nginx/tmp
+      name: proxy-scratch
   - name: dnsmasq
     image: rhte-dnsmasq
     securityContext:
@@ -41,3 +44,5 @@ spec:
   - name: image-data
     persistentVolumeClaim:
       claimName: rhte-sno-image-data
+  - name: proxy-scratch
+    emptyDir: {}
