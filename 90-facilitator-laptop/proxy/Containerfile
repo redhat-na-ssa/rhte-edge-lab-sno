@@ -10,4 +10,4 @@ EXPOSE 443
 USER 0
 
 ENTRYPOINT ["/bin/bash"]
-CMD ["-c", "chown -R nginx:nginx /var/lib/nginx && exec /usr/sbin/nginx -g daemon off;"]
+CMD ["-c", "chown -R nginx:nginx /var/lib/nginx && exec /usr/sbin/nginx -g 'daemon off;'"]
