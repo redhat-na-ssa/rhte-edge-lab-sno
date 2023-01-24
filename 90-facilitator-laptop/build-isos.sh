@@ -61,6 +61,6 @@ EOF
     "$OPENSHIFT_INSTALL" --dir="$cluster_dir" create single-node-ignition-config
     metal_iso="$cluster_dir/rhcos-live.iso"
     cp "$rhcos_live" "$metal_iso"
-    coreos-installer "$cluster_dir" iso ignition embed -fi bootstrap-in-place-for-live-iso.ign
     coreos-installer "$cluster_dir" iso customize -f --live-karg-append "$kargs_network $kargs_blacklist" --dest-karg-append "$kargs_blacklist"
+    coreos-installer "$cluster_dir" iso ignition embed -fi bootstrap-in-place-for-live-iso.ign
 done
