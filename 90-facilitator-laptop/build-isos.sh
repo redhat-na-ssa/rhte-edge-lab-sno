@@ -6,9 +6,9 @@ cd "$SCRIPT_DIR" || fail Unable to cd into the script directory
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/../common.sh"
 
-# shellcheck disable=SC2089
-PULL_SECRET='{"auths":{"registry.internal.'"${BASE_DOMAIN}"'":{"auth":"ZmFrZTpmYWtlCg=="}}}'
-# shellcheck disable=SC2090
+{ set +x ; } &>/dev/null
+PULL_SECRET="$(echo '{"auths":{"registry.internal.'"${BASE_DOMAIN}"'":{"auth":"ZmFrZTpmYWtlCg=="}}}' | jq -s '.[0] * .[1]' - ~/.pull-secret.json | tr '\n' ' ' | sed 's/\s\+//g')"
+set -x
 export PULL_SECRET
 
 podman pull quay.io/coreos/coreos-installer:release
