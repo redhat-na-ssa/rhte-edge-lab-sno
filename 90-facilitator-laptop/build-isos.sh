@@ -73,6 +73,6 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
 
     kargs_blacklist="modprobe.blacklist=iwlwifi"
     "$metal_install" agent create cluster-manifests --dir="$cluster_dir"
-    sed -i '/^    name: '"$METAL_CLUSTER_NAME"'$/a\ \ kernalArguments:\n\ \ - operation: append\n\ \ \ \ value: '"$kargs_blacklist" "$cluster_dir/cluster-manifests/infraenv.yaml"
+    sed -i '/^    name: '"$METAL_CLUSTER_NAME"'$/a\ \ kernelArguments:\n\ \ - operation: append\n\ \ \ \ value: '"$kargs_blacklist" "$cluster_dir/cluster-manifests/infraenv.yaml"
     "$metal_install" agent create image --dir="$cluster_dir"
 done
