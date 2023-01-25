@@ -24,10 +24,6 @@ bootstrapInPlace:
 pullSecret: '${PULL_SECRET}'
 sshKey: |
   ${SSH_PUB_KEY}
-capabilities:
-  baselineCapabilitySet: None
-  additionalEnabledCapabilities: 
-  - baremetal
 imageContentSources:
 - mirrors:
   - registry.internal.${BASE_DOMAIN}/mirror/openshift/release
