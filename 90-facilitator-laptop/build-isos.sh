@@ -20,7 +20,7 @@ function coreos-installer {
         -v /run/udev:/run/udev \
         -v "$cluster_dir:/data" \
         -w /data \
-        quay.io/coreos/coreos-installer:release "${@}" rhcos-live.iso
+        quay.io/coreos/coreos-installer:release "${@}"
 }
 
 last_mirrored_results="$(find "$DOWNLOAD_DIR"/oc-mirror-workspace -mindepth 1 -maxdepth 1 -type d -name 'results*' | sort | tail -1)"
@@ -73,4 +73,6 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
     < agent-config.yaml.tpl envsubst '$METAL_CLUSTER_NAME $METAL_NODE_NAME $METAL_INSTANCE_NIC $METAL_INSTANCE_IP $METAL_INSTANCE_CIDR $LAB_INFRA_IP $METAL_INSTANCE_MAC' > "$cluster_dir/agent-config.yaml"
 
     "$metal_install" agent create image --dir="$cluster_dir"
+    kargs_blacklist="modprobe.blacklist=iwlwifi"
+    coreow-installer "$cluster_dir" iso kargs append "$kargs_blacklist" agent.x86_64.iso
 done
