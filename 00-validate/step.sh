@@ -33,6 +33,7 @@ needed_bins=(
     envsubst
     podman
     ipcalc
+    nmstatectl
 )
 lacking_bins=()
 
