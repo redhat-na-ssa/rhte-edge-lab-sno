@@ -69,7 +69,7 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
     METAL_INSTANCE_MAC="${METAL_MAC_ADDRESSES[$METAL_CLUSTER_NAME]:-$DEFAULT_MAC_ADDRESS}"
     export METAL_INSTANCE_MAC
     < install-config.yaml.tpl envsubst '$METAL_CLUSTER_NAME $BASE_DOMAIN $LAB_INFRA_NETWORK $PULL_SECRET $SSH_PUB_KEY' > "$cluster_dir/install-config.yaml"
-    < agent.config.yaml.tpl envsubst '$METAL_CLUSTER_NAME $METAL_NODE_NAME $METAL_INSTANCE_NIC $METAL_INSTANCE_IP $METAL_INSTANCE_CIDR $LAB_INFRA_IP $METAL_INSTANCE_MAC' > "$cluster_dir/agent.config.yaml"
+    < agent-config.yaml.tpl envsubst '$METAL_CLUSTER_NAME $METAL_NODE_NAME $METAL_INSTANCE_NIC $METAL_INSTANCE_IP $METAL_INSTANCE_CIDR $LAB_INFRA_IP $METAL_INSTANCE_MAC' > "$cluster_dir/agent-config.yaml"
 
     "$metal_install" agent create image --dir="$cluster_dir"
 done
