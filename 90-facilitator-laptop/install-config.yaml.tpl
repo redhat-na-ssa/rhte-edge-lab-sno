@@ -28,8 +28,6 @@ capabilities:
   baselineCapabilitySet: None
   additionalEnabledCapabilities: 
   - baremetal
-  - Console
-  - openshift-samples
 imageContentSources:
 - mirrors:
   - registry.internal.${BASE_DOMAIN}/mirror/openshift/release
