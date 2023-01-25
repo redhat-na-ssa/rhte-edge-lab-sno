@@ -6,6 +6,7 @@ compute:
 controlPlane:
   name: master
   replicas: 1 
+  architecture: amd64
 metadata:
   name: ${METAL_CLUSTER_NAME}
 networking: 
@@ -19,8 +20,6 @@ networking:
   - 172.30.0.0/16
 platform:
   none: {}
-bootstrapInPlace:
-  installationDisk: ${METAL_DISK}
 pullSecret: '${PULL_SECRET}'
 sshKey: |
   ${SSH_PUB_KEY}

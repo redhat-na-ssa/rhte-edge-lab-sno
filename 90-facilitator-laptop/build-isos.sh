@@ -64,15 +64,15 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
     mkdir -p "$cluster_dir"
     METAL_INSTANCE_IP="$(metal_cluster_ip "$cluster")"
     export METAL_INSTANCE_IP
-    METAL_INSTANCE_NETMASK="$(ipcalc -m "$LAB_INFRA_NETWORK" --no-decorate)"
-    export METAL_INSTANCE_NETMASK
-    METAL_DISK="${METAL_DISK_QUIRKS[$METAL_CLUSTER_NAME]:-$DEFAULT_METAL_DISK}"
-    export METAL_DISK
-    < install-config.yaml.tpl envsubst '$METAL_CLUSTER_NAME $BASE_DOMAIN $METAL_DISK $LAB_INFRA_NETWORK $PULL_SECRET $SSH_PUB_KEY' > "$cluster_dir/install-config.yaml"
+    METAL_INSTANCE_CIDR="$(ipcalc -p "$LAB_INFRA_NETWORK" --no-decorate)"
+    export METAL_INSTANCE_CIDR
+    METAL_INSTANCE_MAC="${METAL_MAC_ADDRESSES[$METAL_CLUSTER_NAME]:-$DEFAULT_MAC_ADDRESS}"
+    export METAL_INSTANCE_MAC
+    < install-config.yaml.tpl envsubst '$METAL_CLUSTER_NAME $BASE_DOMAIN $LAB_INFRA_NETWORK $PULL_SECRET $SSH_PUB_KEY' > "$cluster_dir/install-config.yaml"
+    < agent.config.yaml.tpl envsubst '$METAL_CLUSTER_NAME $METAL_NODE_NAME $METAL_INSTANCE_NIC $METAL_INSTANCE_IP $METAL_INSTANCE_CIDR $LAB_INFRA_IP $METAL_INSTANCE_MAC' > "$cluster_dir/agent.config.yaml.tpl"
 
-    kargs_network="ip=$METAL_INSTANCE_IP::$LAB_INFRA_IP:$METAL_INSTANCE_NETMASK:$METAL_NODE_NAME.$METAL_CLUSTER_NAME.$BASE_DOMAIN:$METAL_INSTANCE_NIC:none nameserver=$LAB_INFRA_IP"
     kargs_blacklist="modprobe.blacklist=iwlwifi"
-    "$metal_install" --dir="$cluster_dir" create manifests
+    "$metal_install" agent create cluster-manifests --dir="$cluster_dir"
     cat << EOF > "$cluster_dir/openshift/99-openshift-machineconfig-master-kargs.yaml"
 apiVersion: machineconfiguration.openshift.io/v1
 kind: MachineConfig
@@ -84,24 +84,5 @@ spec:
   kernelArguments:
   - $kargs_blacklist
 EOF
-    "$metal_install" --dir="$cluster_dir" create single-node-ignition-config
-
-    # Rewrite the ignition script for writing to disk to enforce the blacklist karg
-
-    { set +x ; } &>/dev/null
-    echo "Unset -x to save your terminal, manually rewriting the ignition..."
-    ign_file="$cluster_dir/bootstrap-in-place-for-live-iso.ign"
-    ignition="$(cat "$ign_file")"
-    install_to_disk="data:text/plain;charset=utf-8;base64,$(echo "$ignition" | jq -r '.storage.files[] | select(.path == "/usr/local/bin/install-to-disk.sh") | .contents.source' | \
-                                                            cut -d, -f2 | base64 -d | \
-                                                            sed 's/coreos-installer install -n/coreos-installer install -n --append-karg='"$kargs_blacklist/" \
-                                                            | base64 -w0)"
-    export install_to_disk
-    echo "$ignition" | jq '(.storage.files[] | select(.path == "/usr/local/bin/install-to-disk.sh")).contents.source |= env.install_to_disk' > "$ign_file"
-    set -x
-
-    metal_iso="$cluster_dir/rhcos-live.iso"
-    cp "$rhcos_live" "$metal_iso"
-    coreos-installer "$cluster_dir" iso customize -f --live-karg-append "$kargs_network $kargs_blacklist" --dest-karg-append "$kargs_blacklist"
-    coreos-installer "$cluster_dir" iso ignition embed -fi bootstrap-in-place-for-live-iso.ign
+    "$metal_install" agent create image --dir="$cluster_dir"
 done
