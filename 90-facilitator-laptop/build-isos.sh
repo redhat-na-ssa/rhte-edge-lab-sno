@@ -71,8 +71,6 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
     < install-config.yaml.tpl envsubst '$METAL_CLUSTER_NAME $BASE_DOMAIN $LAB_INFRA_NETWORK $PULL_SECRET $SSH_PUB_KEY' > "$cluster_dir/install-config.yaml"
     < agent.config.yaml.tpl envsubst '$METAL_CLUSTER_NAME $METAL_NODE_NAME $METAL_INSTANCE_NIC $METAL_INSTANCE_IP $METAL_INSTANCE_CIDR $LAB_INFRA_IP $METAL_INSTANCE_MAC' > "$cluster_dir/agent.config.yaml.tpl"
 
-    kargs_blacklist="modprobe.blacklist=iwlwifi"
     "$metal_install" agent create cluster-manifests --dir="$cluster_dir"
-    sed -i '/^    name: '"$METAL_CLUSTER_NAME"'$/a\ \ kernelArguments:\n\ \ - operation: append\n\ \ \ \ value: '"$kargs_blacklist" "$cluster_dir/cluster-manifests/infraenv.yaml"
     "$metal_install" agent create image --dir="$cluster_dir"
 done
