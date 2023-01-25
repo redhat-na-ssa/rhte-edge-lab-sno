@@ -7,7 +7,7 @@ cd "$SCRIPT_DIR" || fail Unable to cd into the script directory
 source "$SCRIPT_DIR/../common.sh"
 
 # shellcheck disable=SC2089
-PULL_SECRET='{"auths":{"registry.internal.'"${BASE_DOMAIN}"'":{"auth":"ZmFrZQo="}}}'
+PULL_SECRET='{"auths":{"registry.internal.'"${BASE_DOMAIN}"'":{"auth":"ZmFrZTpmYWtlCg=="}}}'
 # shellcheck disable=SC2090
 export PULL_SECRET
 
