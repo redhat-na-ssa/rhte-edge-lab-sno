@@ -22,6 +22,7 @@
       records:
       - api
       - "*.apps"
+      - api-int
     delegate_to: localhost
 
   - name: Ensure HAProxy is installed

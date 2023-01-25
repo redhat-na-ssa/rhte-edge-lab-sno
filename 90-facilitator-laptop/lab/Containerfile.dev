@@ -1,0 +1,23 @@
+FROM registry.fedoraproject.org/fedora:37
+
+RUN dnf -y install \
+    rubygem-bundler ruby-devel \
+    gcc gcc-c++ \
+    vips vips-devel vips-tools \
+    libpng libpng-devel \
+    libwebp libwebp-devel \
+    libjpeg libjpeg-devel \
+    ImageMagick ImageMagick-devel ImageMagick-libs
+
+COPY content/Gemfile /app/
+
+WORKDIR /app
+
+RUN bundle install
+
+ARG BUILD_REVISION
+ENV JEKYLL_ENV=development
+ENV JEKYLL_BUILD_REVISION="${BUILD_REVISION}"
+
+ENTRYPOINT ["/bin/sh"]
+CMD ["-c", "jekyll clean && jekyll serve --incremental --host 0.0.0.0 --port 8080"]

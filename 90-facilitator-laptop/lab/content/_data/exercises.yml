@@ -1,0 +1,26 @@
+Getting Started:
+- name: Preflight Checks
+  exercise: '1.1'
+- name: Exploring the ACM Hub
+  exercise: '1.2'
+- name: Exploring the Cockpit Interface
+  exercise: '1.3'
+- name: Looking at our Bare Metal Nodes
+  exercise: '1.4'
+Provisioning and Adopting:
+- name: Provisioning a SNO Cluster with the Assisted Installer
+  exercise: '2.1'
+- name: Adopting a Running SNO Cluster
+  exercise: '2.2'
+Managing Groups of Edge Clusters:
+- name: Configure Application RBAC
+  exercise: '3.1'
+- name: Configure Users for Edge Clusters (and Why)
+  exercise: '3.2'
+- name: Configure Certificates for Edge Clusters
+  exercise: '3.3'
+Managing Edge Workloads:
+- name: Define ArgoCD Applications
+  exercise: '4.1'
+- name: Understanding the Reconciliation Model
+  exercise: '4.2'

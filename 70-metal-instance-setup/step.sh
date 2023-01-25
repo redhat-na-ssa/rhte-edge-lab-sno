@@ -11,15 +11,6 @@ set_hosted_zone
 INSTANCE_NAME="$CLUSTER_NAME-virt"
 export INSTANCE_NAME
 
-# Randomly generate a password
-if [ -f "$DOWNLOAD_DIR/lab-user-password" ]; then
-    LAB_USER_PASSWORD="$(cat "$DOWNLOAD_DIR/lab-user-password")"
-else
-    LAB_USER_PASSWORD="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16)"
-    echo "$LAB_USER_PASSWORD" > "$DOWNLOAD_DIR/lab-user-password"
-fi
-export LAB_USER_PASSWORD
-
 COCKPIT_CERT="$(base64 -w0 "$VIRT_FULLCHAIN_FILE")"
 COCKPIT_KEY="$(base64 -w0 "$VIRT_PRIVATE_KEY_FILE")"
 export COCKPIT_CERT

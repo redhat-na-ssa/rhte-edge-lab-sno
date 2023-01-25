@@ -1,0 +1,48 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    io.podman.annotations.autoremove/rhte-sno: "FALSE"
+    io.podman.annotations.init/rhte-sno: "FALSE"
+    io.podman.annotations.privileged/rhte-sno: "TRUE"
+    io.podman.annotations.publish-all/rhte-sno: "FALSE"
+  labels:
+    app: rhte-sno
+  name: rhte-sno
+spec:
+  containers:
+  - name: registry
+    image: docker.io/library/registry:2
+    args:
+    - /etc/docker/registry/config.yml
+    volumeMounts:
+    - mountPath: /var/lib/registry
+      name: registry-data
+  - name: cache
+    image: rhte-cache:latest
+    volumeMounts:
+    - mountPath: /opt/app-root/src
+      name: image-data
+  - name: labguide
+    image: rhte-labguide:latest
+  - name: proxy
+    image: rhte-proxy
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /var/lib/nginx/tmp
+      name: proxy-scratch
+  - name: dnsmasq
+    image: rhte-dnsmasq
+    securityContext:
+      privileged: true
+  volumes:
+  - name: registry-data
+    persistentVolumeClaim:
+      claimName: rhte-sno-registry-data
+  - name: image-data
+    persistentVolumeClaim:
+      claimName: rhte-sno-image-data
+  - name: proxy-scratch
+    emptyDir: {}

@@ -32,6 +32,8 @@ needed_bins=(
     ssh-keygen
     envsubst
     podman
+    ipcalc
+    nmstatectl
 )
 lacking_bins=()
 
