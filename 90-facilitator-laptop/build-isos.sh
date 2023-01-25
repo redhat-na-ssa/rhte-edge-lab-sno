@@ -45,11 +45,12 @@ if [ ! -f "$metal_install" ]; then
 fi
 
 rhcos_iso_json="$("$metal_install" coreos print-stream-json | jq .architectures.x86_64.artifacts.metal.formats.iso)"
-rhcos_iso_src="$(echo "$rhcos_iso_json" | jq -r .disk.location)"
+# rhcos_iso_src="$(echo "$rhcos_iso_json" | jq -r .disk.location)"
 rhcos_iso_sha256="$(echo "$rhcos_iso_json" | jq -r .disk.sha256)"
 if ! echo "$rhcos_iso_sha256  $rhcos_live" | sha256sum -c; then
-    rm -f "$rhcos_live"
-    curl -Lo "$rhcos_live" "$rhcos_iso_src"
+    echo "Disabling rhcos download for agent for now"
+    # rm -f "$rhcos_live"
+    # curl -Lo "$rhcos_live" "$rhcos_iso_src"
 fi
 
 for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
