@@ -59,11 +59,12 @@ mkdir -p dnsmasq/hosts.d
 < dnsmasq/dnsmasq.conf.tpl envsubst '$LAB_INFRA_INTERFACE $LAB_INFRA_IP $BASE_DOMAIN $DHCP_RANGE' > dnsmasq/dnsmasq.conf
 for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
     METAL_CLUSTER_NAME="metal$cluster"
+    METAL_NODE_NAME="node$cluster"
     METAL_CLUSTER_IP="$(metal_cluster_ip "$cluster")"
     # DNS setup
     echo "address=/apps.$METAL_CLUSTER_NAME.$BASE_DOMAIN/$METAL_CLUSTER_IP" >> dnsmasq/dnsmasq.conf
     echo "addn-hosts=/etc/hosts.d/$METAL_CLUSTER_NAME" >> dnsmasq/dnsmasq.conf
-    echo "$METAL_CLUSTER_IP $METAL_CLUSTER_NAME.$BASE_DOMAIN api.$METAL_CLUSTER_NAME.$BASE_DOMAIN api-int.$METAL_CLUSTER_NAME.$BASE_DOMAIN" > "dnsmasq/hosts.d/metal${cluster}"
+    echo "$METAL_CLUSTER_IP $METAL_NODE_NAME.$METAL_CLUSTER_NAME.$BASE_DOMAIN api.$METAL_CLUSTER_NAME.$BASE_DOMAIN api-int.$METAL_CLUSTER_NAME.$BASE_DOMAIN" > "dnsmasq/hosts.d/metal${cluster}"
 done
 
 sudo podman build lab -t rhte-labguide --build-arg BUILD_REVISION="$(git rev-parse HEAD)"

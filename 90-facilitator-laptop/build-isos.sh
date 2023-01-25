@@ -55,6 +55,8 @@ fi
 for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
     METAL_CLUSTER_NAME="metal$cluster"
     export METAL_CLUSTER_NAME
+    METAL_NODE_NAME="node$cluster"
+    export METAL_NODE_NAME
     cluster_dir="$DOWNLOAD_DIR/$METAL_CLUSTER_NAME"
     if [ -d "$cluster_dir" ]; then
         rm -rf "$cluster_dir"
@@ -68,7 +70,7 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
     export METAL_DISK
     < install-config.yaml.tpl envsubst '$METAL_CLUSTER_NAME $BASE_DOMAIN $METAL_DISK $LAB_INFRA_NETWORK $PULL_SECRET $SSH_PUB_KEY' > "$cluster_dir/install-config.yaml"
 
-    kargs_network="ip=$METAL_INSTANCE_IP::$LAB_INFRA_IP:$METAL_INSTANCE_NETMASK:$METAL_CLUSTER_NAME.$BASE_DOMAIN:$METAL_INSTANCE_NIC:none nameserver=$LAB_INFRA_IP"
+    kargs_network="ip=$METAL_INSTANCE_IP::$LAB_INFRA_IP:$METAL_INSTANCE_NETMASK:$METAL_NODE_NAME.$METAL_CLUSTER_NAME.$BASE_DOMAIN:$METAL_INSTANCE_NIC:none nameserver=$LAB_INFRA_IP"
     kargs_blacklist="modprobe.blacklist=iwlwifi"
     "$metal_install" --dir="$cluster_dir" create manifests
     cat << EOF > "$cluster_dir/openshift/99-openshift-machineconfig-master-kargs.yaml"
