@@ -23,9 +23,33 @@ function coreos-installer {
         quay.io/coreos/coreos-installer:release "${@}" rhcos-live.iso
 }
 
-rhcos_live="$DOWNLOAD_DIR/rhcos-live.iso"
-if [ ! -f "$rhcos_live" ]; then
-    curl -L "$("$OPENSHIFT_INSTALL" coreos print-stream-json | grep location | grep x86_64 | grep iso | cut -d\" -f4)" -o "$rhcos_live"
+last_mirrored_results="$(find "$DOWNLOAD_DIR"/oc-mirror-workspace -mindepth 1 -maxdepth 1 -type d -name 'results*' | sort | tail -1)"
+last_mirrored_version="$(head -1 "$last_mirrored_results/mapping.txt" | grep -o 'release:[^-]*' | cut -d: -f2)"
+metal_download_dir="$DOWNLOAD_DIR/$last_mirrored_version"
+mkdir -p "$metal_download_dir"
+
+release_image="registry.internal.$BASE_DOMAIN/mirror/openshift/release-images:$last_mirrored_version-x86_64"
+metal_oc="$metal_download_dir/oc"
+metal_install="$metal_download_dir/openshift-install"
+rhcos_live="$metal_download_dir/rhcos-live.iso"
+
+if [ ! -f "$metal_oc" ]; then
+    pushd "$metal_download_dir" || fail Unable to change to the metal client download dir
+    "$OC" adm release extract --command=oc "$release_image"
+    popd || fail Unable to return from the metal client download dir
+fi
+if [ ! -f "$metal_install" ]; then
+    pushd "$metal_download_dir" || fail Unable to change to the metal client download dir
+    "$OC" adm release extract --command=openshift-install "$release_image"
+    popd || fail Unable to return from the metal client download dir
+fi
+
+rhcos_iso_json="$("$metal_install" coreos print-stream-json | jq .architectures.x86_64.artifacts.metal.formats.iso)"
+rhcos_iso_src="$(echo "$rhcos_iso_json" | jq -r .disk.location)"
+rhcos_iso_sha256="$(echo "$rhcos_iso_json" | jq -r .disk.sha256)"
+if ! echo "$rhcos_iso_sha256  $rhcos_live" | sha256sum -c; then
+    rm -f "$rhcos_live"
+    curl -Lo "$rhcos_live" "$rhcos_iso_src"
 fi
 
 for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
@@ -46,7 +70,7 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
 
     kargs_network="ip=$METAL_INSTANCE_IP::$LAB_INFRA_IP:$METAL_INSTANCE_NETMASK:$METAL_CLUSTER_NAME.$BASE_DOMAIN:$METAL_INSTANCE_NIC:none nameserver=$LAB_INFRA_IP"
     kargs_blacklist="modprobe.blacklist=iwlwifi"
-    "$OPENSHIFT_INSTALL" --dir="$cluster_dir" create manifests
+    "$metal_install" --dir="$cluster_dir" create manifests
     cat << EOF > "$cluster_dir/openshift/99-openshift-machineconfig-master-kargs.yaml"
 apiVersion: machineconfiguration.openshift.io/v1
 kind: MachineConfig
@@ -58,7 +82,7 @@ spec:
   kernelArguments:
   - $kargs_blacklist
 EOF
-    "$OPENSHIFT_INSTALL" --dir="$cluster_dir" create single-node-ignition-config
+    "$metal_install" --dir="$cluster_dir" create single-node-ignition-config
     metal_iso="$cluster_dir/rhcos-live.iso"
     cp "$rhcos_live" "$metal_iso"
     coreos-installer "$cluster_dir" iso customize -f --live-karg-append "$kargs_network $kargs_blacklist" --dest-karg-append "$kargs_blacklist"
