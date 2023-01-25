@@ -24,10 +24,3 @@ bootstrapInPlace:
 pullSecret: '${PULL_SECRET}'
 sshKey: |
   ${SSH_PUB_KEY}
-imageContentSources:
-- mirrors:
-  - registry.internal.${BASE_DOMAIN}/mirror/openshift/release
-  source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
-- mirrors:
-  - registry.internal.${BASE_DOMAIN}/mirror/openshift/release-images
-  source: quay.io/openshift-release-dev/ocp-release
