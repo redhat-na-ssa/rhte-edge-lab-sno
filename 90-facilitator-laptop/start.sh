@@ -64,7 +64,11 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
     # DNS setup
     echo "address=/apps.$METAL_CLUSTER_NAME.$BASE_DOMAIN/$METAL_CLUSTER_IP" >> dnsmasq/dnsmasq.conf
     echo "addn-hosts=/etc/hosts.d/$METAL_CLUSTER_NAME" >> dnsmasq/dnsmasq.conf
-    echo "$METAL_CLUSTER_IP $METAL_NODE_NAME.$METAL_CLUSTER_NAME.$BASE_DOMAIN api.$METAL_CLUSTER_NAME.$BASE_DOMAIN api-int.$METAL_CLUSTER_NAME.$BASE_DOMAIN" > "dnsmasq/hosts.d/metal${cluster}"
+    hosts_entry="$METAL_CLUSTER_IP $METAL_NODE_NAME.$METAL_CLUSTER_NAME.$BASE_DOMAIN api.$METAL_CLUSTER_NAME.$BASE_DOMAIN api-int.$METAL_CLUSTER_NAME.$BASE_DOMAIN"
+    echo "$hosts_entry" > "dnsmasq/hosts.d/metal${cluster}"
+    if ! grep -F "$hosts_entry" /etc/hosts; then
+        echo "$hosts_entry" | sudo tee -a /etc/hosts
+    fi
 done
 
 sudo podman build lab -t rhte-labguide --build-arg BUILD_REVISION="$(git rev-parse HEAD)"
