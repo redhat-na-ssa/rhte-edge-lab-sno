@@ -73,16 +73,6 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
 
     kargs_blacklist="modprobe.blacklist=iwlwifi"
     "$metal_install" agent create cluster-manifests --dir="$cluster_dir"
-    cat << EOF > "$cluster_dir/openshift/99-openshift-machineconfig-master-kargs.yaml"
-apiVersion: machineconfiguration.openshift.io/v1
-kind: MachineConfig
-metadata:
-  labels:
-    machineconfiguration.openshift.io/role: master
-  name: 99-openshift-machineconfig-master-kargs
-spec:
-  kernelArguments:
-  - $kargs_blacklist
-EOF
+    sed -i '/^    name: '"$METAL_CLUSTER_NAME"'/a\ \ kernalArguments:\n\ \ - operation: append\n\ \ \ \ value: '"$kargs_blacklist" "$cluster_dir/cluster-manifests/infraenv.yaml"
     "$metal_install" agent create image --dir="$cluster_dir"
 done
