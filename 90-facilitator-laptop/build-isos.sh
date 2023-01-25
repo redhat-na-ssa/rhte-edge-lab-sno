@@ -85,6 +85,9 @@ EOF
     "$metal_install" --dir="$cluster_dir" create single-node-ignition-config
 
     # Rewrite the ignition script for writing to disk to enforce the blacklist karg
+
+    { set +x ; } &>/dev/null
+    echo "Unset -x to save your terminal, manually rewriting the ignition..."
     ign_file="$cluster_dir/bootstrap-in-place-for-live-iso.ign"
     ignition="$(cat "$ign_file")"
     install_to_disk="data:text/plain;charset=utf-8;base64,$(echo "$ignition" | jq -r '.storage.files[] | select(.path == "/usr/local/bin/install-to-disk.sh") | .contents.source' | \
@@ -93,6 +96,7 @@ EOF
                                                             | base64 -w0)"
     export install_to_disk
     echo "$ignition" | jq '(.storage.files[] | select(.path == "/usr/local/bin/install-to-disk.sh")).contents.source |= env.install_to_disk' > "$ign_file"
+    set -x
 
     metal_iso="$cluster_dir/rhcos-live.iso"
     cp "$rhcos_live" "$metal_iso"
