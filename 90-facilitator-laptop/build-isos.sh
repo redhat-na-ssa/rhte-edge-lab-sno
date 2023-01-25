@@ -74,5 +74,5 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
 
     "$metal_install" agent create image --dir="$cluster_dir"
     kargs_blacklist="modprobe.blacklist=iwlwifi"
-    coreow-installer "$cluster_dir" iso kargs append "$kargs_blacklist" agent.x86_64.iso
+    coreos-installer "$cluster_dir" iso kargs append "$kargs_blacklist" agent.x86_64.iso
 done
