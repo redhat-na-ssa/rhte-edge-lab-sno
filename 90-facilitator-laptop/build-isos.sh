@@ -76,3 +76,7 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
     kargs_blacklist="modprobe.blacklist=iwlwifi"
     coreos-installer "$cluster_dir" iso kargs modify -a "$kargs_blacklist" agent.x86_64.iso
 done
+
+# TODO:
+# - kargs for hyperkube and install, live iso karg is working
+# - remove default catalogsources
