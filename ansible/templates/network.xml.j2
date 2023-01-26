@@ -12,7 +12,7 @@
     <dhcp>
       <range start='192.168.122.2' end='192.168.122.200'/>
 {% for cluster in sno_clusters %}
-      <host mac='52:54:00:43:3c:{{ "%02x" % cluster.num }}' name='{{ cluster.name }}' ip='{{ cluster.ip }}'/>
+      <host mac='52:54:00:43:3c:{{ "%02x" % cluster.num }}' name='node{{ cluster.num }}.{{ cluster.name }}.{{ base_domain }}' ip='{{ cluster.ip }}'/>
 {% endfor %}
     </dhcp>
   </ip>
