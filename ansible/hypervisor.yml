@@ -5,6 +5,7 @@
 
   vars:
     infra_env: na
+    network_uuid: 51b15dc3-5683-494c-95df-a0139b5bda5b
 
   tasks:
   - name: Retrieve the default network XML
@@ -25,7 +26,7 @@
         state: present
         xml: '{{ lookup("template", "network.xml.j2") }}'
     when:
-    - default_xml.get_xml != lookup("template", "network.xml.j2")
+    - (default_xml.get_xml|ansible.utils.from_xml|from_json).network.uuid != network_uuid
     vars:
       sno_clusters: '{{ sno_clusters_yaml|from_yaml }}'
 
