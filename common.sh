@@ -17,7 +17,7 @@ METAL_INSTANCE_NIC="${METAL_INSTANCE_NIC:-enp2s0}"
 
 DEFAULT_MAC_ADDRESS=da:d5:de:ad:be:ef
 declare -A METAL_MAC_ADDRESSES
-METAL_MAC_ADDRESSES[metal1]=84:8b:cd:4d:16:2f
+METAL_MAC_ADDRESSES[metal1_na]=84:8b:cd:4d:16:2f
 
 set -eu
 
