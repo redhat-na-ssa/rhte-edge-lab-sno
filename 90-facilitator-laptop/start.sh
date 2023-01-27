@@ -32,7 +32,15 @@ fi
 sudo nmcli c up rhte
 
 # Labguide setup
-rm -rf "$PROJECT_DIR/90-facilitator-laptop/lab/content/"{_data/login.yml,_site,.jekyll-metadata,Gemfile.lock}
+rm -rf "$PROJECT_DIR/90-facilitator-laptop/lab/content/"{_data/login.yml,_data/passwords.yml,_site,.jekyll-metadata,Gemfile.lock}
+for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
+    name="metal$cluster"
+    password_file="$DOWNLOAD_DIR/$name/auth/kubeadmin-password"
+    if [ -f "$password_file" ]; then
+        password="$(cat "$password_file")"
+        echo "$name: $password" >> lab/content/_data/passwords.yml
+    fi
+done
 < lab/content/_data/login.yml.tpl envsubst '$KUBEADMIN_PASS $LAB_USER_PASSWORD $CLUSTER_NAME $BASE_DOMAIN $INFRA_ENV' > lab/content/_data/login.yml
 
 # Proxy setup

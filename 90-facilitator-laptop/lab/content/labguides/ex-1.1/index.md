@@ -19,3 +19,4 @@ title: Preflight Checks
     ```
     {{ site.data.login.kubeadmin_password }}
     ```
+4. Make sure you have the `oc` client downloaded for your laptop's operating system, ideally in your `$PATH` so that you can call it on the shell without a relative/absolute path. If you don't have this done, you should be able to just grab it from [here](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/){:target="_blank"} and unpack the archive in some valid `$PATH` directory like `/usr/local/bin/`, `~/.local/bin`, or whatever directory you Windows weirdos happen to use.
