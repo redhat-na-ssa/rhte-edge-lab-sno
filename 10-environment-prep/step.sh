@@ -82,7 +82,11 @@ if ! gpg --list-keys |& grep -q 'ultimate.*security@redhat\.com'; then
 fi
 raw_download sha256sum.txt
 raw_download sha256sum.txt.gpg
-if ! gpg --verify sha256sum.txt.gpg |& grep -qF 'Good signature from "Red Hat'; then
+declare -A good_signature
+good_signature[en-us.UTF-8]='Good signature from'
+good_signature[fr_FR.UTF-8]='Bonne signature de'
+expected="${good_signature[${LANG:-en-us.UTF-8}]} "'"Red Hat'
+if ! gpg --verify sha256sum.txt.gpg |& grep -qF "$expected"; then
     rm -rf sha256sum.txt{,.gpg}
     fail Unable to validate the signature on the checksums
 fi
