@@ -23,7 +23,7 @@ As we've already got the Cockpit Machines addon installed, you can see that we c
 
 Because we're running so many VMs to stand-in for extra bare metal SNO clusters, we needed to preconfigure some load balancers for access to the API servers and OpenShift routers. This required some DHCP reservations to enable predictable IP addresses, so your SNO cluster VMs were precreated and are loaded up ready to boot into the discovery ISO.
 
-Don't do anything with the virtual machines just yet, but you can click the name of your assigned VM and look around the Cockpit Machines console for it. Your seats should have an assignment for your VM. If not, ask your lab leaders to help identify the appropriate VM for you to use.
+Don't do anything with the virtual machines just yet, but you can click the name of your assigned VM and look around the Cockpit Machines console for it. Your seats should have an assignment for your VM or a bare metal node. If not, ask your lab leaders to help identify the appropriate VM for you to use. Everyone with a VM should have someone with a bare metal node adjacent to them. You'll be working in pairs, using the number assigned to your VM or metal node to pair up.
 
 Here's an example of what the main VM console looks like on a per-VM basis:
 
@@ -34,6 +34,6 @@ Here's an example of what the main VM console looks like on a per-VM basis:
 > The name of your VM will be unique per participant, and the region tag suffixed to it should say `{{ site.data.login.region }}` for this iteration of the lab.
 
 
-You can scroll around a little bit to see the various configurations. Note the CPU, memory, and disk capacity allocated for these VMs aligns with the [Single Node OpenShift minimums](https://docs.openshift.com/container-platform/4.12/installing/installing_sno/install-sno-preparing-to-install-sno.html#:~:text=Table%201.%20Minimum%20resource%20requirements){:target="_blank"}.
+You can scroll around a little bit to see the various configurations. Note the CPU, memory, and disk capacity allocated for these VMs aligns with the [Single Node OpenShift minimums](https://docs.openshift.com/container-platform/4.12/installing/installing_sno/install-sno-preparing-to-install-sno.html#:~:text=Table%201.%20Minimum%20resource%20requirements){:target="_blank"}. This isn't the most capable setup, and we'd be better off with another 16 GB of RAM, but it's enough to host and manage a small workload with all of the OpenShift features working to help us.
 
 We'll be using the Cockpit Machines interface for working with our virtual stand-in Single Node OpenShift nodes. The definitions for these VMs is pretty straightforward and visible in the [lab source code](https://github.com/redhat-na-ssa/rhte-edge-lab-sno/blob/main/ansible/templates/vm.xml.j2){:target="_blank"}. Also available to poke around is the relatively simple [Ansible playbook](https://github.com/redhat-na-ssa/rhte-edge-lab-sno/blob/main/ansible/hypervisor.yml){:target="_blank"} that configured this bare metal server as a hypervisor, defining the VMs using the above definition after ensuring that the discovery ISOs were in place, the network configured, and the disks prepared.

@@ -44,7 +44,6 @@ frontend https
     acl {{ cluster.name }} req.ssl_sni -m end -i apps.{{ cluster.name }}.{{ base_domain }}
     use_backend {{ cluster.name }}-ingress if {{ cluster.name }}
 {% endfor %}
-    tcp-request content accept if { req.ssl_hello_type 1 }
     default_backend webserver
 
 frontend api
@@ -54,14 +53,15 @@ frontend api
     acl {{ cluster.name }} req.ssl_sni -m str -i api.{{ cluster.name }}.{{ base_domain }}
     use_backend {{ cluster.name }}-api if {{ cluster.name }}
 {% endfor %}
-    tcp-request content accept if { req.ssl_hello_type 1 }
 {% for cluster in sno_clusters %}
 
 backend {{ cluster.name }}-ingress
-    server {{ cluster.name }}-ingress {{ cluster.ip }}:443 check
+    option tcp-check
+    server {{ cluster.name }}-ingress {{ cluster.ip }}:443 check fall 3 rise 2
 
 backend {{ cluster.name }}-api
-    server {{ cluster.name }}-api {{ cluster.ip }}:6443 check
+    option tcp-check
+    server {{ cluster.name }}-api {{ cluster.ip }}:6443 check fall 3 rise 2
 {% endfor %}
 
 backend webserver

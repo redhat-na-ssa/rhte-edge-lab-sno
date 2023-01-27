@@ -1,0 +1,18 @@
+<table>
+  <thead>
+    <tr>
+      <th>Metal Cluster</th>
+      <th>Login Command</th>
+    </tr>
+  </thead>
+  <tbody>
+{%- for cluster_password in site.data.passwords %}
+    <tr>
+      <td>{{ cluster_password[0] }}</td>
+      <td><div class="inline-copy"><code class="language-plainext highlighter-rouge">
+        oc login https://api.{{ cluster_password[0] }}.{{ site.data.login.base_domain }}:6443 -u kubeadmin -p {{ cluster_password[1] }}
+      </code></div></td>
+    </tr>
+{% endfor %}
+  </tbody>
+</table>

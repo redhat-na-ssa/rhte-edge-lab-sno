@@ -1,6 +1,6 @@
 <network>
   <name>default</name>
-  <uuid>1ce2c156-7f81-4f71-ae93-19b6aefaaaa4</uuid>
+  <uuid>{{ network_uuid }}</uuid>
   <forward mode='nat'>
     <nat>
       <port start='1024' end='65535'/>
@@ -12,7 +12,7 @@
     <dhcp>
       <range start='192.168.122.2' end='192.168.122.200'/>
 {% for cluster in sno_clusters %}
-      <host mac='52:54:00:43:3c:{{ "%02x" % cluster.num }}' name='{{ cluster.name }}' ip='{{ cluster.ip }}'/>
+      <host mac='52:54:00:43:3c:{{ "%02x" % cluster.num }}' name='node{{ cluster.num }}.{{ cluster.name }}.{{ base_domain }}' ip='{{ cluster.ip }}'/>
 {% endfor %}
     </dhcp>
   </ip>

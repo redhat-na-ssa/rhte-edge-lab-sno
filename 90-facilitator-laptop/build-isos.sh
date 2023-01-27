@@ -6,9 +6,9 @@ cd "$SCRIPT_DIR" || fail Unable to cd into the script directory
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/../common.sh"
 
-# shellcheck disable=SC2089
-PULL_SECRET='{"auths":{"registry.internal.'"${BASE_DOMAIN}"'":{"auth":"ZmFrZTpmYWtlCg=="}}}'
-# shellcheck disable=SC2090
+{ set +x ; } &>/dev/null
+PULL_SECRET="$(echo '{"auths":{"registry.internal.'"${BASE_DOMAIN}"'":{"auth":"ZmFrZTpmYWtlCg=="}}}' | jq -s '.[0] * .[1]' - ~/.pull-secret.json | tr '\n' ' ' | sed 's/\s\+//g')"
+set -x
 export PULL_SECRET
 
 podman pull quay.io/coreos/coreos-installer:release
@@ -67,7 +67,7 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
     export METAL_INSTANCE_IP
     METAL_INSTANCE_CIDR="$(ipcalc -p "$LAB_INFRA_NETWORK" --no-decorate)"
     export METAL_INSTANCE_CIDR
-    METAL_INSTANCE_MAC="${METAL_MAC_ADDRESSES[$METAL_CLUSTER_NAME]:-$DEFAULT_MAC_ADDRESS}"
+    METAL_INSTANCE_MAC="${METAL_MAC_ADDRESSES[${METAL_CLUSTER_NAME}_${INFRA_ENV}]:-$DEFAULT_MAC_ADDRESS}"
     export METAL_INSTANCE_MAC
     < install-config.yaml.tpl envsubst '$METAL_CLUSTER_NAME $BASE_DOMAIN $LAB_INFRA_NETWORK $PULL_SECRET $SSH_PUB_KEY' > "$cluster_dir/install-config.yaml"
     < agent-config.yaml.tpl envsubst '$METAL_CLUSTER_NAME $METAL_NODE_NAME $METAL_INSTANCE_NIC $METAL_INSTANCE_IP $METAL_INSTANCE_CIDR $LAB_INFRA_IP $METAL_INSTANCE_MAC' > "$cluster_dir/agent-config.yaml"

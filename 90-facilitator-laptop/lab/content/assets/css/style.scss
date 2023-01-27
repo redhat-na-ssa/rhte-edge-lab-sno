@@ -98,7 +98,7 @@ img[src*="style=centered"] {
 }
 // Shrink images using ?style=small
 img[src*="style=small"] {
-    height: 2.5rem;
+    max-height: 2.5rem;
 }
 // Border and drop shadow images using ?style=border
 img[src*="style=border"] {
@@ -333,6 +333,33 @@ pre.highlight {
       border-radius: 7px;
       right: 0.2rem;
       top: 0.2rem;
+      opacity: 0;
+  
+      &:active,
+      &:focus,
+      &:hover {
+        background: rgba(0, 0, 0, 0.7);
+        opacity: 1;
+      }
+    }
+  
+    &:active .copy,
+    &:focus .copy,
+    &:hover .copy {
+      background: rgba(0, 0, 0, 0.7);
+      opacity: 1;
+    }
+}
+
+.inline-copy {
+    position: relative;
+
+    .copy {
+      color: #EEEEEE;
+      position: absolute;
+      border-radius: 7px;
+      right: 0.2rem;
+      top: 0px;
       opacity: 0;
   
       &:active,

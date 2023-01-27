@@ -13,12 +13,8 @@ Provisioning and Adopting:
 - name: Adopting a Running SNO Cluster
   exercise: '2.2'
 Managing Groups of Edge Clusters:
-- name: Configure Application RBAC
+- name: Managing Configurations
   exercise: '3.1'
-- name: Configure Users for Edge Clusters (and Why)
-  exercise: '3.2'
-- name: Configure Certificates for Edge Clusters
-  exercise: '3.3'
 Managing Edge Workloads:
 - name: Define ArgoCD Applications
   exercise: '4.1'

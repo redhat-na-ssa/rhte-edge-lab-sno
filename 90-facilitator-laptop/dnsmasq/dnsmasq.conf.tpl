@@ -4,8 +4,8 @@ bind-interfaces
 
 port=53
 
-local=/local.${BASE_DOMAIN}/
-domain=local.${BASE_DOMAIN}
+local=/internal.${BASE_DOMAIN}/
+domain=internal.${BASE_DOMAIN}
 no-hosts
 
 address=/internal.${BASE_DOMAIN}/${LAB_INFRA_IP}
