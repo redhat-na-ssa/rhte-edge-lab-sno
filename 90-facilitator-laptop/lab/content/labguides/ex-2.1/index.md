@@ -58,7 +58,7 @@ When you click `Save`, your cluster will be drafted and queued for binding and i
 
 #### Picking our discovered host and binding it to our SNO cluster draft
 
-Toggle `Auto-select hosts` off, making it look like this: ![Auto-select hosts off](/assets/images/acm-auto-select-hosts-off.png?style=small)  Now, check the box next to your host. ![ACM Checked Host](/assets/images/acm-checked-host.png?style=small "ACM Checked host"). Click on ![Next](/assets/images/acm-next.png?style=small "Next").
+Toggle `Auto-select hosts` off, making it look like this: ![Auto-select hosts off](/assets/images/acm-auto-select-hosts-off.png?style=small)  Now, check the box next to your host - it will be named `node#` where `#` matches the name of the cluster you're provisioning. For example, installing the `student9` cluster, my selected cluster host looks like this: ![ACM Checked Host](/assets/images/acm-checked-host.png?style=small "ACM Checked host"). Click on ![Next](/assets/images/acm-next.png?style=small "Next").
 
 #### Finishing our cluster installation
 
