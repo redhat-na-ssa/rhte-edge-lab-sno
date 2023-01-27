@@ -20,8 +20,11 @@ Parameters:
 
   AmiId:
     Type: AWS::EC2::Image::Id
-    Default: ami-0c39257433c03e8ad # Cloud Access RHEL 9.1
+    Default: ami-0c39257433c03e8ad
     Description: AMI ID pointer in AWS Systems Manager Parameter Store.
+    AllowedValues:
+    - ami-0c39257433c03e8ad # Cloud Access RHEL 9.1 us-east-2
+    - ami-0a988768d3b40afd2 # Cloud Access RHEL 9.1 eu-west-1
 
   InstanceType:
     Type: String
