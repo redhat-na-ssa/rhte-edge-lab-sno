@@ -19,4 +19,8 @@ title: Preflight Checks
     ```
     {{ site.data.login.kubeadmin_password }}
     ```
-4. Make sure you have the `oc` client downloaded for your laptop's operating system, ideally in your `$PATH` so that you can call it on the shell without a relative/absolute path. If you don't have this done, you should be able to just grab it from [here](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/){:target="_blank"} and unpack the archive in some valid `$PATH` directory like `/usr/local/bin/`, `~/.local/bin`, or whatever directory you Windows weirdos happen to use.
+
+### Being Ready to Perform the Labs
+
+1. Make sure you have the `oc` client downloaded for your laptop's operating system, ideally in your `$PATH` so that you can call it on the shell without a relative/absolute path. If you don't have this done, you should be able to just grab it from [here](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/){:target="_blank"} and unpack the archive in some valid `$PATH` directory like `/usr/local/bin/`, `~/.local/bin`, or whatever directory you Windows weirdos happen to use.
+2. Pick a text editor, any text editor. If you want to use `vi` or `vim` or `nvim` or `lvim` or any lesser editor, I don't care. If you're going to use `VSCode` please don't ask James for help, he doesn't know how to use a mouse.
