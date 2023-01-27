@@ -22,6 +22,7 @@ export COCKPIT_KEY
 "$AWS" cloudformation deploy \
     --template-file "$DOWNLOAD_DIR/metal.cf.yaml" \
     --stack-name "$CLUSTER_NAME" \
+    --parameter-overrides "AmiId=${AWS_AMIS[$AWS_REGION]}" \
     --region "$AWS_REGION" \
     --no-fail-on-empty-changeset
 
