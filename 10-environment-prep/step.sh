@@ -83,9 +83,9 @@ fi
 raw_download sha256sum.txt
 raw_download sha256sum.txt.gpg
 declare -A good_signature
-good_signature[en-us.UTF-8]='Good signature from'
-good_signature[fr_FR.UTF-8]='Bonne signature de'
-expected="${good_signature[${LANG:-en-us.UTF-8}]} "'"Red Hat'
+good_signature[en-us.UTF-8]='Good signature from "'
+good_signature[fr_FR.UTF-8]='Bonne signature de « '
+expected="${good_signature[${LANG:-en-us.UTF-8}]}Red Hat"
 if ! gpg --verify sha256sum.txt.gpg |& grep -qF "$expected"; then
     rm -rf sha256sum.txt{,.gpg}
     fail Unable to validate the signature on the checksums
