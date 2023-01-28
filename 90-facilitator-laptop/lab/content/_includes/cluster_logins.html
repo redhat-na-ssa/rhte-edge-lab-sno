@@ -2,20 +2,20 @@
   <thead>
     <tr>
       <th>Metal Cluster</th>
-      <th>`kubeadmin` Password</th>
+      <th>kubeadmin Password</th>
       <th>Login Command</th>
     </tr>
   </thead>
   <tbody>
 {%- for cluster_password in site.data.passwords %}
+{% capture login %}
+oc login https://api.{{ cluster_password[0] }}.{{ site.data.login.base_domain }}:6443 -u kubeadmin -p {{ cluster_password[1] }}
+{% endcapture %}
+{% assign password=cluster_password[1] %}
     <tr>
       <td>{{ cluster_password[0] }}</td>
-      <td><div class="inline-copy"><code class="language-plainext highlighter-rouge">
-        {{ cluster_password[1] }}
-      </code></div></td>
-      <td><div class="inline-copy"><code class="language-plainext highlighter-rouge">
-        oc login https://api.{{ cluster_password[0] }}.{{ site.data.login.base_domain }}:6443 -u kubeadmin -p {{ cluster_password[1] }}
-      </code></div></td>
+      <td>{% include copyable.html content=password %}</td>
+      <td>{% include copyable.html content=login %}</td>
     </tr>
 {% endfor %}
   </tbody>

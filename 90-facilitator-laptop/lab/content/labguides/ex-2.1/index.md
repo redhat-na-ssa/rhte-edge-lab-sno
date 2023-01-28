@@ -3,6 +3,10 @@ layout: exercise
 title: Provisioning a SNO Cluster with the Assisted Installer
 ---
 
+#### What we're doing
+
+We're provisioning this SNO instance in a VM on a bare-metal instance in the cloud. This is because the cloud doesn't let us boot the discovery ISO. That's not super convenient, so we're just using the VM as a stand-in for an edge computing device that someone would want to be able to provision live in the field. There are some details below about how that might be accomplished in the real world, with real devices, but the goal to understand today is just what the experience would be like for someone who wanted to provision a piece of arbitrary edge hardware into ACM for centralized management.
+
 #### Registering a new host with ACM
 
 Navigate to the Cockpit Machines interface and identify your assigned VM, opening the console, if it's not still open from the exploration. Click the ![Install](/assets/images/cockpit-vm-install.png?style=small "Install") button. After a few seconds the VM should start booting:
@@ -37,7 +41,7 @@ Hosted Control Planes, A.K.A. Hive clusters, are still Tech Preview. All the sam
 Because we've already provisioned our host, and approved it, on the next screen we'll pick ![Use existing hosts](/assets/images/acm-use-existing-hosts.png?style=small "Use existing hosts").
 
 1. For your cluster name, `student#` where you replace the `#` with your student number, as in your VM's name. In my examples, I've been showing the `student9-na` VM, so I'll put `student9`.
-2. For `Base domain`, put `rhte.edgelab.dev`.
+2. {::nomarkdown}For {:/}`Base domain`{::nomarkdown}, put: {% include inline_copyable.html content="rhte.edgelab.dev" %}{:/}
 3. Pick `OpenShift 4.11.24` from the `OpenShift version` pulldown (It should be the only option right now).
 4. Check the `Install single node OpenShift (SNO)` box.
 5. In the `Additional labels` box, enter `student=#` replacing `#` with your student number. In my example, I'm entering `student=9`.
@@ -62,8 +66,8 @@ Toggle `Auto-select hosts` off, making it look like this: ![Auto-select hosts of
 
 #### Finishing our cluster installation
 
-You can just hit ![Next](/assets/images/acm-next.png?style=small "Next") on the `Networking` screen. The only thing you might want to set is an SSH key, but this one should populate with the default key for all our labs if you leave it blank. The rest of this information would change depending on our network environment, but because we have DHCP reservations for our hosts they filled correctly by default.
+You can just hit ![Next](/assets/images/acm-next.png?style=small "Next") on the `Networking` screen. The only thing you might want to set is an SSH key, but this one should inherit the default key for our `InfraEnv` if you leave it blank. The rest of this information would change depending on our network environment, but because we have DHCP reservations for our hosts they filled correctly by default.
 
 When you're ready and your cluster shows all green for validations on the `Review and create` screen (you may have to wait a few more seconds if you've been quick so far), you can click ![Install cluster](/assets/images/acm-install-cluster.png?style=small "Install cluster").
 
-In about twenty minutes, this cluster will be up and publicly accessible, though using self-signed certificates for now. If you click ![View Cluster Events](/assets/images/acm-create-cluster-events.png?style=small) you can view the installation progress. We don't need to sit around and wait for that node to install, though. Let's go adopt our bare metal clusters!
+In about twenty to thirty minutes, this cluster will be up and publicly accessible, though using self-signed certificates for now. If you click ![View Cluster Events](/assets/images/acm-create-cluster-events.png?style=small) you can view the installation progress. We don't need to sit around and wait for that node to install, though. Let's go adopt our bare metal clusters!
