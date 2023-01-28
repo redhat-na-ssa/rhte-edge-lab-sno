@@ -88,3 +88,10 @@
     kubernetes.core.k8s:
       state: present
       template: clusterissuer.yml.j2
+
+  - name: Create the Certificates for SNO cluster ingress
+    kubernetes.core.k8s:
+      state: present
+      template: cluster-certificates.yml.j2
+    vars:
+      sno_clusters: '{{ sno_clusters_yaml|from_yaml }}'

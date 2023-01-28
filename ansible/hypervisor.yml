@@ -28,7 +28,7 @@
     when:
     - (default_xml.get_xml|ansible.utils.from_xml|from_json).network.uuid != network_uuid
     vars:
-      sno_clusters: '{{ sno_clusters_yaml|from_yaml }}'
+      sno_clusters: '{{ virt_sno_clusters_yaml|from_yaml }}'
 
   - name: Ensure the network is active
     community.libvirt.virt_net:
@@ -55,7 +55,7 @@
       chdir: /srv/images
       creates:  '{{ vm_name }}.qcow2'
     retries: 5
-    loop: '{{ sno_clusters_yaml|from_yaml }}'
+    loop: '{{ virt_sno_clusters_yaml|from_yaml }}'
     loop_control:
       loop_var: cluster
       label: '{{ vm_name }}'
@@ -66,7 +66,7 @@
     community.libvirt.virt:
       command: define
       xml: '{{ lookup("template", "vm.xml.j2") }}'
-    loop: '{{ sno_clusters_yaml|from_yaml }}'
+    loop: '{{ virt_sno_clusters_yaml|from_yaml }}'
     loop_control:
       loop_var: cluster
       label: '{{ vm_name }}'

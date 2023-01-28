@@ -25,7 +25,7 @@ for env in "${!INFRA_ENV_LOCS[@]}"; do
 done
 
 cd "$ANSIBLE_DIR" || fail Unable to change into the ansible directory
-echo "$iso_files" > "$ANSIBLE_DIR/inventory/group_vars/metal/isos.yml"
+echo "$iso_files" > "$ANSIBLE_DIR/inventory/group_vars/all/isos.yml"
 
 "$ANSIBLE_PLAYBOOK" haproxy.yml
 "$ANSIBLE_PLAYBOOK" hypervisor.yml

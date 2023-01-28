@@ -1,0 +1,16 @@
+---
+virt_sno_clusters_yaml: |-
+  {% for num in range(1, cluster_count + 1) %}
+  - name: student{{ num }}
+    ip: '192.168.122.{{ 200 + num }}'
+    num: {{ num }}
+  {% endfor %}
+metal_sno_clusters_yaml: |-
+  {% for num in range(1, cluster_count + 1) %}
+  - name: metal{{ num }}
+    ip: '192.168.99.{{ 200 + num }}'
+    num: {{ num }}
+  {% endfor %}
+sno_clusters_yaml: |
+  {{ virt_sno_clusters_yaml -}}
+  {{ metal_sno_clusters_yaml -}}
