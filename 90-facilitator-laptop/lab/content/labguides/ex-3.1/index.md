@@ -209,3 +209,10 @@ Again, we need to edit this file before applying it. You'll need to update your 
 ![Placement Binding YAML](/assets/images/acm-placement-binding.png?style=centered&style=border "Placement Binding YAML")
 
 You can click ![Create](/assets/images/acm-create.png?style=small "Create") to create the `PlacementBinding` and it should begin to be enforced immediately.
+
+TODO:
+add trip to look at Governance to see policy applied
+go to clusters
+add new labels to adopt pre-applied policy
+go check out the clusters, notice the newly applied certs, sign in with user
+move on

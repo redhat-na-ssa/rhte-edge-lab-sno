@@ -15,18 +15,19 @@
 
   - name: Create a certmanager IAM user
     amazon.aws.iam_user:
-      name: certmanager
       state: present
+      name: certmanager
 
   - name: Create an access key for the certmanager user
     community.aws.iam_access_key:
+      state: present
       user_name: certmanager
       id: '{{ cert_manager.access_key|default(omit) }}'
-      state: present
     register: cert_manager_access_key
 
   - name: Record the access key and secret
     ansible.builtin.template:
+      state: present
       src: certmanager-access-key.yml.j2
       dest: '{{ download_dir }}/certmanager-access-key.yml'
     when: cert_manager_access_key.changed
@@ -37,3 +38,43 @@
       file: "{{ cert_manager_vars }}"
       name: cert_manager
     when: cert_manager_key_recorded.changed
+
+  - name: Recover the hosted zone ID
+    amazon.aws.route53_zone:
+      state: present
+      zone: '{{ base_domain }}'
+    register: hosted_zone
+
+  - name: Define policy to allow editing the hosted zone
+    amazon.aws.iam_policy:
+      state: present
+      iam_type: user
+      iam_name: certmanager
+      policy_name: certmanager_{{ base_domain.replace('.', '_') }}
+      policy_json: |
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "ListAll",
+              "Effect": "Allow",
+              "Action": [
+                "route53:GetChange",
+                "route53:ListHostedZones",
+                "route53:GetHostedZoneCount",
+                "route53:ListHostedZonesByName"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "EditHostedZone",
+              "Effect": "Allow",
+              "Action": [
+                  "route53:GetHostedZone",
+                  "route53:ChangeResourceRecordSets",
+                  "route53:ListResourceRecordSets"
+              ],
+              "Resource": "arn:aws:route53:::hostedzone/{{ hosted_zone.zone_id }}"
+            }
+          ]
+        }
