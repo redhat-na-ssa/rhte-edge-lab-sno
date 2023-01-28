@@ -1,4 +1,4 @@
-var codeBlocks = document.querySelectorAll('pre.highlight, div.inline-copy');
+var codeBlocks = document.querySelectorAll('pre.highlight, div.inline-copy, span.inline-copy');
 
 codeBlocks.forEach(function (codeBlock) {
   var copyButton = document.createElement('button');

@@ -19,6 +19,9 @@ fi
 if [ ! -f ~/.pull-secret.json ]; then
     fail You must place a valid Red Hat pull secret in ~/.pull-secret.json
 fi
+if [ ! -f ~/.zerossl ] || [ -z "$ZEROSSL_KID" ] || [ -z "$ZEROSSL_HMAC" ]; then
+    fail You must have the ZEROSSL_KID and ZEROSSL_HMAC variables exported in ~/.zerossl for the "$ACME_EMAIL" account
+fi
 
 # Make sure we've got the binaries we need in the environment
 needed_bins=(

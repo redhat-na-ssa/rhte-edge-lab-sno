@@ -4,6 +4,6 @@
         {% if prev %}<a href="/labguides/ex-{{ prev.exercise }}/">◄ {{ prev_section }} - {{ prev.name }}</a>{% endif %}
     </div>
     <div id="next" class="nav-item">
-        {% if next %}<a href="/labguides/ex-{{ next.exercise }}/">{{ next_section }} - {{ next.name }} ►</a>{% else %}<a href="/labguides/fin/">Next: Wrap-up</a>{% endif %}
+        {% if next %}<a href="/labguides/ex-{{ next.exercise }}/">{{ next_section }} - {{ next.name }} ►</a>{% elsif page.title != "Wrap-up" %}<a href="/labguides/fin/">Wrap-up ►</a>{% endif %}
     </div>
 </div>

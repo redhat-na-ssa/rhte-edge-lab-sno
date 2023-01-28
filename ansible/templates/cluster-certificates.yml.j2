@@ -1,0 +1,17 @@
+{% for cluster in sno_clusters %}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ cluster.name }}-router
+  namespace: {{ infra_env }}
+spec:
+  dnsNames:
+    - apps.{{ cluster.name }}.{{ base_domain }}
+    - '*.apps.{{ cluster.name }}.{{ base_domain }}'
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: zerossl-prod
+  secretName: {{ cluster.name }}-router
+{% endfor %}

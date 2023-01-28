@@ -11,10 +11,10 @@
       zone: '{{ base_domain }}'
       record: '{{ record.1 }}.{{ record.0.name }}.{{ base_domain }}'
       type: CNAME
-      value: '{{ ansible_hostname }}.{{ base_domain }}'
+      value: '{{ inventory_hostname }}'
       overwrite: true
       ttl: 300
-    loop: '{{ sno_clusters_yaml|from_yaml|product(records)|list }}'
+    loop: '{{ virt_sno_clusters_yaml|from_yaml|product(records)|list }}'
     loop_control:
       loop_var: record
       label: '{{ record.1 }}.{{ record.0.name }}.{{ base_domain }}'
@@ -46,7 +46,7 @@
       mode: '0644'
       validate: haproxy -f %s -c -q
     vars:
-      sno_clusters: '{{ sno_clusters_yaml|from_yaml }}'
+      sno_clusters: '{{ virt_sno_clusters_yaml|from_yaml }}'
     notify: restart haproxy
 
   - name: Ensure HAProxy is running and starts on boot

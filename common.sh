@@ -32,6 +32,7 @@ OPENSHIFT_INSTALL_DIR="$DOWNLOAD_DIR/install"
 ACME_DIR="$DOWNLOAD_DIR/acme.sh"
 ANSIBLE_DIR="$PROJECT_DIR/ansible"
 ACME_EMAIL='jharmison@redhat.com'
+ZEROSSL_CREDS_FILE="$HOME/.zerossl"
 
 KUBECONFIG="$OPENSHIFT_INSTALL_DIR/auth/kubeconfig"
 SSH_PRIV_KEY_FILE="$DOWNLOAD_DIR/id_rsa"
@@ -111,6 +112,11 @@ export OPENSHIFT_INSTALL_DIR
 export ACME_DIR
 export ANSIBLE_DIR
 export ACME_EMAIL
+export ZEROSSL_CREDS_FILE
+if [ -f "$ZEROSSL_CREDS_FILE" ]; then
+    # shellcheck disable=1090
+    source "$ZEROSSL_CREDS_FILE"
+fi
 
 export KUBECONFIG
 export SSH_PRIV_KEY_FILE

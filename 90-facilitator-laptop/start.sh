@@ -28,6 +28,9 @@ if [ "$(sudo nmcli c show rhte | awk '/^connection\.zone/{print $2}')" != "inter
 fi
 if $changed; then
     sudo systemctl restart NetworkManager
+    while ! ping -c 1 8.8.8.8; do
+        sleep 1
+    done
 fi
 sudo nmcli c up rhte
 

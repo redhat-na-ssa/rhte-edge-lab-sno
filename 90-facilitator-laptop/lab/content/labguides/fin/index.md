@@ -1,9 +1,6 @@
 ---
-layout: default
+layout: exercise
+title: Wrap-up
 ---
-
-# {{ site.title }}
-
-## Wrap-up
 
 You're done!

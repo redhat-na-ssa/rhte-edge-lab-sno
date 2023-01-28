@@ -1,0 +1,44 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: zerossl-eab
+  namespace: openshift-cert-manager
+stringData:
+  kid: {{ zerossl_kid }}
+  hmac: {{ zerossl_hmac }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: zerossl-route53
+  namespace: openshift-cert-manager
+stringData:
+  access-key: {{ cert_manager.access_key }}
+  secret-access-key: {{ cert_manager.secret_key }}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: zerossl-prod
+spec:
+  acme:
+    server: https://acme.zerossl.com/v2/DV90
+    email: {{ acme_email }}
+    privateKeySecretRef:
+      name: zerossl-prod
+    externalAccountBinding:
+      keyID: {{ zerossl_kid }}
+      keySecretRef:
+        name: zerossl-eab
+        key: hmac
+      keyAlgorithm: HS256
+    solvers:
+    - selector: {}
+      dns01:
+        route53:
+          region: {{ aws_region }}
+          accessKeyID: {{ cert_manager.access_key }}
+          secretAccessKeySecretRef:
+            name: zerossl-route53
+            key: secret-access-key

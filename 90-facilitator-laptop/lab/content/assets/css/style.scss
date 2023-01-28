@@ -377,3 +377,10 @@ pre.highlight {
       opacity: 1;
     }
 }
+
+.boxless-copy {
+    .copy {
+        right: -3rem;
+        top: -0.65rem;
+    }
+}
