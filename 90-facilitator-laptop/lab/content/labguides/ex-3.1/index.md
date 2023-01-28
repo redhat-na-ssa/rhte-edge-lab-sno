@@ -5,7 +5,7 @@ title: Managing Configurations
 
 #### Cluster configurations
 
-Now that we have several edge clusters (maybe?) running and (definitely) listed under the same label, let's look at managing those clusters as part of an overall hybrid cloud infrastructure.
+Now that we have several edge clusters (maybe?) running and (definitely) listed under the same label (one as the VM we're installing on, and one as the pre-installed bare metal we're adopting), let's look at managing those clusters as part of an overall hybrid cloud infrastructure.
 
 We're going to address some common use-cases for basic management of our edge clusters, though our examples will be necessarily pretty simplified for the purposes of the lab. The limits of your ability to apply governance to your collections of clusters is limited only by your ability to test the changes [before deploying them to prod](https://twitter.com/stahnma/status/634849376343429120){:target="_blank"}.
 
@@ -46,15 +46,17 @@ You need to replace two things in this file. In the `metadata.name` field, repla
 
 > **Note**
 >
-> This is YAML. Woe are they who mess with the indentation of YAML.
+> This is YAML. Woe are they who [mess with the indentation of YAML](https://twitter.com/memenetes/status/1229888446912704513){:target="_blank"}.
 
 Here's what mine looks like, adjusting the definition for my running example of `student9`:
 
 ![PlacementRule YAML](/assets/images/acm-placementrule-yaml.png?style=centered&style=border "PlacementRule YAML")
 
+Also note that the proper way to do this isn't by adding the YAML to the web console. If we were going to do this the right way, we would have some basic bootstrapping of a GitOps framework to apply these to our hub and use pull requests, branches, and code reviews to get our changes to Placements, Policies, and more down to our groups of edge clusters.
+
 This `PlacementRule` defines a way which we can select groups of workloads for groups of clusters, but it doesn't do anything to define the workloads themselves. That object would be a `PlacementBinding`. A `PlacementBinding` can select one `PlacementRule` and many `Policies`. Let's apply this `PlacementRule` by clicking the ![Create](/assets/images/acm-create.png?style=small "Create") button in the bottom-left, so we can get on to doing something with it.
 
-Click the ![Plus button](/assets/images/plus-button.png?style=small "Plus button") icon again, and paste the following YAML into the interface:
+Click the ![Plus button](/assets/images/plus-button.png?style=small "Plus button") icon again and after reading through it paste the following YAML into the interface:
 
 ```yaml
 ---
@@ -142,6 +144,8 @@ spec:
                   name: labuser
                 identities:
                 - 'htpasswd:labuser'
+                groups: []
+                fullName: Lab User
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -171,8 +175,37 @@ spec:
                   name: labuser
 ```
 
+This policy requires that HTPasswd is configured as an authentication provider for OpenShift, with a defined HTPasswd file that sets up the username to `labuser` and the password to the relatively simple `R3dH4t1!`. It then creates an OpenShift `User` object for this authentication source, and ties authorization as a `cluster-admin` to the user.
+
 Once again, we need to edit the file a bit per student pair. Here, just the `metadata.name` for the `Policy` object needs edited. Change the `#` to match your student number as before. You'll probably have to scroll up to get back to line number 5. Here's how mine looks at this point:
 
 ![Policy YAML](/assets/images/acm-policy-yaml.png?style=centered&style=border "Policy YAML")
 
-Clicking again on ![Create](/assets/images/acm-create.png?style=small "Create") will define the policy. This policy requires that HTPasswd is configured as an authentication provider for OpenShift, with a defined HTPasswd file that sets up the username to `labuser` and the password to the relatively simple `R3dH4t1!`. It then creates an OpenShift `User` object for this authentication source, and ties authorization as a `cluster-admin` to the user.
+Clicking again on ![Create](/assets/images/acm-create.png?style=small "Create") will define the `Policy`.
+
+Applying the `Policy` to our clusters, selected by their `student` label, will still require the `PlacementBinding`. Think of a `PlacementBinding` like a `RoleBinding` - a `Role` defines the permissions a user may have, a `User` or `ServiceAccount` defines the identity of an authenticated entity, and the `RoleBinding` ties the two together. Let's tie our `Policy` requiring `HTPasswd` users and RBAC to our `Placement` that selects our two clusters.
+
+Once again, click the ![Plus button](/assets/images/plus-button.png?style=small "Plus button") in the ACM Hub interface, and paste in the following YAML:
+
+```yaml
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: student#-binding
+  namespace: {{ site.data.login.region }}
+placementRef:
+  name: student#-placement
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+subjects:
+  - name: student#-htpasswd
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+```
+
+Again, we need to edit this file before applying it. You'll need to update your `#` on lines 5, 8, and 12. After updating mine for the `student9` example, it looks like this:
+
+![Placement Binding YAML](/assets/images/acm-placement-binding.png?style=centered&style=border "Placement Binding YAML")
+
+You can click ![Create](/assets/images/acm-create.png?style=small "Create") to create the `PlacementBinding` and it should begin to be enforced immediately.
