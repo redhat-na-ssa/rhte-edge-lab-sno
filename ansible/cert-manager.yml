@@ -11,6 +11,7 @@
     ansible.builtin.include_vars:
       file: "{{ cert_manager_vars }}"
       name: cert_manager
+    when: cert_manager_vars != ""
 
   - name: Create a certmanager IAM user
     amazon.aws.iam_user:
