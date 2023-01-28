@@ -238,4 +238,6 @@ You can log in using the `htpasswd` provider with the information you configured
  - Username: {% include inline_copyable.html content="labuser" %}
  - Password: {% include inline_copyable.html content="R3dH4t1!" %}
 
+There are lots of other `Policy` types we could apply to our clusters. Here, we're just using `ConfigurationPolicies` in our definitions - ways to specify arbitrary Kubernetes YAML. There are several other policy controllers, but this isn't really an ACM features workshop. You can read more about ACM Policy controllers in the [ACM Documentation](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.6/html/governance/governance#policy-controllers){:target="_blank"} and see some great examples of different kinds of policies, including the definitions for supported `Policies` that come with an ACM install as well as some community implementations that are maybe a little less fleshed-out, but still a good basis for customers to leverage, in the [policy-collection repository](https://github.com/open-cluster-management-io/policy-collection){:target="_blank"}.
+
 Let's wrap up the lab by getting to workload management.
