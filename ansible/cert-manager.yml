@@ -83,3 +83,9 @@
             }
           ]
         }
+
+  - name: Define the ClusterIssuer for cert-manager
+    kubernetes.core.k8s:
+      state: present
+      template: clusterissuer.yml.j2
+      namespace: '{{ infra_env }}'

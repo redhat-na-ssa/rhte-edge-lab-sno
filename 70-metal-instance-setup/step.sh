@@ -39,4 +39,4 @@ while ! "${instance_up[@]}" &>/dev/null; do
     sleep 5;
 done
 cd "$ANSIBLE_DIR" || fail Unable to change into the ansible directory
-< "$ANSIBLE_DIR/inventory/hosts.ini.tpl" envsubst '$INSTANCE_NAME $BASE_DOMAIN $DOWNLOAD_DIR $VIRT_CLUSTER_COUNT $INFRA_ENV' > "$ANSIBLE_DIR/inventory/hosts.ini"
+< "$ANSIBLE_DIR/inventory/hosts.ini.tpl" envsubst '$INSTANCE_NAME $BASE_DOMAIN $DOWNLOAD_DIR $VIRT_CLUSTER_COUNT $INFRA_ENV $ACME_EMAIL $AWS_REGION $ZEROSSL_KID $ZEROSSL_HMAC' > "$ANSIBLE_DIR/inventory/hosts.ini"
