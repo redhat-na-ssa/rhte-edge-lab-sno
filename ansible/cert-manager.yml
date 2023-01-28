@@ -7,6 +7,11 @@
   vars:
     cert_manager_vars: '{{ lookup("first_found", download_dir + "/certmanager-access-key.yml", errors="ignore") }}'
   tasks:
+  - name: Apply a CertManager subscription to the hub
+    kubernetes.core.k8s:
+      state: present
+      src: cert-manager-subscription.yml
+
   - name: Read any existing keys
     ansible.builtin.include_vars:
       file: "{{ cert_manager_vars }}"
