@@ -1,0 +1,86 @@
+{% for cluster in sno_clusters %}
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: certificates-managed-{{ cluster.name }}
+  namespace: {{ infra_env }}
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: certificates-managed
+        operator: In
+        values:
+          - "true"
+          - "True"
+          - "TRUE"
+      - key: name
+        operator: In
+        values:
+          - {{ cluster.name }}
+  clusterConditions: []
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: certificates-managed-{{ cluster.name }}
+  namespace: {{ infra_env }}
+  annotations:
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: SC System and Communications Protection
+    policy.open-cluster-management.io/controls: SC-12 Cryptographic Key Establishment and Management
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: router-certificate
+        spec:
+          remediationAction: enforce
+          namespaceSelector:
+            exclude:
+              - kube-*
+            include:
+              - default
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Secret
+                metadata:
+                  name: router-certificate
+                  namespace: openshift-ingress
+                type: kubernetes.io/tls
+                data:
+                  tls.crt: >-
+                    {{ "{{" }}hub (index (lookup "v1" "Secret" "{{ infra_env }}" "{{ cluster.name }}-router").data "tls.crt") | protect hub{{ "}}" }}
+                  tls.key: >-
+                    {{ "{{" }}hub (index (lookup "v1" "Secret" "{{ infra_env }}" "{{ cluster.name }}-router").data "tls.key") | protect hub{{ "}}" }}
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operator.openshfit.io/v1
+                kind: IngressController
+                metadata:
+                  name: default
+                  namespace: openshift-ingress-operator
+                spec:
+                  defaultCertficiate:
+                    name: router-certificate
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: certificates-managed-{{ cluster.name }}
+  namespace: {{ infra_env }}
+placementRef:
+  name: certificates-managed-{{ cluster.name }}
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+subjects:
+  - name: certificates-managed-{{ cluster.name }}
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+{% endfor %}
