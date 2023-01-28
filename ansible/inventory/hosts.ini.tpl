@@ -16,4 +16,5 @@ infra_env = ${INFRA_ENV}
 
 [hub:vars]
 ansible_connection = local
+ansible_python_interpreter = "{{ download_dir }}/../venv/bin/python"
 kubeconfig = "{{ download_dir }}/install/auth/kubeconfig"
