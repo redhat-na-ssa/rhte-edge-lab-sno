@@ -61,7 +61,7 @@ spec:
                     {{ "{{" }}hub (index (lookup "v1" "Secret" "{{ infra_env }}" "{{ cluster.name }}-router").data "tls.key") | protect hub{{ "}}" }}
             - complianceType: musthave
               objectDefinition:
-                apiVersion: operator.openshfit.io/v1
+                apiVersion: operator.openshift.io/v1
                 kind: IngressController
                 metadata:
                   name: default
