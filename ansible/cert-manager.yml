@@ -88,4 +88,3 @@
     kubernetes.core.k8s:
       state: present
       template: clusterissuer.yml.j2
-      namespace: '{{ infra_env }}'

@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: zerossl-eab
+  namespace: openshift-cert-manager
 stringData:
   kid: {{ zerossl_kid }}
   hmac: {{ zerossl_hmac }}
@@ -11,6 +12,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: zerossl-route53
+  namespace: openshift-cert-manager
 stringData:
   access-key: {{ cert_manager.access_key }}
   secret-access-key: {{ cert_manager.secret_key }}
