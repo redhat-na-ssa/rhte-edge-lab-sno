@@ -1,0 +1,38 @@
+---
+- name: Configure an AWS IAM account for certificate management
+  hosts: hub
+  module_defaults:
+    group/k8s:
+      kubeconfig: '{{ kubeconfig }}'
+  vars:
+    cert_manager_vars: '{{ lookup("first_found", download_dir + "/certmanager-access-key.yml", errors="ignore") }}'
+  tasks:
+  - name: Read any existing keys
+    ansible.builtin.include_vars:
+      file: "{{ cert_manager_vars }}"
+      name: cert_manager
+
+  - name: Create a certmanager IAM user
+    amazon.aws.iam_user:
+      name: certmanager
+      state: present
+
+  - name: Create an access key for the certmanager user
+    community.aws.iam_access_key:
+      user_name: certmanager
+      id: '{{ cert_manager.access_key|default(omit) }}'
+      state: present
+    register: cert_manager_access_key
+
+  - name: Record the access key and secret
+    ansible.builtin.template:
+      src: certmanager-access-key.yml.j2
+      dest: '{{ download_dir }}/certmanager-access-key.yml'
+    when: cert_manager_access_key.changed
+    register: cert_manager_key_recorded
+
+  - name: Read updated vars
+    ansible.builtin.include_vars:
+      file: "{{ cert_manager_vars }}"
+      name: cert_manager
+    when: cert_manager_key_recorded.changed

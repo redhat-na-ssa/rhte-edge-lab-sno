@@ -29,13 +29,4 @@ echo "$iso_files" > "$ANSIBLE_DIR/inventory/group_vars/metal/isos.yml"
 
 "$ANSIBLE_PLAYBOOK" haproxy.yml
 "$ANSIBLE_PLAYBOOK" hypervisor.yml
-
-# need to add argocd deployment
-# consider Skupper deployment
-# app:
-# https://www.youtube.com/watch?v=FOelk2m8r0o
-# https://github.com/redhat-developer-demos/quinoa-wind-turbine-manifests
-# https://github.com/redhat-developer-demos/quinoa-wind-turbine
-# https://docs.google.com/document/d/1eRde9o62sb7e3wHKt2ra8W6tvnBBKGYAxmiE_pV-XM4/edit#
-# https://github.com/stefan-bergstein/quinoa-wind-turbine-manifests
-# https://github.com/stefan-bergstein/quinoa-wind-turbine
+"$ANSIBLE_PLAYBOOK" cert-manager.yml
