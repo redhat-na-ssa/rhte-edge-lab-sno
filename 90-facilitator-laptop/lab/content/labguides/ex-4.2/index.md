@@ -1,5 +1,5 @@
 ---
 layout: exercise
-title: Understanding the Reconciliation Model
+title: Applying our Application
 ---
 
