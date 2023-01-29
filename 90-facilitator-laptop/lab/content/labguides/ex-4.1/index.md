@@ -87,7 +87,7 @@ For our labs today, we're not in either of those states. We didn't deploy a VPN 
 
 Despite finding ourselves in this situation right now, OpenShift GitOps is well integrated with our cluster life-cycle management tool, ACM. There is a whole section of the ACM documentation devoted to talking about this integration available for your perusal [here](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.6/html-single/applications/index#gitops-config){:target="_blank"}.
 
-It should be noted, also, that while features and capabilities may vary, other open source or third-party solutions similar to ArgoCD/OpenShift GitOps may support this application management paradigm. If your customer happily using [Flux](https://fluxcd.io/){:target="_blank"} to manage their existing Kubernetes cluster workloads, it can work just fine with OpenShift and you shouldn't necessarily try to force them to use our supported tooling. Woo them, maybe - but don't turn them off to our platform because they're using some competitive piece of tooling.
+It should be noted, also, that while features and capabilities may vary, other open source or third-party solutions similar to ArgoCD/OpenShift GitOps may support this application management paradigm. If your customer is happily using [Flux](https://fluxcd.io/){:target="_blank"} to manage their existing Kubernetes cluster workloads, it can work just fine with OpenShift and you shouldn't necessarily try to force them to use our supported tooling. Woo them, maybe - but don't turn them off to our platform because they're using some competitive piece of tooling.
 
 #### Red Hat Ansible Automation Platform
 
