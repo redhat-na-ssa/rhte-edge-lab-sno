@@ -217,7 +217,11 @@ Again, we need to edit this file before applying it. You'll need to update your 
 
 You can click ![Create](/assets/images/acm-create.png?style=small "Create") to create the `PlacementBinding` and it should begin to be enforced immediately.
 
-To see the effects of your policies in ACM, make sure you're on the `All Clusters` view of the Hub cluster console (pulldown in the top-left), head to `Governance` in the left navigation bar, head to the `Policies` tab of the main pane, and enter `htpasswd` in the search bar to filter it down quite a bit. Find your policy named `student#-htpasswd` with the correct number, and look over the `Details` and `Results` screens. It may show some ominous red X marks at first, but it should resolve down and give you happy green checkboxes in the `Details` tab: ![Without Violations](/assets/images/acm-policy-without-violations.png?style=small "Without Violations").
+To see the effects of your policies in ACM, make sure you're on the `All Clusters` view of the Hub cluster console (pulldown in the top-left), head to `Governance` in the left navigation bar, head to the `Policies` tab of the main pane, and enter `htpasswd` in the search bar to filter it down quite a bit. Find your policy named `student#-htpasswd` with the correct number, and look over the `Details` and `Results` screens. It may show some ominous red X marks or yellow exclamation points at first, but it should resolve down and give you happy green checkboxes in the `Details` tab: ![Without Violations](/assets/images/acm-policy-without-violations.png?style=small "Without Violations").
+
+> **Note**
+>
+> If you've been kicking butt and getting through the labs quickly, your installation of your VM-based SNO cluster may not yet be complete. It's okay to move on, but the `Policy`` won't be enforcable until the cluster is installed.
 
 The `Results` tab shows you the affect of every piece of the applied policy - including a little ![View details](/assets/images/acm-policy-event-view-details.png?style=small "View details") link to see lots of information about why the policy shows as without-violation.
 
