@@ -39,5 +39,5 @@ for env_name in "${!INFRA_ENV_LOCS[@]}"; do
     export env_loc
     < infraenv.tpl envsubst '$env_name $env_loc $SSH_PUB_KEY $PULL_SECRET_B64' > "$DOWNLOAD_DIR/infraenv-$env_name.yml"
     "$OC" apply --server-side=true -f "$DOWNLOAD_DIR/infraenv-$env_name.yml" --wait=true
-    "$OC" apply --server-side=true -n "$env_name" channel.yml
+    "$OC" apply --server-side=true -n "$env_name" -f channel.yml
 done
