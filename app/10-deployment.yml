@@ -14,6 +14,8 @@ spec:
     metadata:
       labels:
         app: hello-world
+      annotations:
+        alpha.image.policy.openshift.io/resolve-names: '*'
     spec:
       containers:
       - name: helloworld
