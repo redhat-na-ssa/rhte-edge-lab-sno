@@ -85,6 +85,8 @@ It may make sense to deploy OpenShift GitOps in one of two ways for edge cluster
 
 For our labs today, we're not in either of those states. We didn't deploy a VPN tunnel (though you certainly can!) or anything like an application-layer tunnel such as [Skupper](https://skupper.io/){:target="_blank"} to provide us access to our Kubernetes API endpoints directly from the Hub - at least, it's not possible for our bare metal clusters right now.
 
+Despite finding ourselves in this situation right now, OpenShift GitOps is well integrated with our cluster life-cycle management tool, ACM. There is a whole section of the ACM documentation devoted to talking about this integration available for your perusal [here](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.6/html-single/applications/index#gitops-config){:target="_blank"}.
+
 It should be noted, also, that while features and capabilities may vary, other open source or third-party solutions similar to ArgoCD/OpenShift GitOps may support this application management paradigm. If your customer happily using [Flux](https://fluxcd.io/){:target="_blank"} to manage their existing Kubernetes cluster workloads, it can work just fine with OpenShift and you shouldn't necessarily try to force them to use our supported tooling. Woo them, maybe - but don't turn them off to our platform because they're using some competitive piece of tooling.
 
 #### Red Hat Ansible Automation Platform

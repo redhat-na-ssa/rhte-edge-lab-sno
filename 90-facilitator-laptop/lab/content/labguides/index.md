@@ -19,9 +19,12 @@ Josh Swanson | Red Hat
 Kelly Switt | Red Hat
 John Archer | Red Hat
 Danielle Speroni | Red Hat
+Hugo Rego | Red Hat
+Bertrand d'Herouville | Red Hat
+Luca Ferrari | Red Hat
+Luis Arizmendi | Red Hat
 Don Wilmot | Red Hat
 Steven Ellis | Red Hat
-Hugo Rego | Red Hat
 Matt Smith | OnLogic
 Cole Wangsness | OnLogic
 Jennifer Lohmann | OnLogic
