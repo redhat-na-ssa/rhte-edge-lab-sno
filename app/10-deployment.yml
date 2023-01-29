@@ -3,20 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hello-world
-  namespace: helloworld
   labels:
     app: hello-world
-  annotations:
-    image.openshift.io/triggers: |-
-      [
-        {
-          "from": {
-            "kind": "ImageStreamTag",
-            "name": "rust-hello-world:latest"
-          },
-          "fieldPath": "spec.template.spec.containers[0].image"
-        }
-      ]
 spec:
   replicas: 3
   selector:
@@ -29,7 +17,7 @@ spec:
     spec:
       containers:
       - name: helloworld
-        image: rust-hello-world:latest
+        image: rust-hello-world:0.1.3
         ports:
         - containerPort: 8000
         securityContext:
