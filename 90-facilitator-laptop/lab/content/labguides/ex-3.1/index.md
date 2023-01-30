@@ -22,6 +22,8 @@ The basics of what we expect from our edge clusters before deploying our workloa
   - It's just inconvenient to have to deal with HSTS errors on a technician's laptop
   - Normally we might use an internal CA and certificates we control, but we're going to use some publicly-trusted certificates for the sake of your laptops' CA trust bundles
 
+We're working in pairs here and managing both our VM-based `student#` and our metal-based `metal#` clusters simultaneously here. Shoulder-surf one way or another, but don't try to deploy these same things twice.
+
 In the name of time, we're going to just apply some manifests to do this quickly. If both of your clusters are labelled appropriately with `student=#`, we can define a `PlacementRule` for ACM to select those clusters by their labels.
 
 This `PlacementRule` is defined on the ACM hub, so let's use the web UI to import manifests. From the ACM hub interface click the ![Plus button](/assets/images/plus-button.png?style=small "Plus button") icon in the top right.

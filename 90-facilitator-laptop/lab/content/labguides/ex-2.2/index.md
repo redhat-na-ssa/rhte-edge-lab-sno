@@ -3,7 +3,7 @@ layout: exercise
 title: Adopting a Running SNO Cluster
 ---
 
-#### What we're doing
+#### What We're Doing
 
 The next SNO instance we'll be working with in pairs was provisioned ahead of time by your lab facilitators using [a wee bit of automation](https://github.com/redhat-na-ssa/rhte-edge-lab-sno/blob/main/90-facilitator-laptop/build-isos.sh){:target="_blank"}. In this scenario, you might imagine that the SNO install was done by a hardware OEM or system integrator before shipping the device to your team to deploy it in the field. Note that Red Hat has been working with OEMs and SIs on exactly this kind of thing - using the [ZTP Pipeline Relocatable](https://github.com/rh-ecosystem-edge/ztp-pipeline-relocatable){:target="_blank"} project to let them provision multiple clusters automatically before leaving their facilities.
 
