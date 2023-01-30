@@ -16,7 +16,7 @@ Managing Groups of Edge Clusters:
 - name: Managing Configurations
   exercise: '3.1'
 Managing Edge Workloads:
-- name: Define ArgoCD Applications
+- name: Ways to Deploy Workloads to Edge Clusters
   exercise: '4.1'
-- name: Understanding the Reconciliation Model
+- name: Applying our Application
   exercise: '4.2'

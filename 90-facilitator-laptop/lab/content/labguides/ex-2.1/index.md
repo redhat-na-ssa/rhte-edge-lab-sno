@@ -3,11 +3,11 @@ layout: exercise
 title: Provisioning a SNO Cluster with the Assisted Installer
 ---
 
-#### What we're doing
+#### What We're Doing
 
 We're provisioning this SNO instance in a VM on a bare-metal instance in the cloud. This is because the cloud doesn't let us boot the discovery ISO. That's not super convenient, so we're just using the VM as a stand-in for an edge computing device that someone would want to be able to provision live in the field. There are some details below about how that might be accomplished in the real world, with real devices, but the goal to understand today is just what the experience would be like for someone who wanted to provision a piece of arbitrary edge hardware into ACM for centralized management.
 
-#### Registering a new host with ACM
+#### Registering a New Host with ACM
 
 Remember, we have to work in pairs for today's lab due to the amount of hardware we have on hand and the amount of attendees. If you have a bare metal cluster assignment `metal#`, work with your partner who has the equivalent `student#` Virtual Machine.
 
@@ -34,7 +34,7 @@ You can take a look directly at the `InfraEnv` object that resulted in the ISO t
 
 So, once some kind of edge device (or VM in our case) goes through some kind of process to boot the Discovery ISO, an administrator can approve those hosts as we have here to make them available for cluster provisioning. Let's get to that, then!
 
-#### Creating a SNO cluster
+#### Creating a SNO Cluster
 
 On the left navigation bar under `Infrastructure`, select `Clusters` and then click ![Create Cluster](/assets/images/acm-create-cluster.png?style=small "Create Cluster"). Select the option to create the cluster from ![Host Inventory](/assets/images/acm-create-from-host-inventory.png?style=small "Host Inventory"). Choose a ![Standalone](/assets/images/acm-create-standalone.png?style=small "Standalone") control plane.
 
@@ -62,11 +62,11 @@ Review the manifests on the right side of the screen before clicking ![Save](/as
 
 When you click `Save`, your cluster will be drafted and queued for binding and installation. If, for any reason, you have to make any changes after this point, you have to delete the draft cluster from the `Cluster list` using the ![Three dots](/assets/images/acm-cluster-three-dots.png?style=small "Three dots") button, then create it again from scratch.
 
-#### Picking our discovered host and binding it to our SNO cluster draft
+#### Picking our Discovered Host and Binding it to our SNO Cluster Draft
 
 Toggle `Auto-select hosts` off, making it look like this: ![Auto-select hosts off](/assets/images/acm-auto-select-hosts-off.png?style=small)  Now, check the box next to your host - it will be named `node#` where `#` matches the name of the cluster you're provisioning. For example, installing the `student9` cluster, my selected cluster host looks like this: ![ACM Checked Host](/assets/images/acm-checked-host.png?style=small "ACM Checked host"). Click on ![Next](/assets/images/acm-next.png?style=small "Next").
 
-#### Finishing our cluster installation
+#### Finishing our Cluster Installation
 
 You can just hit ![Next](/assets/images/acm-next.png?style=small "Next") on the `Networking` screen when it lights up. The SSH key will be inherited from the default key for our `InfraEnv` if you leave it blank - this was pre-configured by your facilitators. The rest of this information would change depending on our network environment, but because we have DHCP reservations for our hosts they filled correctly by default.
 

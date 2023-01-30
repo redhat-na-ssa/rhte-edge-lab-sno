@@ -22,6 +22,8 @@ The basics of what we expect from our edge clusters before deploying our workloa
   - It's just inconvenient to have to deal with HSTS errors on a technician's laptop
   - Normally we might use an internal CA and certificates we control, but we're going to use some publicly-trusted certificates for the sake of your laptops' CA trust bundles
 
+We're working in pairs here and managing both our VM-based `student#` and our metal-based `metal#` clusters simultaneously here. Shoulder-surf one way or another, but don't try to deploy these same things twice.
+
 In the name of time, we're going to just apply some manifests to do this quickly. If both of your clusters are labelled appropriately with `student=#`, we can define a `PlacementRule` for ACM to select those clusters by their labels.
 
 This `PlacementRule` is defined on the ACM hub, so let's use the web UI to import manifests. From the ACM hub interface click the ![Plus button](/assets/images/plus-button.png?style=small "Plus button") icon in the top right.
@@ -217,7 +219,11 @@ Again, we need to edit this file before applying it. You'll need to update your 
 
 You can click ![Create](/assets/images/acm-create.png?style=small "Create") to create the `PlacementBinding` and it should begin to be enforced immediately.
 
-To see the effects of your policies in ACM, make sure you're on the `All Clusters` view of the Hub cluster console (pulldown in the top-left), head to `Governance` in the left navigation bar, head to the `Policies` tab of the main pane, and enter `htpasswd` in the search bar to filter it down quite a bit. Find your policy named `student#-htpasswd` with the correct number, and look over the `Details` and `Results` screens. It may show some ominous red X marks at first, but it should resolve down and give you happy green checkboxes in the `Details` tab: ![Without Violations](/assets/images/acm-policy-without-violations.png?style=small "Without Violations").
+To see the effects of your policies in ACM, make sure you're on the `All Clusters` view of the Hub cluster console (pulldown in the top-left), head to `Governance` in the left navigation bar, head to the `Policies` tab of the main pane, and enter `htpasswd` in the search bar to filter it down quite a bit. Find your policy named `student#-htpasswd` with the correct number, and look over the `Details` and `Results` screens. It may show some ominous red X marks or yellow exclamation points at first, but it should resolve down and give you happy green checkboxes in the `Details` tab: ![Without Violations](/assets/images/acm-policy-without-violations.png?style=small "Without Violations").
+
+> **Note**
+>
+> If you've been kicking butt and getting through the labs quickly, your installation of your VM-based SNO cluster may not yet be complete. It's okay to move on, but the `Policy`` won't be enforcable until the cluster is installed.
 
 The `Results` tab shows you the affect of every piece of the applied policy - including a little ![View details](/assets/images/acm-policy-event-view-details.png?style=small "View details") link to see lots of information about why the policy shows as without-violation.
 
@@ -229,7 +235,7 @@ If you try to just click through the `Advanced` button and access the clusters u
 
 ![Policy violations](/assets/images/acm-policy-violations.png?style=centered&style=border "Policy violations")
 
-Part of the lab build-out included some free trusted TLS certificates from ZeroSSL (if you know LetsEncrypt, ZeroSSL is like that but cooler) on the Hub cluster, a `Policy` to apply them to publish the certificates down to the managed clusters, and a `Placement` and `PlacementBinding` to select your clusters when this label was added and push the `ConfigurationPolicy` down. So, close the tab with the unsafe TLS warning and try clicking the link again. It may require you to open the link in a new browser session or incognito window to get the new certificate if you fiddled around with trusting the old one. You should be able to get to the managed bare-metal SNO cluster, though:
+Part of the lab build-out included some free trusted TLS certificates from ZeroSSL (if you know LetsEncrypt, ZeroSSL is like that but cooler) on the Hub cluster, a `Policy` to apply them to publish the certificates down to the managed clusters, and a `Placement` and `PlacementBinding` to select your clusters when this label was added and push the `ConfigurationPolicy` down. So, close the tab with the unsafe TLS warning and try clicking the link again. It may take a little bit even after the policy shows that it is without violations for the Ingress controller to roll out the new replicas, or it may require you to open the link in a new browser session or incognito window to get the new certificate if you fiddled around with trusting the old one. You should be able to get to the managed bare-metal SNO cluster, though:
 
 ![Trusted cluster login screen](/assets/images/managed-cluster-trusted-login.png?style=centered&style=border "Trusted cluster login screen")
 
