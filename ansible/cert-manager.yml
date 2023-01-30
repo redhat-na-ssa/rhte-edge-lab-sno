@@ -32,7 +32,6 @@
 
   - name: Record the access key and secret
     ansible.builtin.template:
-      state: present
       src: certmanager-access-key.yml.j2
       dest: '{{ download_dir }}/certmanager-access-key.yml'
     when: cert_manager_access_key.changed
