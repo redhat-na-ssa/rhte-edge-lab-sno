@@ -14,12 +14,10 @@ spec:
     metadata:
       labels:
         app: hello-world
-      annotations:
-        alpha.image.policy.openshift.io/resolve-names: '*'
     spec:
       containers:
-      - name: helloworld
-        image: rust-hello-world:0.1.3
+      - name: hello-world
+        image: quay.io/redhatgov/rust-hello-world:0.1.3
         ports:
         - containerPort: 8000
         securityContext:
