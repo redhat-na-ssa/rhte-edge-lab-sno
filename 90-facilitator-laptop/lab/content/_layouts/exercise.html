@@ -46,6 +46,9 @@ layout: default
 {% else %}
     {% assign prev = false %}
 {% endif %}
+{% if page.section %}
+{% assign section_name = page.section %}
+{% endif %}
 <section>
 {% include ex_nav.html %}
     <h1 id="{{ site.title | downcase | replace: ' ', '-' }}">{{ site.title }}</h1>
