@@ -3,7 +3,7 @@
 OPENSHIFT_VERSION="${OPENSHIFT_VERSION:-stable-4.12}"
 SHORT_VERSION="$(echo "$OPENSHIFT_VERSION" | tr -d '[:lower:]' | tr -d '-')"
 CLUSTER_NAME="${CLUSTER_NAME:-edge1}"
-BASE_DOMAIN=rhte.edgelab.dev
+BASE_DOMAIN="${BASE_DOMAIN:-rhte.edgelab.dev}"
 FULL_CLUSTER_NAME="$CLUSTER_NAME.$BASE_DOMAIN"
 AWS_REGION="${AWS_REGION:-us-east-2}"
 declare -A AWS_AMIS
