@@ -23,7 +23,8 @@
     <acpi/>
     <apic/>
   </features>
-  <cpu mode='host-passthrough' check='none' migratable='on'>
+  <cpu mode='host-model'>
+    <model fallback='forbid'/>
     <topology sockets='8' dies='1' cores='1' threads='1'/>
   </cpu>
   <clock offset='utc'>
