@@ -22,7 +22,7 @@ if [ "$(sudo nmcli c show rhte | awk '/^ipv4\.dns/{print $2}')" != "$LAB_INFRA_I
     sudo nmcli c mod rhte ipv4.dns-search "internal.$BASE_DOMAIN,$(for cluster in $(seq "$METAL_CLUSTER_COUNT"); do echo -n "metal$cluster.$BASE_DOMAIN,"; done | sed 's/,$//')"
     changed=true
 fi
-if [ "$(sudo nmcli c show rhte | awk '/^connection\.zone/{print $2}')" != "internal" ]; then
+if [ "$(sudo nmcli c show rhte | awk '/^connection\.zone/{print $2}')" != "trusted" ]; then
     sudo nmcli c mod rhte connection.zone trusted
     changed=true
 fi
