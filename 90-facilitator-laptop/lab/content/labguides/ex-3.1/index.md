@@ -231,7 +231,7 @@ Once your policy shows that it's been enforced and is without violations, let's 
 
 ![thisisunsafe](/assets/images/thisisunsafe.png?style=centered&style=border "thisisunsafe")
 
-If you try to just click through the `Advanced` button and access the clusters using your well-trained muscle-memory, you'll find that our cluster has HSTS enabled and you can't just accept the invalid cert in most modern browsers. There's a way around it, which some of you may know, but let's do one better. Back in the cluster `Overview` in the ACM hub interface, click the ![Pencil](/assets/images/acm-pencil.png?style=small "Pencil") icon where it says `Labels` in the left column. At the bottom, add: {% include inline_copyable.html content="certificates-managed=true" %} then press `Enter`. Click on ![Save](/assets/images/acm-save.png?style=small "Save") and scroll down to be able to see the `Status` section of the `Overview` tab. It doesn't stay up long, but for just a few moments you might see:
+If you try to just click through the `Advanced` button and access the clusters using your well-trained muscle-memory, you'll find that our cluster has HSTS enabled and you can't just accept the invalid cert in most modern browsers. There's a way around it, which some of you may know, but let's do one better. Back in the cluster `Overview` in the ACM hub interface (this is the same page with the console URL link), click the ![Pencil](/assets/images/acm-pencil.png?style=small "Pencil") icon where it says `Labels` in the left column. At the bottom, add: {% include inline_copyable.html content="certificates-managed=true" %} then press `Enter`. Click on ![Save](/assets/images/acm-save.png?style=small "Save") and scroll down to be able to see the `Status` section of the `Overview` tab. It doesn't stay up long, but for just a few moments you might see:
 
 ![Policy violations](/assets/images/acm-policy-violations.png?style=centered&style=border "Policy violations")
 
@@ -244,6 +244,10 @@ You can log in using the `htpasswd` provider with the information you configured
  - Username: {% include inline_copyable.html content="labuser" %}
  - Password: {% include inline_copyable.html content="R3dH4t1!" %}
 
+Head back to the ACM Hub interface, select `Infrastructure` and `Clusters` from the left navigation bar again, click on your `student#` cluster, and edit the labels there with the ![Pencil](/assets/images-acm-pencil.png?style=small "Pencil") icon like before, and again add the {% include inline_copyable.html content="certificates-managed=true" %} to this cluster. Click ![Save](/assets/images/acm-save.png?style=small "Save"). It's okay if this cluster still isn't all the way provisioned yet, this `Policy` will take effect when it's able to - just because you added this label.
+
 There are lots of other `Policy` types we could apply to our clusters. Here, we're just using `ConfigurationPolicies` in our definitions - ways to specify arbitrary Kubernetes YAML. There are several other policy controllers, but this isn't really an ACM features workshop. You can read more about ACM Policy controllers in the [ACM Documentation](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.6/html/governance/governance#policy-controllers){:target="_blank"} and see some great examples of different kinds of policies, including the definitions for supported `Policies` that come with an ACM install as well as some community implementations that are maybe a little less fleshed-out, but still a good basis for customers to leverage, in the [policy-collection repository](https://github.com/open-cluster-management-io/policy-collection){:target="_blank"}.
+
+
 
 Let's wrap up the lab by getting to workload management.
