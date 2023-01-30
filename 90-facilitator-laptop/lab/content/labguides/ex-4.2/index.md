@@ -25,7 +25,7 @@ Application deployment artifacts themselves can be hosted in:
 
 In ACM, application deployment artifact source definition is done with a `Channel` object. The `Channel` we're going to use today is going to be shared amongst all the clusters in our lab and it's already applied to the ACM Hub cluster. Let's look at that definition by clicking [here]({{ console_url }}/k8s/ns/{{ ns }}/apps.open-cluster-management.io~v1~Channel/rust-hello-world/yaml){:target="_blank"}. Note that the git repo called out in this `Channel` is the same repo that all of the other lab content has been sourced from - but doesn't contain any more information than the repository.
 
-If you want to look at the (relatively simple) application deployment manifests we're using here, you can check them out [in the repo directly](https://github.com/redhat-na-ssa/rhte-edge-lab-sno/tree/main/app){:target="_blank"}. If you want to see how the container image we're syncing in the `ImageStream` is built, you can head to [this other repository](https://github.com/RedHatGov/ingress-route-examples/tree/main/demo-application){:target="_blank"} I've worked on before. For our purposes, the application itself isn't super important. This isn't a very "edge" application, it's just a simple `hello-world`. It's written in Rust and designed to be incredibly light on resources, though, so it's convenient for our resource-constrained edge lab. The [entire program](https://github.com/RedHatGov/ingress-route-examples/blob/main/demo-application/hello-world/src/main.rs){:target="_blank"} is 26 lines of code - including whitespace. It was originally written to provide a very small example application to show off some specific behavior of the OpenShift Router for [a blog post](https://cloud.redhat.com/blog/a-guide-to-using-routes-ingress-and-gateway-apis-in-kubernetes-without-vendor-lock-in){:target="_blank"}.
+If you want to look at the (relatively simple) application deployment manifests we're using here, you can check them out [in the repo directly](https://github.com/redhat-na-ssa/rhte-edge-lab-sno/tree/main/app){:target="_blank"}. If you want to see how the container image we're using in the `Deployment` is built, you can head to [this other repository](https://github.com/RedHatGov/ingress-route-examples/tree/main/demo-application){:target="_blank"} I've worked on before. For our purposes, the application itself isn't super important. This isn't a very "edge" application, it's just a simple `hello-world`. It's written in Rust and designed to be incredibly light on resources, though, so it's convenient for our resource-constrained edge lab. The [entire program](https://github.com/RedHatGov/ingress-route-examples/blob/main/demo-application/hello-world/src/main.rs){:target="_blank"} is 26 lines of code - including whitespace. It was originally written to provide a very small example application to show off some specific behavior of the OpenShift Router for [a blog post](https://cloud.redhat.com/blog/a-guide-to-using-routes-ingress-and-gateway-apis-in-kubernetes-without-vendor-lock-in){:target="_blank"}.
 
 #### Selecting Clusters to Deploy To
 
@@ -81,7 +81,7 @@ Continuing with my theme of using `student9`, here's how mine looks right now:
 
 ![ACM Application and Subscription](/assets/images/acm-app-subscription.png?style=centered&style=border "ACM Application and Subscription")
 
-After making sure your `Application` and `Subscription` definitions are correct, hit ![Create](/assets/images/acm-create.png?style=small "Create") in the bottom-left. Ensure your pulldown in the top-left is set to `All Clusters` instead of `local-cluster`, then head into `Applications` on the left navigation bar. Grab the ![Filter](/assets/images/acm-filter.png?style=small "Filter") pulldown near the top of the main `Overview` tab and check the `Subscription` box to reduce some of the noise from our initial ACM deployment. Here you should see your `hello-world-studen#` `Application`, complete with some basic status showing you that it's selected to deploy to ![2 Remote](/assets/images/acm-2-remote.png?style=small "2 Remote") clusters and is using a `Git` resource to back the `Application`. Click on the link in the `Name` column for your application and head over to the `Topology` tab. You should see a view something like this one:
+After making sure your `Application` and `Subscription` definitions are correct, hit ![Create](/assets/images/acm-create.png?style=small "Create") in the bottom-left. Ensure your pulldown in the top-left is set to `All Clusters` instead of `local-cluster`, then head into `Applications` on the left navigation bar. Grab the ![Filter](/assets/images/acm-filter.png?style=small "Filter") pulldown near the top of the main `Overview` tab and check the `Subscription` box to reduce some of the noise from our initial ACM deployment. Here you should see your `hello-world-student#` `Application`, complete with some basic status showing you that it's selected to deploy to ![2 Remote](/assets/images/acm-2-remote.png?style=small "2 Remote") clusters and is using a `Git` resource to back the `Application`. Click on the link in the `Name` column for your application and head over to the `Topology` tab. You should see a view something like this one:
 
 ![ACM Application Topology](/assets/images/acm-application-topology.png?style=centered&style=border "ACM Application Toplogy")
 
@@ -105,14 +105,26 @@ If you have any issues with your apps coming up, you should be able to access th
 
 ![ACM Induced Failure](/assets/images/acm-app-induced-failure.png?style=centered&style=border "ACM Induced Failure"){:width="70%"}
 
-Easy enough to diagnose that the application required an instruction set on the CPU that my modified VM wouldn't support using the logs from the deployment with some troubleshooting:
+> **Note**
+>
+> Your applications should not have this failure - this is a contrived example. Yours should all green up - if they don't, let a lab facilitator know and we'll use these features to _actually_ troubleshoot your problem.
+
+If I had a failure on a cluster that ACM can't reach out to directly, I may find myself unable to access the logs in the ACM interface directly:
+
+![ACM Logs Error](/assets/images/acm-logs-error.png?style=centered&style=border "ACM Logs Error")
+
+Easy enough to reach out to the cluster via some means that _can_ reach it, which lets me diagnose that the application required an instruction set on the CPU that wasn't supported.
 
 ![ACM Induced Failure Logs](/assets/images/acm-induced-failure-logs.png?style=centered&style=border "ACM Induced Failure Logs")
+
+> **Note**
+>
+> How did this failure get induced? I booted a VM cluster with the wrong CPU type set on purpose, so that everything worked except this app.
 
 Then, after either (notionally) upgrading my field hardware or (notionally) improving my application build pipeline to support this older hardware I have in the field, the app comes up fine:
 
 ![ACM Induced Failure Fixed](/assets/images/acm-induced-failure-fixed.png?style=centered&style=border "ACM Induced Failure Fixed")
 
-And remember, `Applications` (the root of this topology view) can be composed of multiple `Subscriptions` targeting multiple clusters through their `Placement`. Our complex applications can be composed of many pieces, managed and lifecycled independently, and tracked centrally - but without requiring push-style management of our edge clusters.. It's up to the cluster administrators, the ACM Hub users, to follow best-practices for tracking and managing these applications and their deployments. By following the documented prescriptive process, you can have a system and process that scales to thousands of clusters.
+And remember, `Applications` (the root of this topology view) can be composed of multiple `Subscriptions` targeting multiple clusters through their `Placement`. Our complex applications can be composed of many pieces, managed and lifecycled independently, and tracked centrally - but without requiring push-style management of our edge clusters. It's up to the cluster administrators, the ACM Hub users, to follow best-practices for tracking and managing these applications and their deployments. By following the documented prescriptive process, you can have a system and process that scales to thousands of clusters.
 
 With that, let's review everything we did today.

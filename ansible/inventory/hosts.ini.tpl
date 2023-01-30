@@ -3,7 +3,8 @@ download_dir = "${DOWNLOAD_DIR}"
 base_domain = ${BASE_DOMAIN}
 aws_region = ${AWS_REGION}
 infra_env = ${INFRA_ENV}
-cluster_count = ${VIRT_CLUSTER_COUNT}
+virt_cluster_count = ${VIRT_CLUSTER_COUNT}
+metal_cluster_count = ${METAL_CLUSTER_COUNT}
 
 [metal]
 ${INSTANCE_NAME}.${BASE_DOMAIN}
