@@ -105,9 +105,21 @@ If you have any issues with your apps coming up, you should be able to access th
 
 ![ACM Induced Failure](/assets/images/acm-app-induced-failure.png?style=centered&style=border "ACM Induced Failure"){:width="70%"}
 
-Easy enough to diagnose that the application required an instruction set on the CPU that my modified VM wouldn't support using the logs from the deployment with some troubleshooting:
+> **Note**
+>
+> Your applications should not have this failure - this is a contrived example. Yours should all green up - if they don't, let a lab facilitator know and we'll use these features to _actually_ troubleshoot your problem.
+
+If I had a failure on a cluster that ACM can't reach out to directly, I may find myself unable to access the logs in the ACM interface directly:
+
+![ACM Logs Error](/assets/images/acm-logs-error.png?style=centered&style=border "ACM Logs Error")
+
+Easy enough to reach out to the cluster via some means that _can_ reach it, which lets me diagnose that the application required an instruction set on the CPU that wasn't supported.
 
 ![ACM Induced Failure Logs](/assets/images/acm-induced-failure-logs.png?style=centered&style=border "ACM Induced Failure Logs")
+
+> **Note**
+>
+> How did this failure get induced? I booted a VM cluster with the wrong CPU type set on purpose, so that everything worked except this app.
 
 Then, after either (notionally) upgrading my field hardware or (notionally) improving my application build pipeline to support this older hardware I have in the field, the app comes up fine:
 
