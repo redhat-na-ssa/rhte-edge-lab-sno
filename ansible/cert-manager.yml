@@ -21,12 +21,12 @@
   - name: Create a certmanager IAM user
     amazon.aws.iam_user:
       state: present
-      name: certmanager
+      name: certmanager-{{ infra_env }}
 
   - name: Create an access key for the certmanager user
     community.aws.iam_access_key:
       state: present
-      user_name: certmanager
+      user_name: certmanager-{{ infra_env }}
       id: '{{ cert_manager.access_key|default(omit) }}'
     register: cert_manager_access_key
 
@@ -53,7 +53,7 @@
     amazon.aws.iam_policy:
       state: present
       iam_type: user
-      iam_name: certmanager
+      iam_name: certmanager-{{ infra_env }}
       policy_name: certmanager_{{ base_domain.replace('.', '_') }}
       policy_json: |
         {
