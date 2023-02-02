@@ -1,0 +1,14 @@
+---
+- name: Configure libvirt for hosting clusters
+  hosts: metal
+  become: true
+
+  tasks:
+  - name: Undefine and delete the VMs
+    include_tasks: undefine-and-delete.yml
+    loop: '{{ virt_sno_clusters_yaml|from_yaml }}'
+    loop_control:
+      loop_var: cluster
+      label: '{{ vm_name }}'
+    vars:
+      vm_name: '{{ cluster.name }}-{{ infra_env }}'

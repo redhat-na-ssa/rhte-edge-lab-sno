@@ -1,0 +1,12 @@
+- name: Undefine and delete via libvirt
+  community.libvirt.virt:
+    command: '{{ item }}'
+    name: '{{ vm_name }}'
+  loop:
+  - destroy
+  - undefine
+
+- name: Remove disk image
+  ansible.builtin.file:
+    state: absent
+    path: /srv/images/{{ vm_name }}.qcow2
