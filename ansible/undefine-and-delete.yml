@@ -2,6 +2,7 @@
   community.libvirt.virt:
     command: '{{ item }}'
     name: '{{ vm_name }}'
+  ignore_errors: true
   loop:
   - destroy
   - undefine
