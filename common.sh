@@ -20,8 +20,23 @@ LAB_WAN_NM_CONN="${LAB_WAN_NM_CONN:-Harmison}"
 METAL_INSTANCE_NIC="${METAL_INSTANCE_NIC:-enp2s0}"
 
 DEFAULT_MAC_ADDRESS=da:d5:de:ad:be:ef
-declare -A METAL_MAC_ADDRESSES
-METAL_MAC_ADDRESSES[metal1_na]=84:8b:cd:4d:16:2f
+declare -A METAL_MAC_ADDRESSES=(
+    [metal1_na]=84:8b:cd:4d:16:37
+    [metal2_na]=84:8b:cd:4d:15:79
+    [metal3_na]=84:8b:cd:4d:16:2f
+    [metal4_na]=84:8b:cd:4d:15:6f
+    [metal5_na]=84:8b:cd:4d:15:63
+    [metal6_na]=84:8b:cd:4d:15:eb
+    [metal7_na]=84:8b:cd:4d:15:c8
+    [metal8_na]=84:8b:cd:4d:14:a3
+    [metal9_na]=84:8b:cd:4d:15:c7
+    [metal10_na]=84:8b:cd:4d:14:67
+    [metal11_na]=84:8b:cd:4d:14:62
+    [metal12_na]=84:8b:cd:4d:14:73
+    [metal13_na]=84:8b:cd:4d:15:56
+    [metal14_na]=84:8b:cd:4d:14:c5
+    [metal15_na]=84:8b:cd:4d:14:44
+)
 
 set -eu
 
