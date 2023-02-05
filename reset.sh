@@ -19,14 +19,14 @@ for num in $(seq $(( VIRT_CLUSTER_COUNT > METAL_CLUSTER_COUNT ? VIRT_CLUSTER_COU
     delete policy.policy student$num-htpasswd -n $INFRA_ENV
     delete placementrule.apps student$num-placement -n "$INFRA_ENV"
 
-    delete kluterletaddonconfig -n student$num student$num
+    delete kluterletaddonconfig -n vm$num vm$num
     delete kluterletaddonconfig -n metal$num metal$num
-    delete managedcluster student$num
+    delete managedcluster vm$num
     delete managedcluster metal$num
-    delete secret pullsecret-cluster-student$num -n student$num
-    delete agentclusterinstall student$num -n student$num
-    delete clusterdeployment.hive student$num -n student $num
-    delete namespace student$num
+    delete secret pullsecret-cluster-student$num -n vm$num
+    delete agentclusterinstall vm$num -n vm$num
+    delete clusterdeployment.hive vm$num -n vm$num
+    delete namespace vm$num
     delete namespace metal$num
 done
 for infra_env in "${!INFRA_ENV_LOCS[@]}"; do

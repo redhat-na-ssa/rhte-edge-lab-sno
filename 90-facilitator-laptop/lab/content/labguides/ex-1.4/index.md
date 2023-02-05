@@ -19,9 +19,13 @@ Feel free to investigate the hardware at your workstation, and if you have quest
 The bare metal nodes used with today's lab were purchased by Red Hat with the help of our partners at OnLogic. The Helix HX500 nodes are powerful, fanless, and RHEL Certified. OnLogic is with us today to talk a bit about their edge hardware capabilities, including talking about other form factors and models available.
 
 ![OnLogic Helix HX500](/assets/images/hx500.jpg?style=centered&style=border "OnLogic Helix HX500")
-{% else %}
+{% elsif site.data.login.region == "apac" %}
 
 #### Intel Edge Hardware
 
-intel stuff
+The bare metal nodes used with today's lab were graciously provided by our partners at Intel. The NUC Rugged line of hardware are powerful, fanless, and RHEL Certified. Additionally, Intel's modular Compute Element architecture allows for selection of appropriate hardware components and I/O per use-case while remaining standardized on the Compute Element architecture.
+
+![Intel NUC Rugged Chassis and Board Element](/assets/images/nuc-rugged-element.jpg?style=centered&style=border "Intel NUC Rugged Chassis and Board Element")
+
+For more information on the Intel NUC Rugged line, see the [product pages](https://www.intel.com/content/www/us/en/products/docs/boards-kits/nuc/nuc-assets/nuc-elements-austin-beach.html){:target="_blank"}.
 {% endif %}

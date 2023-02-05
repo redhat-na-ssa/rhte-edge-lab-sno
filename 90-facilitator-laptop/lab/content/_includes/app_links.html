@@ -1,0 +1,43 @@
+<table>
+  <thead>
+    <tr>
+      <th>Student #</th>
+      <th>Cluster</th>
+      <th>Endpoint</th>
+      <th>App Link</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <select id="student">
+          <option value=""></option>
+{%- if site.data.login.metal_cluster_count > site.data.login.virt_cluster_count -%}
+{%- assign cluster_count_array = site.data.login.metal_cluster_str | split:' ' -%}
+{%- else -%}
+{%- assign cluster_count_array = site.data.login.virt_cluster_str | split:' ' -%}
+{%- endif -%}
+{%- for num in cluster_count_array %}
+          <option value="{{ num }}">student{{ num }}</option>
+{%- endfor %}
+        </select>
+      </td>
+      <td>
+        <select id="cluster">
+          <option value=""></option>
+          <option value="metal">Bare Metal</option>
+          <option value="vm">Virtual Machine</option>
+        </select>
+      </td>
+      <td>
+        <select id="endpoint">
+          <option value="/">/</option>
+          <option value="/hello/Red%20Hatters">/hello/Red%20Hatters</option>
+        </select>
+      </td>
+      <td>
+        <a id="app_link" href="#" target="_blank">Hello, World!</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
