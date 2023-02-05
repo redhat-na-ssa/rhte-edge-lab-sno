@@ -58,5 +58,9 @@ ip addr | grep -qF "inet $hostname_ip" || fail Unable to identify IP address for
 # Make sure we can sudo
 sudo whoami | grep -qF root || fail Unable to verify sudo access
 
+if [ "$VIRT_CLUSTER_COUNT" -gt 45 ]; then
+    fail Unable to support "$VIRT_CLUSTER_COUNT" instances, the maximum is 45
+fi
+
 echo "Environment validation complete."
 set -x

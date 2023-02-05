@@ -1,3 +1,4 @@
+{% if site.data.passwords %}
 <table>
   <thead>
     <tr>
@@ -9,7 +10,7 @@
   <tbody>
 {%- for cluster_password in site.data.passwords %}
 {% capture login %}
-oc login https://api.{{ cluster_password[0] }}.{{ site.data.login.base_domain }}:6443 -u kubeadmin -p {{ cluster_password[1] }}
+oc login --insecure-skip-tls-verify=true https://api.{{ cluster_password[0] }}.{{ site.data.login.base_domain }}:6443 -u kubeadmin -p {{ cluster_password[1] }}
 {% endcapture %}
 {% assign password=cluster_password[1] %}
     <tr>
@@ -20,3 +21,6 @@ oc login https://api.{{ cluster_password[0] }}.{{ site.data.login.base_domain }}
 {% endfor %}
   </tbody>
 </table>
+{% else %}
+#### No metal cluster logins to copy!
+{% endif %}

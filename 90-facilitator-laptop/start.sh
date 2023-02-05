@@ -44,7 +44,11 @@ for cluster in $(seq "$METAL_CLUSTER_COUNT"); do
         echo "$name: $password" >> lab/content/_data/passwords.yml
     fi
 done
-< lab/content/_data/login.yml.tpl envsubst '$KUBEADMIN_PASS $LAB_USER_PASSWORD $CLUSTER_NAME $BASE_DOMAIN $INFRA_ENV' > lab/content/_data/login.yml
+METAL_CLUSTER_STR="$(seq "$METAL_CLUSTER_COUNT")"
+export METAL_CLUSTER_STR
+VIRT_CLUSTER_STR="$(seq "$VIRT_CLUSTER_COUNT")"
+export VIRT_CLUSTER_STR
+< lab/content/_data/login.yml.tpl envsubst '$KUBEADMIN_PASS $LAB_USER_PASSWORD $CLUSTER_NAME $BASE_DOMAIN $INFRA_ENV $METAL_CLUSTER_COUNT $METAL_CLUSTER_STR $VIRT_CLUSTER_COUNT $VIRT_CLUSTER_STR' > lab/content/_data/login.yml
 < lab/content/_config.yml.tpl envsubst '$BASE_DOMAIN' > lab/content/_config.yml
 
 # Proxy setup

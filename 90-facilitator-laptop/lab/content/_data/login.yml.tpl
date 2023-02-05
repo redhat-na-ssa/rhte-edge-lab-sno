@@ -3,3 +3,7 @@ kubeadmin_password: "${KUBEADMIN_PASS}"
 cluster_name: "${CLUSTER_NAME}"
 base_domain: "${BASE_DOMAIN}"
 region: "${INFRA_ENV}"
+metal_cluster_count: ${METAL_CLUSTER_COUNT}
+metal_cluster_str: "${METAL_CLUSTER_STR}"
+virt_cluster_count: ${VIRT_CLUSTER_COUNT}
+virt_cluster_str: "${VIRT_CLUSTER_STR}"
