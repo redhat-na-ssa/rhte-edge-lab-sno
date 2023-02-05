@@ -16,15 +16,23 @@ COCKPIT_KEY="$(base64 -w0 "$VIRT_PRIVATE_KEY_FILE")"
 export COCKPIT_CERT
 export COCKPIT_KEY
 
+if [ "$VIRT_CLUSTER_COUNT" -gt 20 ] || [ "$AWS_REGION" = sa-east-1 ]; then
+    instance_type=r5n.metal
+else
+    instance_type=z1d.metal
+fi
+
 < metal.cf.yaml envsubst \
     '$HOSTED_ZONE $BASE_DOMAIN $INSTANCE_NAME $LAB_USER_PASSWORD $SSH_PUB_KEY $COCKPIT_CERT $COCKPIT_KEY' \
     > "$DOWNLOAD_DIR/metal.cf.yaml"
 "$AWS" cloudformation deploy \
     --template-file "$DOWNLOAD_DIR/metal.cf.yaml" \
     --stack-name "$CLUSTER_NAME" \
-    --parameter-overrides "AmiId=${AWS_AMIS[$AWS_REGION]}" \
     --region "$AWS_REGION" \
-    --no-fail-on-empty-changeset
+    --no-fail-on-empty-changeset \
+    --parameter-overrides \
+    "AmiId=${AWS_AMIS[$AWS_REGION]}" \
+    "InstanceType=$instance_type"
 
 instance_up=(
     ssh

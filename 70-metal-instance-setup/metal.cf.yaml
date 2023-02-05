@@ -25,16 +25,16 @@ Parameters:
     AllowedValues:
     - ami-0c39257433c03e8ad # Cloud Access RHEL 9.1 us-east-2
     - ami-0a988768d3b40afd2 # Cloud Access RHEL 9.1 eu-west-1
+    - ami-0816720497fc1763a # Cloud Access RHEL 9.1 ap-southeast-1
+    - ami-0cb86104c83a5f6bd # Cloud Access RHEL 9.1 sa-east-1
 
   InstanceType:
     Type: String
     Default: z1d.metal
     Description: Instance type to use to launch the NAT instances.
     AllowedValues:
-    - c5n.metal # 72c 192 GB
-    - m5zn.metal # 48c 192 GB
-    - z1d.metal # 48c 384 GB
-    - c5d.metal # 96c 192 GB
+    - z1d.metal # 48c 384 GB available in: us-east-2, eu-west-1, ap-southeast-1
+    - r5n.metal # 96c 768 GB available in: us-east-2, eu-west-1, ap-southeast-1, sa-east-1
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -187,11 +187,15 @@ Resources:
 
             # Configure disks for /srv/images
             mkdir -p /srv/images
-            pvcreate /dev/nvme0n1
-            pvcreate /dev/nvme1n1
-            vgcreate vg_images /dev/nvme0n1 /dev/nvme1n1
+            disks=/dev/nvme*n1
+            count=0
+            for disk in $disks; do
+              pvcreate $disk
+              (( count += 1 ))
+            done
+            vgcreate vg_images $disks
             extents=$(vgdisplay | awk '/Total PE/{print $3}')
-            lvcreate --stripes 2 --extents $extents --name lv_images vg_images
+            lvcreate --stripes $count --extents $extents --name lv_images vg_images
             mkfs.xfs /dev/vg_images/lv_images
             echo "/dev/vg_images/lv_images /srv/images xfs defaults 0 0" >> /etc/fstab
             sync
