@@ -128,7 +128,7 @@ spec:
           object-templates:
             - complianceType: musthave
               objectDefinition:
-                apiVersion: v1requiring
+                apiVersion: v1
                 kind: Secret
                 metadata:
                   name: htpasswd
@@ -229,7 +229,7 @@ To see the effects of your policies in ACM, once again make sure you're on the `
 
 > **Note**
 >
-> If you've been kicking butt and getting through the labs quickly, your installation of your VM-based SNO cluster may not yet be complete. It's okay to move on, but the `Policy`` won't be enforcible until the cluster is installed.
+> If you've been kicking butt and getting through the labs quickly, your installation of your VM-based SNO cluster may not yet be complete. It's okay to move on, but the `Policy` won't be enforcible until the cluster is installed.
 
 The `Results` tab shows you the affect of every piece of the applied policy - including a little ![View details](/assets/images/acm-policy-event-view-details.png?style=small "View details") link to see lots of information about why the policy shows as without-violation (if your cluster has finished installing).
 
