@@ -17,7 +17,7 @@ export COCKPIT_CERT
 export COCKPIT_KEY
 
 if [ "$VIRT_CLUSTER_COUNT" -gt 20 ] || [ "$AWS_REGION" = sa-east-1 ]; then
-    instance_type=r5n.metal
+    instance_type=r5d.metal
 else
     instance_type=z1d.metal
 fi

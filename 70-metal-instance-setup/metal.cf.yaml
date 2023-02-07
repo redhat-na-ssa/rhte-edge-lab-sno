@@ -34,7 +34,7 @@ Parameters:
     Description: Instance type to use to launch the NAT instances.
     AllowedValues:
     - z1d.metal # 48c 384 GB available in: us-east-2, eu-west-1, ap-southeast-1
-    - r5n.metal # 96c 768 GB available in: us-east-2, eu-west-1, ap-southeast-1, sa-east-1
+    - r5d.metal # 96c 768 GB available in: us-east-2, eu-west-1, ap-southeast-1, sa-east-1
 
 Metadata:
   AWS::CloudFormation::Interface:
