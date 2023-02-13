@@ -7,7 +7,7 @@ title: Preflight Checks
 ### Getting Connected
 
 1. Make sure you're on the correct WiFi network - the instructor has this information.
-2. Make sure you can pull up the [Cockpit Interface](https://{{ virt_node }}:9090){:target="_blank"} for our bare-metal hypervisor.
+2. Make sure you can pull up the [Cockpit Interface](https://{{ virt_node }}:9090){:target="_blank"} for our bare metal hypervisor.
   - Username: `labuser`
   - Password:
     ```
