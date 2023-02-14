@@ -9,16 +9,10 @@ title: Preflight Checks
 1. Make sure you're on the correct WiFi network - the instructor has this information.
 2. Make sure you can pull up the [Cockpit Interface](https://{{ virt_node }}:9090){:target="_blank"} for our bare metal hypervisor.
   - Username: `labuser`
-  - Password:
-    ```
-    {{ site.data.login.labuser_password }}
-    ```
+  - Password: {{ site.data.login.labuser_password }}
 3. Make sure you can pull up the [ACM Hub Cluster](https://console-openshift-console.{{ cluster_router }}/multicloud/home/overview){:target="_blank"} interface for managing our nodes.
   - Username: `kubeadmin`
-  - Password:
-    ```
-    {{ site.data.login.kubeadmin_password }}
-    ```
+  - Password: {{ site.data.login.kubeadmin_password }}
 
 ### Being Ready to Perform the Labs
 
