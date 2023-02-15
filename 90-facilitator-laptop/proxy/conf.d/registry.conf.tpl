@@ -1,7 +1,7 @@
 server {
     listen       443 ssl http2;
     listen       [::]:443 ssl http2;
-    server_name  registry.internal.${BASE_DOMAIN};
+    server_name  registry.${SUBDOM}.${BASE_DOMAIN};
 
     add_header Strict-Transport-Security "max-age=31536000;";
     client_max_body_size 0;

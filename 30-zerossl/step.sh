@@ -68,5 +68,5 @@ instructor_domain="*.internal.$BASE_DOMAIN"
 
 "${acme[@]}" --register-account -m "$ACME_EMAIL" --eab-kid "$ZEROSSL_KID" --eab-hmac-key "$ZEROSSL_HMAC"
 acme_issue "$api_endpoint" "$router_endpoint" -f "$CLUSTER_CERT_PREFIX"
-acme_issue "$virt_domain" -f "$VIRT_CERT_PREFIX"
+acme_issue "$virt_domain" "*.$virt_domain" -f "$VIRT_CERT_PREFIX"
 acme_issue "$instructor_domain" -f "$INSTRUCTOR_CERT_PREFIX"

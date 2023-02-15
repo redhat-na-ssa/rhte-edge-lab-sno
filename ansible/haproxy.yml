@@ -25,6 +25,18 @@
       - api-int
     delegate_to: localhost
 
+  - name: Ensure that the webserver records exist
+    become: false
+    amazon.aws.route53:
+      state: present
+      zone: '{{ base_domain }}'
+      record: '*.{{ inventory_hostname }}'
+      type: CNAME
+      value: '{{ inventory_hostname }}'
+      overwrite: true
+      ttl: 300
+    delegate_to: localhost
+
   - name: Ensure HAProxy is installed
     ansible.builtin.package:
       name: haproxy

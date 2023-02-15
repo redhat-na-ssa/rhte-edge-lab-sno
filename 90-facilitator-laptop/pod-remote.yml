@@ -1,0 +1,31 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    io.podman.annotations.autoremove/rhte-sno: "FALSE"
+    io.podman.annotations.init/rhte-sno: "FALSE"
+    io.podman.annotations.privileged/rhte-sno: "FALSE"
+    io.podman.annotations.publish-all/rhte-sno: "FALSE"
+  labels:
+    app: rhte-sno
+  name: rhte-sno
+spec:
+  containers:
+  - name: labguide
+    image: rhte-labguide:latest
+  - name: proxy
+    image: rhte-proxy
+    ports:
+    - containerPort: 443
+      hostPort: 8443
+    volumeMounts:
+    - mountPath: /var/lib/nginx/tmp
+      name: proxy-scratch
+    envFrom:
+    - configMapRef:
+        name: proxy-config
+  volumes:
+  - name: proxy-scratch
+    persistentVolumeClaim:
+      claimName: proxy-scratch

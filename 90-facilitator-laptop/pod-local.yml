@@ -19,11 +19,6 @@ spec:
     volumeMounts:
     - mountPath: /var/lib/registry
       name: registry-data
-  - name: cache
-    image: rhte-cache:latest
-    volumeMounts:
-    - mountPath: /opt/app-root/src
-      name: image-data
   - name: labguide
     image: rhte-labguide:latest
   - name: proxy
