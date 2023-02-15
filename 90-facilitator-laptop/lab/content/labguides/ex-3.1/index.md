@@ -5,12 +5,12 @@ title: Managing Configurations
 
 #### Cluster configurations
 
-Now that we have several edge clusters (maybe?) running and selectable under the same `student=#` label (one being the VM we're installing on, and one bare metal if available), let's look at managing those clusters as part of an overall hybrid cloud infrastructure.
+Now that we have several edge clusters (maybe?) running and selectable under the same **student=**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} label (one being the VM we're installing on, and one bare metal if available), let's look at managing those clusters as part of an overall hybrid cloud infrastructure.
 
 Normally, our selectors would be a bit more broad in order to manage a large group of clusters. We could use selectors to select on clusters:
  - Per region
  - Specific to a use case, or
- - whatever's appropriate for what your customer is trying to accomplish.
+ - Whatever's appropriate for what your customer is trying to accomplish.
  
 Today, we're just trying to make sure that everyone gets to see how ACM works on these edge clusters - so your selectors in the following exercises will be pretty narrowly scoped to just your student number, selecting one or two clusters.
 
@@ -27,11 +27,11 @@ The basics of what we expect from our edge clusters before deploying our workloa
   - It's just inconvenient to have to deal with HSTS errors on a technician's laptop
   - Normally we might use an internal CA and certificates we control, but we're going to use some publicly-trusted certificates for the sake of your laptops' CA trust bundles
 
-We're working in pairs and managing both our VM `vm#` and bare metal `metal#` clusters simultaneously. Ride shotgun (shoulder-surf) and rotate who is driving if you're working in a pair, but don't try to deploy these same things twice.
+We're working in pairs and managing both our VM **vm**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} and bare metal **metal**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} clusters simultaneously. Ride shotgun (shoulder-surf) and rotate who is driving if you're working in a pair, but don't try to deploy these same things twice.
 
 #### Placement Rules
 
-In the name of time, we're going to just apply some manifests to do this quickly. If your cluster(s) are labelled appropriately with `student=#`, we can define a `PlacementRule` for ACM to select those cluster(s) by their labels.
+In the name of time, we're going to just apply some manifests to do this quickly. If your cluster(s) are labelled appropriately with **student=**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}, we can define a `PlacementRule` for ACM to select those cluster(s) by their labels.
 
 This `PlacementRule` is defined on the ACM hub, so let's use the web UI to import manifests. From the ACM hub interface click the ![Plus button](/assets/images/plus-button.png?style=small "Plus button") icon in the top right.
 
@@ -54,7 +54,7 @@ spec:
   clusterConditions: []
 ```
 
-You need to replace two things in this file on lines 5 and 13. In the `metadata.name` field, replace `#` with your actual student number. In the `values` array for the `matchExpression`, you need to also replace `#` with your actual student number. In the case of all of my examples, that would be `student9-placement` and `- "9"` for my edits.
+You need to replace two things in this file on lines 5 and 13. In the `metadata.name` field, replace `#` with {::nomarkdown}<span class="studentId"></span>{:/nomarkdown}. In the `values` array for the `matchExpression`, you need to also replace `#` with {::nomarkdown}<span class="studentId"></span>{:/nomarkdown}. In the case of all of my examples, that would be `student9-placement` and `- "9"` for my edits.
 
 > **Note**
 >
@@ -195,7 +195,7 @@ spec:
 
 This policy requires that HTPasswd is configured as an authentication provider for OpenShift, with a defined HTPasswd file that sets up the username to `labuser` and the password to the relatively simple `R3dH4t1!`. It then creates an OpenShift `User` object for this authentication source, and ties authorization as a `cluster-admin` to the user.
 
-Once again, we need to edit the file a bit per student pair. Here, just the `metadata.name` for the `Policy` object needs edited. Change the `#` to match your student number as before. You'll probably have to scroll up to get back to line number 5. Here's how mine looks at this point:
+Once again, we need to edit the file a bit per student pair. Here, just the `metadata.name` for the `Policy` object needs edited. Change the `#` to {::nomarkdown}<span class="studentId"></span>{:/nomarkdown}. You'll probably have to scroll up to get back to line number 5. Here's how mine looks at this point:
 
 ![Policy YAML](/assets/images/acm-policy-yaml.png?style=centered&style=border "Policy YAML")
 
@@ -224,7 +224,7 @@ subjects:
     kind: Policy
 ```
 
-Again, we need to edit this file before applying it. You'll need to update your `#` on lines 5, 8, and 12. After updating mine for the `student9` example, it looks like this:
+Again, we need to edit this file before applying it. You'll need to update your `#` with {::nomarkdown}<span class="studentId"></span>{:/nomarkdown} on lines 5, 8, and 12. After updating mine for the `student9` example, it looks like this:
 
 ![Placement Binding YAML](/assets/images/acm-placement-binding.png?style=centered&style=border "Placement Binding YAML")
 
@@ -271,7 +271,7 @@ You can log in using the `htpasswd` provider with the information you configured
 
 #### Certificates for VMs
 
-Head back to the ACM Hub interface, select `Infrastructure` and `Clusters` from the left navigation bar again, click on your `vm#` cluster, and edit the labels there with the ![Pencil](/assets/images/acm-pencil.png?style=small "Pencil") icon, and add the {% include inline_copyable.html content="certificates-managed=true" %} label to this cluster. Click ![Save](/assets/images/acm-save.png?style=small "Save"). It's okay if this cluster still isn't all the way provisioned yet, this `Policy` will take effect when it's able to - just because you added this label.
+Head back to the ACM Hub interface, select `Infrastructure` and `Clusters` from the left navigation bar again, click on your **vm**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} cluster, and edit the labels there with the ![Pencil](/assets/images/acm-pencil.png?style=small "Pencil") icon, and add the {% include inline_copyable.html content="certificates-managed=true" %} label to this cluster. Click ![Save](/assets/images/acm-save.png?style=small "Save"). It's okay if this cluster still isn't all the way provisioned yet, this `Policy` will take effect when it's able to - just because you added this label.
 
 #### Configuration Wrap-up
 

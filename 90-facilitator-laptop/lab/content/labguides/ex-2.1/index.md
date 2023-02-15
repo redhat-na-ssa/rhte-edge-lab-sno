@@ -9,7 +9,7 @@ We're provisioning a SNO instance in a VM, which is hosted on a bare metal insta
 
 #### Registering a New Host with ACM
 
-Remember, we may be working in pairs for today's lab if there are VM and metal instances available. If you have a bare metal assignment `metal#`, work with your partner who has the equivalent `vm#` virtual machine on this section. You will only need to use one workstation.
+Remember, we may be working in pairs for today's lab if there are VM and metal instances available. If you have a bare metal assignment **metal**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}, work with your partner who has the equivalent **vm**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} virtual machine on this section. You will only need to use one workstation.
 
 1. Navigate to the Cockpit `Virtual Machines` interface and identify your assigned VM.
 2. Opening the console, if it's not still open from the exploration.
@@ -27,7 +27,7 @@ From the ACM Hub interface, head to `Infrastructure` then `Host Inventory` and c
 >
 > If you don't see the `Infrastructure` section of the navigation bar on the left, remember to change `local-cluster` to `All Clusters` using the pulldown in the top left.
 
-Click on the `Hosts` tab in the main pane and find your assigned VM in the list - it should be named `node#`. You may have to wait a few seconds if it's not showing yet. Click ![Approve Host](/assets/images/acm-approve-host.png?style=small "Approve Host") (then `Approve Host` again in the popup after confirming the correct number in the `node#` hostname) in the `Status` column.
+Click on the `Hosts` tab in the main pane and find your assigned VM in the list - it should be named **node**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}. You may have to wait a few seconds if it's not showing yet. Click ![Approve Host](/assets/images/acm-approve-host.png?style=small "Approve Host") (then `Approve Host` again in the popup after confirming the correct number in the **node**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} hostname) in the `Status` column.
 
 This registers your host as `Available` for binding to a cluster. As long as this host stays booted into the Discovery ISO (from an ISO in the VM in this case, or maybe from a USB storage device in the field), it will remain available for binding to a cluster installation.
 
@@ -45,11 +45,11 @@ Hosted Control Planes, A.K.A. HyperShift or Hive clusters, are still Tech Previe
 
 Because we've already provisioned our host, and approved it, on the next screen we'll pick ![Use existing hosts](/assets/images/acm-use-existing-hosts.png?style=small "Use existing hosts").
 
-1. For your cluster name, put `vm#` where you replace the `#` with your student number. In my examples, I've been working with the `vm9-na` VM, so I'll put `vm9`. Make sure you don't put `vm#-{{ site.data.login.region }}` for the cluster name, as DNS for these metal nodes is pre-provisioned.
+1. For your cluster name, put **vm**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}. In my examples, I've been working with the `vm9-na` VM, so I'll put `vm9`. Make sure you don't put **vm**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}**-{{ site.data.login.region }}** for the cluster name, as DNS for these metal nodes is pre-provisioned.
 2. {::nomarkdown}For {:/}`Base domain`{::nomarkdown}, put: {% include inline_copyable.html content=site.data.login.base_domain %}{:/}
 3. Pick `OpenShift 4.11.24` from the `OpenShift version` pulldown (It should be the only option right now, and selected by default).
 4. Check the `Install single node OpenShift (SNO)` box.
-5. In the `Additional labels` box, enter `student=#` replacing `#` with your student number. In my example, I'm entering `student=9`.
+5. In the `Additional labels` box, enter **student=**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}. In my example, I'm entering `student=9`.
   - It should look like this: ![Additional labels](/assets/images/acm-cluster-additional-labels.png?style=border "Additional labels")
 6. Paste a `Pull secret` in the box. I'm not going to give you mine so easy, so head to the [OpenShift Cloud Console](https://console.redhat.com/openshift/install/pull-secret){:target="_blank"} to copy your own to put in this block.
 
@@ -59,15 +59,19 @@ Review the manifests on the right side of the screen before clicking ![Save](/as
 
 When you click `Save`, your cluster will be drafted and queued for binding and installation. 
 
+> **Note**
+>
 > If, for any reason, you have to make any changes after this point, you have to delete the draft cluster from the `Cluster list` tab in the `Infrastructure` -> `Clusters` interface using the ![Three dots](/assets/images/acm-cluster-three-dots.png?style=small "Three dots") button, then create it again from scratch.
 
 #### Picking our Discovered Host and Binding it to our SNO Cluster
 
+> **Note**
+>
 > Toggle **`Auto-select hosts` off**
 
 This is important, otherwise ACM auto-selects a VM, making the VM unusable for the VM's owner (if it isn't yours).
 
-Making it look like this: ![Auto-select hosts off](/assets/images/acm-auto-select-hosts-off.png?style=small)  Now, check the box next to your host - it will be named `node#` where `#` matches the name of the cluster you're provisioning. For example, installing the `vm9` cluster, my selected cluster host looks like this: ![ACM Checked Host](/assets/images/acm-checked-host.png?style=small "ACM Checked host"). Click on ![Next](/assets/images/acm-next.png?style=small "Next"). It may take a few moments to let you move to the next screen while validation wraps up.
+Make sure it look like this: ![Auto-select hosts off](/assets/images/acm-auto-select-hosts-off.png?style=small)  Now, check the box next to your host - it will be named **node**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}. For example, installing the `vm9` cluster, my selected cluster host looks like this: ![ACM Checked Host](/assets/images/acm-checked-host.png?style=small "ACM Checked host"). Click on ![Next](/assets/images/acm-next.png?style=small "Next"). It may take a few moments to let you move to the next screen while validation wraps up.
 
 #### Finishing our Cluster Installation
 
@@ -75,4 +79,4 @@ You can just hit ![Next](/assets/images/acm-next.png?style=small "Next") on the 
 
 When you're ready and your cluster shows all green for validations on the `Review and create` screen (you may have to wait a few more seconds if you've been quick so far), you can click ![Install cluster](/assets/images/acm-install-cluster.png?style=small "Install cluster").
 
-In about twenty to thirty minutes, this cluster will be up and publicly accessible. Though it will be using self-signed certificates for now. If you click ![View Cluster Events](/assets/images/acm-create-cluster-events.png?style=small) you can view the installation progress. We don't need to sit around and wait for that node to install, though. Let's go adopt our bare metal clusters!
+In about twenty to thirty minutes, this cluster will be up and publicly accessible (using self-signed certificates for now). If you click ![View Cluster Events](/assets/images/acm-create-cluster-events.png?style=small) you can view the installation progress. We don't need to sit around and wait for that node to install, though. Let's go adopt our bare metal clusters!

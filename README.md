@@ -6,6 +6,7 @@ Click the above badge
 
 ## Using the `live preview` functionality
 1. Once the workspace loads, expand the `endpoints` drop-down
+    1. It may take a few seconds to load
 2. Click on the clipboard image to the right of `jekyll-server (8080/http)`
 3. Paste the URL into another tab
 > **Note**
