@@ -4,6 +4,7 @@ title: Preflight Checks
 ---
 {% capture virt_node %}{{ site.data.login.cluster_name }}-virt.{{ site.data.login.base_domain }}{% endcapture %}
 {% capture cluster_router %}apps.{{ site.data.login.cluster_name }}.{{ site.data.login.base_domain }}{% endcapture %}
+
 ### Getting Connected
 
 1. Make sure you're on the correct WiFi network - the instructor has this information.

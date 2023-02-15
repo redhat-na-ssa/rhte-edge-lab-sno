@@ -40,6 +40,13 @@
         </div>
       </header>
 
+      <div id="studentNumberElement">
+        <input id="studentNumberForm" type="number" min="0" max="99" placeholder="Student #">
+        <button onclick="setStudentNumber()">Submit</button><br><br>
+      </div>
+
+      <p id="greeting"></p>
+
       <section>
         {{ content }}
       </section>
@@ -77,5 +84,6 @@
     <script src="/assets/js/prism.js"></script>
     <script src="/assets/js/studentpicker.js"></script>
     <script src="/assets/js/codeblock.js"></script>
+    <script src="/assets/js/studentNumber.js"></script>
   </body>
 </html>
