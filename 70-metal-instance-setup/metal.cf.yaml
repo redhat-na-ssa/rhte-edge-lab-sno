@@ -187,15 +187,13 @@ Resources:
 
             # Configure disks for /srv/images
             mkdir -p /srv/images
-            disks=/dev/nvme*n1
-            count=0
-            for disk in $disks; do
-              pvcreate $disk
-              (( count += 1 ))
+            disks=( $(lsblk -J | jq -r '.blockdevices[] | select(.size != "10G") | .name') )
+            for disk in ${disks[@]}; do
+              pvcreate /dev/$disk
             done
             vgcreate vg_images $disks
             extents=$(vgdisplay | awk '/Total PE/{print $3}')
-            lvcreate --stripes $count --extents $extents --name lv_images vg_images
+            lvcreate --stripes ${#disks[@]} --extents $extents --name lv_images vg_images
             mkfs.xfs /dev/vg_images/lv_images
             echo "/dev/vg_images/lv_images /srv/images xfs defaults 0 0" >> /etc/fstab
             sync
