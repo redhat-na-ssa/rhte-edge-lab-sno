@@ -87,6 +87,7 @@
     kubernetes.core.k8s:
       state: present
       template: clusterissuer.yml.j2
+    retries: 30
 
   - name: Create the Certificates for SNO cluster ingress
     kubernetes.core.k8s:
@@ -94,6 +95,7 @@
       template: cluster-certificates.yml.j2
     vars:
       sno_clusters: '{{ sno_clusters_yaml|from_yaml }}'
+    retries: 30
 
   - name: Define the Policy for certificates
     kubernetes.core.k8s:
