@@ -28,4 +28,13 @@ The bare metal nodes used with today's lab were graciously provided by our partn
 ![Intel NUC Rugged Chassis and Board Element](/assets/images/nuc-rugged-element.jpg?style=centered&style=border "Intel NUC Rugged Chassis and Board Element")
 
 For more information on the Intel NUC Rugged line, see the [product pages](https://www.intel.com/content/www/us/en/products/docs/boards-kits/nuc/nuc-assets/nuc-elements-austin-beach.html){:target="_blank"}.
+{% elsif site.data.login.region == "latam" %}
+
+#### Example Intel Edge Hardware
+
+Today's lab won't be using any bare metal instances due to availability of the hardware in the quantities necessary to conduct the lab. The NUC Rugged Element available for viewing here (but not integrated to the lab) is similar to the ones used in the iteration of this lab in the APAC region. The NUC Rugged line of hardware are powerful, fanless, and RHEL Certified. Additionally, Intel's modular Compute Element architecture allows for selection of appropriate hardware components and I/O per use-case while remaining standardized on the Compute Element architecture.
+
+![Intel NUC Rugged Chassis and Board Element](/assets/images/nuc-rugged-element.jpg?style=centered&style=border "Intel NUC Rugged Chassis and Board Element")
+
+For more information on the Intel NUC Rugged line, see the [product pages](https://www.intel.com/content/www/us/en/products/docs/boards-kits/nuc/nuc-assets/nuc-elements-austin-beach.html){:target="_blank"}.
 {% endif %}

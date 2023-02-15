@@ -235,7 +235,7 @@ The `Results` tab shows you the affect of every piece of the applied policy - in
 
 > **Note**
 >
-> If you don't have a metal cluster partner to work with on the next sections, that's okay. You can see the examples as if you did and move on to then [Certificates for VMs](#certificates-for-vms) section.
+> If you don't have a metal cluster partner to work with on the next sections, that's okay. You can see the examples as if you did and move on to then [Certificates for VMs](#certificates-for-vms) section. You shouldn't worry about performing any steps in the "Logging In - Or, Trying To" section and can just read along.
 
 #### Logging In - Or, Trying To
 

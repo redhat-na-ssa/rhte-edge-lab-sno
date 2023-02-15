@@ -17,7 +17,7 @@ Your customers may have environments that have a mix of the two kinds of deploym
 
 Since these clusters are already provisioned, we're just going to adopt them into ACM management. If you and a partner were working together on the `vm9` cluster, you're now going to work together to adopt the `metal9` cluster.
 
-With our VM SNO clusters, we were in the same VPC as the ACM Hub. ACM was able to discover and provision them just fine. Our metal clusters won't be so easy. The network topology doesn't exactly do us any favors here at the edge. Remember, our lab is organized like this:
+With our VM SNO clusters, we were in the same VPC as the ACM Hub. ACM was able to discover and provision them just fine. Our metal clusters won't be so easy. The network topology doesn't exactly do us any favors here at the edge. If you're working with any bare metal in your lab today, the network has been arranged like this:
 
 ![Lab Architecture Diagram](/assets/images/lab-diagram.png?style=border&style=centered "Lab Achitecture Diagram")
 
@@ -51,7 +51,7 @@ If there are any errors in the above output, make sure to let a facilitator know
 
 #### Being Logged In
 
-This section would have existed if there were metal clusters to adopt. You need to log in to them for the next section, in order to be able to run commands against them. It's not present because the `Copy` blocks would have been too enticing for people to click without any metal clusters. You _can_ continue on and do the import steps, without running the commands in your terminal locally at the end.
+This section would have existed if there were metal clusters to adopt. You would have needed to log in to them for the next section, in order to be able to run commands against them. It's not present because the `Copy` blocks would have been too enticing for people to click without any metal clusters. You _can_ continue on and do the import steps, without running the commands in your terminal locally at the end. This will leave you in a state where your bare metal cluster is waiting to be imported and never comes under management - that's okay.
 {% endif %}
 
 #### Hub Cluster Adoption
@@ -72,7 +72,7 @@ When your imported cluster definition is good to go, click ![Next](/assets/image
 
 Now that the cluster is ready for import, and we have the capability to apply the agent manifests, we have to kick it off from the edge cluster directly - where we have network access to it. {% if site.data.passwords %}Click the ![Copy command](/assets/images/acm-copy-command.png?style=small "Copy command") button. Back in your terminal where you can run `kubectl` commands against your metal SNO cluster, paste the copied command and wait a little bit for magic to happen. {% else %}If you had metal clusters to log into here, you could use the ![Copy command](/assets/images/acm-copy-command.png?style=small "Copy command") button to have a command to run against the cluster locally. You don't have any bare metal clusters, so don't bother. {% endif %}Running this (massive) command against an unmanaged cluster spins up some deployments with enough information to reach out and communicate with our cloud-hosted ACM Hub, enrolling the edge cluster under ACM management.
 
-If you want to wait around for all of your clusters to be ready, you can. It makes more sense, in the interest of time, to get started on the next section defining policy and application deployments for our clusters. Once any clusters we have policy or applications defined for comes up, they will be enforced then.
+If you want to wait around for all of your clusters to be ready, you can. It makes more sense, in the interest of time, to get started on the next section defining policy and application deployments for our clusters. Clusters that match our policy or application placement decisions will have those enforced retroactively, so moving on causes no harm.
 {% if site.data.passwords %}
 > **Note**
 >
