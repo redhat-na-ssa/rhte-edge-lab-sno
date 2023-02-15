@@ -188,12 +188,10 @@ Resources:
             # Configure disks for /srv/images
             mkdir -p /srv/images
             disks=( $(lsblk -J | jq -r '.blockdevices[] | select(.size != "10G") | .name') )
-            for disk in ${disks[@]}; do
-              pvcreate /dev/$disk
-            done
+            pvcreate ${!disks[@]}
             vgcreate vg_images $disks
             extents=$(vgdisplay | awk '/Total PE/{print $3}')
-            lvcreate --stripes ${#disks[@]} --extents $extents --name lv_images vg_images
+            lvcreate --stripes ${!#disks[@]} --extents $extents --name lv_images vg_images
             mkfs.xfs /dev/vg_images/lv_images
             echo "/dev/vg_images/lv_images /srv/images xfs defaults 0 0" >> /etc/fstab
             sync
