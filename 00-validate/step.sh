@@ -56,7 +56,9 @@ hostname_ip="$(dig -4 +short "${HOSTNAME}")" || fail Unable to resolve hostname:
 ip addr | grep -qF "inet $hostname_ip" || fail Unable to identify IP address for "$HOSTNAME" on interfaces
 
 # Make sure we can sudo
-sudo whoami | grep -qF root || fail Unable to verify sudo access
+if [ "$METAL_CLUSTER_COUNT" -gt 0 ]; then
+    sudo whoami | grep -qF root || fail Unable to verify sudo access
+fi
 
 if [ "$VIRT_CLUSTER_COUNT" -gt 45 ]; then
     fail Unable to support "$VIRT_CLUSTER_COUNT" instances, the maximum is 45
