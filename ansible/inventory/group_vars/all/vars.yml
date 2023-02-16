@@ -15,4 +15,4 @@ sno_clusters_yaml: |
   {{ virt_sno_clusters_yaml -}}
   {{ metal_sno_clusters_yaml -}}
 
-lab_user_password: '{{ lookup("ansible.builtin.password", download_dir + "/lab_user_password") }}'
+lab_guide_password: '{{ lookup("ansible.builtin.password", download_dir + "/lab-guide-password length=6") }}'
