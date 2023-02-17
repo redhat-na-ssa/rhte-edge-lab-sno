@@ -9,13 +9,13 @@ https://console-openshift-console.apps.{{ site.data.login.cluster_name }}.{{ sit
 
 #### What We're Doing
 
-We're about to configure our ACM hub to apply application deployment manifests tracked in `git` to all the cluster(s) selected by our earlier `PlacementRules` that select our cluster(s) by their `student=#` labels. The correct way to do this at scale, with multiple selectors, was described in the ACM [Managing applications documentation](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.6/html-single/applications/index#gitops-pattern){:target="_blank}. It involves a single root folder that manages the ACM `local-cluster` with a definition to apply manifests from a `managed-subscriptions` folder, which contains the `Subscription` objects that define our applications that we want running on the edge cluster(s). Also inside that `managed-subscriptions` folder, it recommends subfolders that would contain configuration and policy settings for the managed cluster(s) - like the ones we applied via the console in exercise 3.1.
+We're about to configure our ACM hub to apply application deployment manifests tracked in `git` to all the cluster(s) selected by our earlier `PlacementRules`, which use our cluster(s) `student=#` label. The correct way to do this at scale, with multiple selectors, was described in the ACM [Managing applications documentation](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.7/html-single/applications/index#gitops-pattern){:target="_blank}. It involves a single root folder that manages the ACM `local-cluster` with a definition to apply manifests from a `managed-subscriptions` folder, which contains the `Subscription` objects that define our applications that we want running on the edge cluster(s). Also inside that `managed-subscriptions` folder, it recommends creating subfolders that would contain configuration and policy settings for the managed cluster(s), like the ones we applied via the console in exercise 3.1.
 
-If this edge computing workshop consisted of me pointing you to a git repo where everything was already managed, it wouldn't fill the allotted time. If I asked you to use `git` to manage your cluster definitions, it wouldn't get done in the allotted time because some of you, I'm sure, don't work with `git` enough to [be comfortable](/assets/images/git-is-scary.png "git is scary"){:target="_blank"}. Not all of you need to be comfortable in `git` to do your jobs, though - even if your job is convincing a customer that `git` is the superior way to manage their application deployments (because it is).
+If this edge computing workshop consisted of me pointing you to a git repo where everything was already managed, it wouldn't fill the allotted time. If I asked you to use `git` to manage your cluster definitions, it wouldn't get done in the allotted time because some of you, I'm sure, don't work with `git` enough to [be comfortable](/assets/images/git-is-scary.png "git is scary"){:target="_blank"}. Not all of you need to be comfortable in `git` to do your jobs, even if your job is convincing a customer that `git` is the superior way to manage their application deployments - because it is.
 
-So, we'll be defining an `Application` object on our hub cluster that selects the `Subscription` information for our application, which will reference our workload definition source and our `PlacementRule`. We'll be using the `Import YAML` interface we used earlier, and our `Subscription` will be subscribing the managed edge cluster(s) to a deployment that _is_ defined in `git`. Changes to that deployment definition in `git` would be reflected in our cluster(s) as soon as they're able to reconcile their application `Subscription`, even if the `Subscription` is being managed in a sub-optimal way (the console) for the sake of the lab.
+So, we'll be defining an `Application` object on our hub cluster that selects the `Subscription` information for our application, which will reference our workload definition source and our `PlacementRule`. We'll be using the `Import YAML` interface we used earlier, and our `Subscription` will be subscribing the managed edge cluster(s) to a deployment that _is_ defined in `git`. Changes to that deployment definition in `git` would be reflected in our cluster(s) as soon as they're able to reconcile their application `Subscription`, even if the `Subscription` is being managed in a sub-optimal way (the Web UI console) for the sake of the lab.
 
-#### The Definition of Our Git-hosted Application Deployment
+#### The Definition of Our Git-Hosted Application Deployment
 
 Application deployment artifacts themselves can be hosted in:
 
@@ -33,7 +33,7 @@ As mentioned, we're going to reuse the same `PlacementRule` you wrote earlier fo
 
 #### Declaring Intent to Deploy Our Application
 
-We're working in pairs here (if applicable) and managing both our VM-based `vm#` and our metal-based `metal#` clusters simultaneously here. Shoulder-surf one way or another if you need to, but don't try to deploy these same things twice.
+We're working in pairs here (if applicable) and managing both our VM `vm#` and our bare metal `metal#` clusters simultaneously here. Ride shotgun (shoulder-surf) and alternate who is driving, but don't try to deploy these same things twice.
 
 Back in the ACM Hub interface, click on our now-familiar ![Plus button](/assets/images/plus-button.png?style=small "Plus button") icon in the top right. Read through the following `Application`, including its selected `Subscription`, before pasting it into the `Import YAML` interface.
 
@@ -83,9 +83,9 @@ Continuing with my theme of using the `vm9` and `metal9` clusters, here's how mi
 
 After making sure your `Application` and `Subscription` definitions are correct, hit ![Create](/assets/images/acm-create.png?style=small "Create") in the bottom-left. Ensure your pulldown in the top-left is, once again, set to `All Clusters` instead of `local-cluster`, then head into `Applications` on the left navigation bar. Grab the ![Filter](/assets/images/acm-filter.png?style=small "Filter") pulldown near the top of the main `Overview` tab and check the `Subscription` box to reduce some of the noise from our initial ACM deployment. Here you should see your `hello-world-student#` `Application`, complete with some basic status showing you that it's selected to deploy to some amount of remote clusters: ![2 Remote](/assets/images/acm-2-remote.png?style=small "2 Remote"). It should indicate that it's using a `Git` resource to back the `Application`. Click on the link in the `Name` column for your application and head over to the `Topology` tab. You should see a view something like this one:
 
-![ACM Application Topology](/assets/images/acm-application-topology.png?style=centered&style=border "ACM Application Toplogy")
+![ACM Application Topology](/assets/images/acm-application-topology.png?style=centered&style=border "ACM Application Topology")
 
-As our edge clusters get their updated instructions from the Hub, pull the image down locally (this can take a little bit in some cases, like poor network connectivity), and start the pods - all of these statuses should green up.
+As our edge clusters get their updated instructions from the Hub, they pull the image down locally (this can take a little bit in some cases, like poor network connectivity), and start the pods - all of these statuses should green up.
 
 When they do, go ahead and check out your application deployments!
 
@@ -115,6 +115,6 @@ Then, after either (notionally) upgrading my field hardware or (notionally) impr
 
 ![ACM Induced Failure Fixed](/assets/images/acm-induced-failure-fixed.png?style=centered&style=border "ACM Induced Failure Fixed")
 
-And remember, `Applications` (the root of this topology view) can be composed of multiple `Subscriptions` targeting multiple clusters through their `Placement`. Our complex applications can be composed of many pieces, managed and lifecycled independently, and tracked centrally - but without requiring push-style management of our edge clusters. It's up to the cluster administrators, the ACM Hub users, to follow best-practices for tracking and managing these applications and their deployments. By following the documented prescriptive process, you can have a system and process that scales to thousands of clusters.
+And remember, `Applications` (the root of this topology view) can be composed of multiple `Subscriptions` targeting multiple clusters through their `Placement`. Our complex applications can be composed of many pieces, managed and life cycled independently, and tracked centrally - but without requiring push-style management of our edge clusters. It's up to the cluster administrators, the ACM Hub users, to follow best practices for tracking and managing these applications and their deployments. By following the documented prescriptive process, you can have a system and process that scales to thousands of clusters.
 
 With that, let's review everything we did today.

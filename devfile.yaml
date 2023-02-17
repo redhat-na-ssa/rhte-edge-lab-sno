@@ -1,0 +1,40 @@
+schemaVersion: 2.2.0
+metadata:
+  name: rhte-edge-lab-sno
+components:
+  - name: universal-developer-image
+    container:
+      command:
+        - /checode/entrypoint-volume.sh
+      env:
+        - name: CHE_DASHBOARD_URL
+          value: 'https://devspaces.apps.sandbox-m3.1530.p1.openshiftapps.com'
+        - name: CHE_PLUGIN_REGISTRY_URL
+          value: 'https://devspaces.apps.sandbox-m3.1530.p1.openshiftapps.com/plugin-registry/v3'
+        - name: CHE_PLUGIN_REGISTRY_INTERNAL_URL
+          value: 'http://plugin-registry.crw.svc:8080/v3'
+        - name: OPENVSX_REGISTRY_URL
+          value: 'https://open-vsx.org'
+      image: 'quay.io/devfile/universal-developer-image:ubi8-38da5c2'
+      memoryLimit: 1024Mi
+      memoryRequest: 256Mi
+      sourceMapping: /projects
+  - name: jekyll
+    container:
+      image: quay.io/ahussey/jekyll:latest
+      mountSources: true
+      sourceMapping: /projects
+      env:
+        - name: JEKYLL_ENV
+          value: development
+      endpoints:
+        - name: jekyll-server
+          targetPort: 8080
+          protocol: http
+          exposure: public
+      memoryLimit: 2048M
+      command:
+        - '/bin/sh'
+      args:
+        - '-c'
+        - 'cp _config.yml.tpl _config.yml && jekyll clean && jekyll serve --incremental --host 0.0.0.0 --port 8080'

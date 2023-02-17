@@ -1,5 +1,3 @@
----
----
 let student = "";
 let cluster = "";
 let endpoint = "/";
