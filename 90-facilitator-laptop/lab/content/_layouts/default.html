@@ -40,10 +40,10 @@
         </div>
       </header>
 
-      <div id="studentNumberElement">
-        <input id="studentNumberForm" type="number" min="0" max="99" placeholder="Student #">
-        <button onclick="setStudentNumber()">Submit</button><br><br>
-      </div>
+      <form id="studentNumberElement" action="javascript:void(0);" onSubmit="setStudentNumber()">
+        <input id="studentNumberForm" type="number" min="0" max="99" placeholder="Student#">
+        <button type="submit" onclick="setStudentNumber()">Submit</button><br><br>
+      </form>
 
       <p id="greeting"></p>
 
@@ -81,6 +81,13 @@
         ga('send', 'pageview');
       </script>
     {% endif %}
+    <script>
+      $(function() {
+          $('#studentNumberForm').change(function(e) {
+              $('input[type=submit]').focus();
+          })
+      });
+    </script>
     <script src="/assets/js/prism.js"></script>
     <script src="/assets/js/studentpicker.js"></script>
     <script src="/assets/js/codeblock.js"></script>

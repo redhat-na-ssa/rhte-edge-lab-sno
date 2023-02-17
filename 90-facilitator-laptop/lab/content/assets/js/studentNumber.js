@@ -19,7 +19,7 @@ function updateHTML() {
     });
 }
 
-window.onload = function toggleStudentNumberInputVisibility() {
+function toggleStudentNumberInputVisibility() {
     var x = getStudentNumber();
     var y = document.getElementById("studentNumberElement");
     if ( x ) {
@@ -29,3 +29,5 @@ window.onload = function toggleStudentNumberInputVisibility() {
         y.style.display = "block";
     }
 };
+
+window.onload = toggleStudentNumberInputVisibility();
