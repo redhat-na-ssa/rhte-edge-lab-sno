@@ -33,7 +33,7 @@ Here's an example of what the main VM console looks like on a per-VM basis:
 
 > **Note**
 >
-> The name in the screenshot doesn't reflect the current naming of `vm#-{region}`, but it will have a unique number per participant, and the region tag suffixed to it should say `{{ site.data.login.region }}` for this iteration of the lab.
+> The name in the screenshot doesn't reflect the current naming of **vm**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}**-{region}**, but it will have a unique number per participant, and the region tag suffixed to it should say `{{ site.data.login.region }}` for this iteration of the lab.
 
 You can scroll around a little bit to see the various configurations. Note the CPU, memory, and disk capacity allocated for these VMs aligns with the [Single Node OpenShift minimums](https://docs.openshift.com/container-platform/4.12/installing/installing_sno/install-sno-preparing-to-install-sno.html#:~:text=Table%201.%20Minimum%20resource%20requirements){:target="_blank"}. This isn't the most capable setup, and we'd be better off with another 16 GB of RAM for workload deployment with some room to grow, but it's enough to host and manage a small workload with all of the OpenShift features working to help us.
 

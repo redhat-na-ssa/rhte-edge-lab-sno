@@ -15,7 +15,7 @@ Your customers may have environments that have a mix of the two kinds of deploym
 
 #### Edge Cluster Network Topology
 
-Since these clusters are already provisioned, we're just going to adopt them into ACM management. If you and a partner were working together on the `vm#` cluster, you're now going to work together to adopt the `metal#` cluster.
+Since these clusters are already provisioned, we're just going to adopt them into ACM management. If you and a partner were working together on the **vm**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} cluster, you're now going to work together to adopt the **metal**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} cluster.
 
 With our VM SNO clusters, we were in the same VPC as the ACM Hub. ACM was able to discover and provision them just fine. Our metal clusters won't be so easy. The network topology doesn't exactly do us any favors here at the edge. Remember, our lab is organized like this:
 
@@ -28,7 +28,7 @@ So, how will we adopt our bare metal clusters? By reaching up to the publicly-ac
 
 #### Edge Cluster logins
 
-Those of you with `metal#` cluster assignments, copy your login command from the following list and run it on your local machine.
+Those of you with **metal**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} cluster assignments, copy your login command from the following list and run it on your local machine.
 
 > **Note**
 >
@@ -57,7 +57,7 @@ This section exists if there are metal clusters to adopt. You need to log in to 
 
 In the ACM Hub interface, navigate to `Infrastructure` -> `Clusters` and click the ![Import Cluster](/assets/images/acm-import-cluster.png?style=small "Import Cluster") button.
 
-1. Name your cluster using the `metal#` part of your assigned metal cluster.
+1. Name your cluster using the **metal**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} part of your assigned metal cluster.
 2. In the `Additional labels` field, apply the same label that your partner used on their VM cluster. Since I was demonstrating with `vm9` earlier, my partner and I are adopting the `metal9` cluster and would enter `student=9` into the labels.
 3. **Ensure** that `Import mode` is set to the default of `Run import commands manually`.
 
