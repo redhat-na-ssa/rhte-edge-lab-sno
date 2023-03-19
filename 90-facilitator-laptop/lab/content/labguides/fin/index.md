@@ -16,12 +16,11 @@ Today, you explored managing Single Node OpenShift clusters from deploying bare 
 6. Explored and evaluated the mechanisms we might use to manage workloads on edge OpenShift clusters, weighing the pros and cons of each
 7. Leveraged ACM's native features to deploy a simple application to multiple clusters, exploring some features that ACM provides for application management
 
-Hopefully, you can see some of the _benefits_ of running Single Node OpenShift in this paradigm. We get so many great OpenShift features in exchange for the overhead it carries with it.
-- The self-healing applications
-- The declarative configurations
-- The native metrics and status mechanisms
+Hopefully, you can see some of the _benefits_ of running Single Node OpenShift in this paradigm. We get so many great OpenShift features in exchange for the overhead it carries with it. Some of these features include:
+- Self-healing applications
+- Declarative configurations
+- Native metrics and status mechanisms
 - The ability to define pull-style management with ease, and
-- The top-to-bottom integration of OpenShift running on RHEL CoreOS
-    -  With MachineConfigs available to us give us a great platform to work with in our edge strategy, where we need or want to leverage those features
+- The top-to-bottom integration of OpenShift running on RHEL CoreOS, with MachineConfigs available to us give us a great platform to work with in our edge strategy
 
 I appreciate your time exploring these concepts and learning how powerful a platform we can run in the palm of your hand!

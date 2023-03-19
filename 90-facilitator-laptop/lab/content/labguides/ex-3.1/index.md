@@ -10,7 +10,7 @@ Now that we have several edge clusters (maybe?) running and selectable under the
 Normally, our selectors would be a bit more broad in order to manage a large group of clusters. We could use selectors to select on clusters:
  - Per region
  - Specific to a use case, or
- - whatever's appropriate for what your customer is trying to accomplish.
+ - Whatever's appropriate for what your customer is trying to accomplish.
  
 Today, we're just trying to make sure that everyone gets to see how ACM works on these edge clusters - so your selectors in the following exercises will be pretty narrowly scoped to just your student number, selecting one or two clusters.
 
@@ -212,14 +212,14 @@ Once again, click the ![Plus button](/assets/images/plus-button.png?style=small 
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: student{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}-binding
+  name: student#-binding
   namespace: {{ site.data.login.region }}
 placementRef:
-  name: student{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}-placement
+  name: student#-placement
   apiGroup: apps.open-cluster-management.io
   kind: PlacementRule
 subjects:
-  - name: student{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}-htpasswd
+  - name: student#-htpasswd
     apiGroup: policy.open-cluster-management.io
     kind: Policy
 ```

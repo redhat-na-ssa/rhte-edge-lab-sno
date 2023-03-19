@@ -9,7 +9,7 @@ We're provisioning a SNO instance in a VM, which is hosted on a bare metal insta
 
 #### Registering a New Host with ACM
 
-Remember, we may be working in pairs for today's lab if there are VM and metal instances available. If you have a bare metal assignment `metal`{::nomarkdown}<code class="studentId lang-c"></code>{:/nomarkdown}, work with your partner who has the equivalent `vm`{::nomarkdown}<code class="studentId lang-c"></code>{:/nomarkdown} virtual machine on this section. You will only need to use one workstation.
+Remember, we may be working in pairs for today's lab if there are VM and metal instances available. If you have a bare metal assignment **metal**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}, work with your partner who has the equivalent **vm**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} virtual machine on this section. You will only need to use one workstation.
 
 1. Navigate to the Cockpit `Virtual Machines` interface and identify your assigned VM.
 2. Opening the console, if it's not still open from the exploration.
@@ -59,15 +59,19 @@ Review the manifests on the right side of the screen before clicking ![Save](/as
 
 When you click `Save`, your cluster will be drafted and queued for binding and installation. 
 
+> **Note**
+>
 > If, for any reason, you have to make any changes after this point, you have to delete the draft cluster from the `Cluster list` tab in the `Infrastructure` -> `Clusters` interface using the ![Three dots](/assets/images/acm-cluster-three-dots.png?style=small "Three dots") button, then create it again from scratch.
 
 #### Picking our Discovered Host and Binding it to our SNO Cluster
 
+> **Note**
+>
 > Toggle **`Auto-select hosts` off**
 
 This is important, otherwise ACM auto-selects a VM, making the VM unusable for the VM's owner (if it isn't yours).
 
-Making it look like this: ![Auto-select hosts off](/assets/images/acm-auto-select-hosts-off.png?style=small)  Now, check the box next to your host - it will be named **node**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}. For example, installing the `vm9` cluster, my selected cluster host looks like this: ![ACM Checked Host](/assets/images/acm-checked-host.png?style=small "ACM Checked host"). Click on ![Next](/assets/images/acm-next.png?style=small "Next"). It may take a few moments to let you move to the next screen while validation wraps up.
+Make sure it look like this: ![Auto-select hosts off](/assets/images/acm-auto-select-hosts-off.png?style=small)  Now, check the box next to your host - it will be named **node**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}. For example, installing the `vm9` cluster, my selected cluster host looks like this: ![ACM Checked Host](/assets/images/acm-checked-host.png?style=small "ACM Checked host"). Click on ![Next](/assets/images/acm-next.png?style=small "Next"). It may take a few moments to let you move to the next screen while validation wraps up.
 
 #### Finishing our Cluster Installation
 
@@ -75,4 +79,4 @@ You can just hit ![Next](/assets/images/acm-next.png?style=small "Next") on the 
 
 When you're ready and your cluster shows all green for validations on the `Review and create` screen (you may have to wait a few more seconds if you've been quick so far), you can click ![Install cluster](/assets/images/acm-install-cluster.png?style=small "Install cluster").
 
-In about twenty to thirty minutes, this cluster will be up and publicly accessible. Though it will be using self-signed certificates for now. If you click ![View Cluster Events](/assets/images/acm-create-cluster-events.png?style=small) you can view the installation progress. We don't need to sit around and wait for that node to install, though. Let's go adopt our bare metal clusters!
+In about twenty to thirty minutes, this cluster will be up and publicly accessible (using self-signed certificates for now). If you click ![View Cluster Events](/assets/images/acm-create-cluster-events.png?style=small) you can view the installation progress. We don't need to sit around and wait for that node to install, though. Let's go adopt our bare metal clusters!

@@ -42,6 +42,7 @@ After running the commands above in your local terminal, you should be able to r
 oc whoami
 oc get nodes
 oc version
+which kubectl &>/dev/null || alias kubectl=oc
 oc get clusterversion -o=jsonpath='{.items[0].spec.desiredUpdate.version}'
 ```
 
@@ -66,12 +67,14 @@ Your cluster details should look like this:
 ![Import cluster details](/assets/images/acm-import-cluster-details.png?style=centered&style=border "Import cluster details")
 
 You might want to click the pulldown for `Import mode` to see some other modes we could use to import the metal clusters into ACM management.
+
 I wouldn't recommend selecting one of them for even a moment - otherwise you have to back up and start again due to some flakiness in the way that validations are processed.
+
 If you have a publicly-accessible cluster endpoint, you can choose to just provide an endpoint and token, or upload a whole `kubeconfig`. Because of the network we're dealing with, we can't do that. We maybe could have opened a VPN tunnel, but I have deliberately chosen not to do that to simplify this example and show the *OEM imaged* model, without requiring additional configuration on our part.
 
 When your imported cluster definition is good to go, click ![Next](/assets/images/acm-next.png?style=small "Next"). Once again, on the `Automation` screen, just click ![Next](/assets/images/acm-next.png?style=small "Next"). On the `Details` screen, click the ![Generate command](/assets/images/acm-generate-command.png?style=small "Generate command").
 
-Now that the cluster is ready for import, and we have the capability to apply the agent manifests, we have to kick it off from the edge cluster directly - where we have network access to it. {% if site.data.passwords %}Click the ![Copy command](/assets/images/acm-copy-command.png?style=small "Copy command") button. Back in your terminal where you can run `oc` commands against your metal SNO cluster, paste the copied command and wait a little bit for magic to happen. {% else %}If you had metal clusters to log into, you could use the ![Copy command](/assets/images/acm-copy-command.png?style=small "Copy command") button to have a command to run against the cluster locally. You don't have any bare metal clusters, so don't bother. {% endif %}Running this (massive) command against an unmanaged cluster spins up some deployments with enough information to reach out and communicate with our cloud-hosted ACM Hub, enrolling the edge cluster under ACM management.
+Now that the cluster is ready for import, and we have the capability to apply the agent manifests, we have to kick it off from the edge cluster directly - where we have network access to it. {% if site.data.passwords %}Click the ![Copy command](/assets/images/acm-copy-command.png?style=small "Copy command") button. Back in your terminal where you can run `kubectl` commands against your metal SNO cluster, paste the copied command and wait a little bit for magic to happen. {% else %}If you had metal clusters to log into, you could use the ![Copy command](/assets/images/acm-copy-command.png?style=small "Copy command") button to have a command to run against the cluster locally. You don't have any bare metal clusters, so don't bother. {% endif %}Running this (massive) command against an unmanaged cluster spins up some deployments with enough information to reach out and communicate with our cloud-hosted ACM Hub, enrolling the edge cluster under ACM management.
 
 If you want to wait around for all of your clusters to be ready, you can. It makes more sense, in the interest of time, to get started on the next section defining policy and application deployments for our clusters. Once any clusters we have policies or applications defined for comes up, they will be applied and enforced.
 {% if site.data.passwords %}
