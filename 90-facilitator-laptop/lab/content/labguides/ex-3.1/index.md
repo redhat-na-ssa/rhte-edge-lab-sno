@@ -5,16 +5,21 @@ title: Managing Configurations
 
 #### Cluster configurations
 
-Now that we have several edge clusters (maybe?) running and (definitely) selectable under the same `student=#` label (one as the VM we're installing on, and maybe one as the pre-installed bare metal we're adopting), let's look at managing those clusters as part of an overall hybrid cloud infrastructure.
+Now that we have several edge clusters (maybe?) running and selectable under the same **student=**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} label (one being the VM we're installing on, and one bare metal if available), let's look at managing those clusters as part of an overall hybrid cloud infrastructure.
 
-Normally, our selectors would be a bit more broad in order to manage a large group of clusters per region, use-case, or whatever's appropriate for what your customer is trying to accomplish. Today, we're just trying to make sure that everyone gets to see how ACM works on these edge clusters - so your selectors in the following exercises will be pretty narrowly scoped to just your student number, selecting one or two clusters.
+Normally, our selectors would be a bit more broad in order to manage a large group of clusters. We could use selectors to select on clusters:
+ - Per region
+ - Specific to a use case, or
+ - Whatever's appropriate for what your customer is trying to accomplish.
+ 
+Today, we're just trying to make sure that everyone gets to see how ACM works on these edge clusters - so your selectors in the following exercises will be pretty narrowly scoped to just your student number, selecting one or two clusters.
 
-We're going to address some common use-cases for basic management of our edge clusters, though our examples will be necessarily pretty simplified for the purposes of the lab. The limits of your ability to apply governance to your collections of clusters is limited only by your ability to test the changes [before deploying them to prod](https://twitter.com/stahnma/status/634849376343429120){:target="_blank"}.
+We're going to address some common use cases for basic management of our edge clusters, though our examples will be necessarily simplified for the purposes of the lab. The limits of your ability to apply governance to your collections of clusters is limited only by your ability to test the changes [before deploying them to prod](https://twitter.com/stahnma/status/634849376343429120){:target="_blank"}.
 
 The basics of what we expect from our edge clusters before deploying our workloads in the lab today are:
 
-- Some users other than kubeadmin for troubleshooting or administrative work in the field
-  - It should be noted that, this being an edge cluster, it may not be necessary to tie this into a central identity management platform
+- Some users other than `kubeadmin` for troubleshooting or administrative work in the field
+  - It should be noted that because this is an edge cluster, it may not be necessary to tie this into a central identity management platform
 - RBAC for those users
   - Troubleshooting will require cluster-admin most of the time
   - It might make sense to have some lower-privileged users configured as well
@@ -22,11 +27,11 @@ The basics of what we expect from our edge clusters before deploying our workloa
   - It's just inconvenient to have to deal with HSTS errors on a technician's laptop
   - Normally we might use an internal CA and certificates we control, but we're going to use some publicly-trusted certificates for the sake of your laptops' CA trust bundles
 
-We're working in pairs here and managing both our VM-based `vm#` and (maybe) our metal-based `metal#` clusters simultaneously here. Shoulder-surf one way or another if you're working in a pair, but don't try to deploy these same things twice.
+We're working in pairs and managing both our VM **vm**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} and bare metal **metal**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} clusters simultaneously. Ride shotgun (shoulder-surf) and rotate who is driving if you're working in a pair, but don't try to deploy these same things twice.
 
-#### PlacementRules
+#### Placement Rules
 
-In the name of time, we're going to just apply some manifests to do this quickly. If your cluster(s) are labelled appropriately with `student=#`, we can define a `PlacementRule` for ACM to select those cluster(s) by their labels.
+In the name of time, we're going to just apply some manifests to do this quickly. If your cluster(s) are labelled appropriately with **student=**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown}, we can define a `PlacementRule` for ACM to select those cluster(s) by their labels.
 
 This `PlacementRule` is defined on the ACM hub, so let's use the web UI to import manifests. From the ACM hub interface click the ![Plus button](/assets/images/plus-button.png?style=small "Plus button") icon in the top right.
 
@@ -49,7 +54,7 @@ spec:
   clusterConditions: []
 ```
 
-You need to replace two things in this file on lines 5 and 13. In the `metadata.name` field, replace `#` with your actual student number. In the `values` array for the `matchExpression`, you need to also replace `#` with your actual student number. In the case of all of my examples, that would be `student9-placement` and `- "9"` for my edits.
+You need to replace two things in this file on lines 5 and 13. In the `metadata.name` field, replace `#` with {::nomarkdown}<span class="studentId"></span>{:/nomarkdown}. In the `values` array for the `matchExpression`, you need to also replace `#` with {::nomarkdown}<span class="studentId"></span>{:/nomarkdown}. In the case of all of my examples, that would be `student9-placement` and `- "9"` for my edits.
 
 > **Note**
 >
@@ -59,7 +64,7 @@ Here's what mine looks like, adjusting the definition for my running example of 
 
 ![PlacementRule YAML](/assets/images/acm-placementrule-yaml.png?style=centered&style=border "PlacementRule YAML")
 
-Also note that the proper way to do this isn't by adding the YAML to the web console. If we were going to do this the right way, we would have some basic bootstrapping of a GitOps framework to apply these to our hub and use pull requests, branches, and code reviews to get our changes to Placements, Policies, and more down to our groups of edge clusters. Working with the web console YAML editor is much more convenient for a diverse group of attendees in a lab/workshop setting, though.
+Also note that the proper way to do this isn't by adding the YAML to the web console. If we were going to do this the right way, we would have some basic bootstrapping of a GitOps framework to apply these to our hub and use pull requests, branches, and code reviews to get our changes to Placements, Policies, and more down to our groups of edge clusters. Working with the web console YAML editor is much more convenient for a diverse group of attendees in a lab/workshop setting though.
 
 > **Note**
 >
@@ -190,7 +195,7 @@ spec:
 
 This policy requires that HTPasswd is configured as an authentication provider for OpenShift, with a defined HTPasswd file that sets up the username to `labuser` and the password to the relatively simple `R3dH4t1!`. It then creates an OpenShift `User` object for this authentication source, and ties authorization as a `cluster-admin` to the user.
 
-Once again, we need to edit the file a bit per student pair. Here, just the `metadata.name` for the `Policy` object needs edited. Change the `#` to match your student number as before. You'll probably have to scroll up to get back to line number 5. Here's how mine looks at this point:
+Once again, we need to edit the file a bit per student pair. Here, just the `metadata.name` for the `Policy` object needs edited. Change the `#` to {::nomarkdown}<span class="studentId"></span>{:/nomarkdown}. You'll probably have to scroll up to get back to line number 5. Here's how mine looks at this point:
 
 ![Policy YAML](/assets/images/acm-policy-yaml.png?style=centered&style=border "Policy YAML")
 
@@ -198,7 +203,7 @@ Clicking again on ![Create](/assets/images/acm-create.png?style=small "Create") 
 
 Applying the `Policy` to our clusters, selected by their `student` label, will still require the `PlacementBinding`. Think of a `PlacementBinding` like a `RoleBinding` - a `Role` defines the permissions a user may have, a `User` or `ServiceAccount` defines the identity of an authenticated entity, and the `RoleBinding` ties the two together. Let's tie our `Policy` requiring HTPasswd users and cluster-admin RBAC to our `Placement` that selects our clusters.
 
-#### PlacementBindings
+#### Placement Bindings
 
 Once again, click the ![Plus button](/assets/images/plus-button.png?style=small "Plus button") in the ACM Hub interface, and paste in the following YAML:
 
@@ -219,7 +224,7 @@ subjects:
     kind: Policy
 ```
 
-Again, we need to edit this file before applying it. You'll need to update your `#` on lines 5, 8, and 12. After updating mine for the `student9` example, it looks like this:
+Again, we need to edit this file before applying it. You'll need to update your `#` with {::nomarkdown}<span class="studentId"></span>{:/nomarkdown} on lines 5, 8, and 12. After updating mine for the `student9` example, it looks like this:
 
 ![Placement Binding YAML](/assets/images/acm-placement-binding.png?style=centered&style=border "Placement Binding YAML")
 
@@ -229,9 +234,9 @@ To see the effects of your policies in ACM, once again make sure you're on the `
 
 > **Note**
 >
-> If you've been kicking butt and getting through the labs quickly, your installation of your VM-based SNO cluster may not yet be complete. It's okay to move on, but the `Policy` won't be enforcible until the cluster is installed.
+> If you've been kicking butt and getting through the labs quickly, the installation of your VM SNO cluster may not yet be complete. It's okay to move on, but the `Policy` won't be enforceable until the cluster is installed.
 
-The `Results` tab shows you the affect of every piece of the applied policy - including a little ![View details](/assets/images/acm-policy-event-view-details.png?style=small "View details") link to see lots of information about why the policy shows as without-violation (if your cluster has finished installing).
+The `Results` tab shows you the affect of every piece of the applied policy - including a little ![View details](/assets/images/acm-policy-event-view-details.png?style=small "View details") link to see lots of information about why the policy shows *without-violation* (if your cluster has finished installing).
 
 > **Note**
 >
@@ -251,11 +256,11 @@ Back in the cluster `Overview` in the ACM hub interface (this is the same page w
 
 ![Policy violations](/assets/images/acm-policy-violations.png?style=centered&style=border "Policy violations")
 
-Part of the lab build-out included some free trusted TLS certificates from ZeroSSL (if you know LetsEncrypt, ZeroSSL is like that but cooler) on the Hub cluster, a `Policy` to apply them to publish the certificates down to the managed clusters, and a `Placement` and `PlacementBinding` to select your clusters when this label was added and push the `ConfigurationPolicy` down. So, close the tab with the unsafe TLS warning and try clicking the link again.
+Part of the lab build-out included: some free trusted TLS certificates from ZeroSSL (if you know LetsEncrypt, ZeroSSL is like that but cooler) on the Hub cluster, a `Policy` to apply the certificates to the managed clusters, a `Placement` and `PlacementBinding` resource to select your cluster(s) and push the `ConfigurationPolicy` to your cluster(s). So, close the tab with the unsafe TLS warning and try clicking the link again.
 
 #### Validating our Metal Cluster Certificates
 
-It may take a little bit even after the policy shows that it is without violations for the Ingress controller to roll out the new replicas, or it may require you to open the link in a new browser session or incognito window to get the new certificate if you fiddled around with trusting the old one. You should be able to get to the managed bare-metal SNO cluster, though:
+It may take a little bit even after the policy shows that it is without violations for the Ingress controller to roll out the new replicas, or it may require you to open the link in a new browser session or incognito window to get the new certificate if you fiddled around with trusting the old one. You should be able to get to the managed bare metal SNO cluster though:
 
 ![Trusted cluster login screen](/assets/images/managed-cluster-trusted-login.png?style=centered&style=border "Trusted cluster login screen")
 
@@ -266,10 +271,10 @@ You can log in using the `htpasswd` provider with the information you configured
 
 #### Certificates for VMs
 
-Head back to the ACM Hub interface, select `Infrastructure` and `Clusters` from the left navigation bar again, click on your `vm#` cluster, and edit the labels there with the ![Pencil](/assets/images/acm-pencil.png?style=small "Pencil") icon, and add the {% include inline_copyable.html content="certificates-managed=true" %} label to this cluster. Click ![Save](/assets/images/acm-save.png?style=small "Save"). It's okay if this cluster still isn't all the way provisioned yet, this `Policy` will take effect when it's able to - just because you added this label.
+Head back to the ACM Hub interface, select `Infrastructure` and `Clusters` from the left navigation bar again, click on your **vm**{::nomarkdown}<span class="studentId"></span>{:/nomarkdown} cluster, and edit the labels there with the ![Pencil](/assets/images/acm-pencil.png?style=small "Pencil") icon, and add the {% include inline_copyable.html content="certificates-managed=true" %} label to this cluster. Click ![Save](/assets/images/acm-save.png?style=small "Save"). It's okay if this cluster still isn't all the way provisioned yet, this `Policy` will take effect when it's able to - just because you added this label.
 
 #### Configuration Wrap-up
 
-There are lots of other `Policy` types we could apply to our clusters. Here, we're just using `ConfigurationPolicies` in our definitions - ways to specify arbitrary Kubernetes YAML. There are several other policy controllers, but this isn't really an ACM features workshop. You can read more about ACM Policy controllers in the [ACM Documentation](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.6/html/governance/governance#policy-controllers){:target="_blank"} and see some great examples of different kinds of policies, including the definitions for supported `Policies` that come with an ACM install as well as some community implementations that are maybe a little less fleshed-out, but still a good basis for customers to leverage, in the [policy-collection repository](https://github.com/open-cluster-management-io/policy-collection){:target="_blank"}.
+There are lots of other `Policy` types we could apply to our clusters. Here, we're just using `ConfigurationPolicies` in our definitions - ways to specify arbitrary Kubernetes YAML. There are several other policy controllers, but this isn't really an ACM features workshop. You can read more about ACM Policy controllers in the [ACM Documentation](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.7/html/governance/governance#policy-controllers){:target="_blank"} and see some great examples of different kinds of policies, including the definitions for supported `Policies` that come with an ACM install, as well as some community implementations that are maybe a little less fleshed-out, but still a good basis for customers to leverage in the [policy-collection repository](https://github.com/open-cluster-management-io/policy-collection){:target="_blank"}.
 
 Let's wrap up the lab by getting to workload management.
