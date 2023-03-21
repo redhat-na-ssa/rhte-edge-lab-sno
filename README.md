@@ -1,6 +1,6 @@
 # To develop using Red Hat Dev Spaces
 
-[![Contribute](https://www.eclipse.org/che/contribute.svg)]("https://workspaces.openshift.com#https://github.com/redhat-na-ssa/rhte-edge-lab-sno")
+[![Contribute](https://www.eclipse.org/che/contribute.svg)](https://workspaces.openshift.com#https://github.com/redhat-na-ssa/rhte-edge-lab-sno)
 
 Click the above badge
 
